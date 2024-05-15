@@ -5,6 +5,13 @@
 This document describes the design of an XM23p emulator's loader module.\
 It reads the S-records from an XME file, and loads the result into the emulator's IMEM and DMEM.
 
+## Design ##
+![](main.svg)
+
+![](process_record.svg)
+
+![](display_memory.svg)
+
 ## Data Dictionary
 ```
 S_REC = 'S' + REC_TYPE + LENGTH + ADDRESS + DATA
@@ -15,13 +22,3 @@ DATA = 1{BYTE_PAIR}30
 BYTE_PAIR = 2{CHAR}2
 CHAR = ['0'-'F']
 ```
-## Design ##
-
-![](main.svg)
-### Main Program Flowchart ###
-
-![](process_record.svg)
-### Process Record Flowchart ###
-
-![](display_memory.svg)
-### Display Memory Flowchart ###
