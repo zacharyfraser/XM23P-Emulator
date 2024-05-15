@@ -15,10 +15,13 @@ DATA = 1{BYTE_PAIR}30
 BYTE_PAIR = 2{CHAR}2
 CHAR = ['0'-'F']
 ```
-## Design    
-### Main Program Flowchart ###
+## Design ##
+
 ![](main.svg)
-### Process Record Flowchart ###
+### Main Program Flowchart ###
+
 ![](process_record.svg)
-### Display Memory Flowchart ###
+### Process Record Flowchart ###
+
 ![](display_memory.svg)
+### Display Memory Flowchart ###
