@@ -8,6 +8,12 @@
 #ifndef FILE_H
 #define FILE_H
 
+#include <stdint.h>
+#include <ctype.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+
 #define byte_t unsigned char
 #define MAX_RECORD_LENGTH 32
 
@@ -16,11 +22,16 @@
 
 /* Returns true if type is a valid record type */
 #define IS_VALID_TYPE(type) \
-                    type == NAME_TYPE || \
-                    type == INSTRUCTION_TYPE || \
-                    type == DATA_TYPE || \
-                    type == ADDRESS_TYPE\
-                            
+                    type - '0' == NAME_TYPE || \
+                    type - '0' == INSTRUCTION_TYPE || \
+                    type - '0' == DATA_TYPE || \
+                    type - '0' == ADDRESS_TYPE\
+
+/* Read two characters and interpret them as a single byte. Increases byte pointer */
+#define Read_Byte(byte_pointer) ( \
+    ((isdigit(*byte_pointer) ? (*byte_pointer++ - '0') : (toupper(*byte_pointer++) - 'A' + 10)) << 4) + \
+    (isdigit(*byte_pointer) ? (*byte_pointer++ - '0') : (toupper(*byte_pointer++) - 'A' + 10)) \
+)
 
 /* Valid Record Types */
 enum
@@ -48,7 +59,7 @@ typedef struct s_record_t
 {
 byte_t type;
 byte_t length;
-byte_t address[4];
+byte_t address[2];
 byte_t data[MAX_RECORD_LENGTH];
 }s_record_t;
 

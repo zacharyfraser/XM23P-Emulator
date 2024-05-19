@@ -36,16 +36,26 @@ int main(int argc, char **argv)
 
         while (fgets(input_record, sizeof(input_record), file))
         {
-            if (parse_record(input_record, &s_record) != 0)
+            int record_status = parse_record(input_record, &s_record);
+            if (record_status != 0)
             {
-                printf("Invalid Line: >%s<\n", input_record);
+                printf("Invalid Line: >%s< Error: >%d<\n", input_record, record_status);
                 continue;
             }
             printf("Valid Line: >%s<\n", input_record);
-            printf("Type: >%c<\n", s_record.type);
-            printf("Length: >%c<\n", s_record.length);
-            printf("Address: >%s<\n", s_record.address);
-            printf("Data: >%s<\n", s_record.data);
+            printf("Type: >%d<\n", s_record.type);
+            printf("Length: >%d<\n", s_record.length);
+            printf("Address: ");
+            for(int j = 0; j < ADDRESS_LENGTH; j++)
+            {
+                printf("%02x", s_record.address[j]);
+            }
+            printf("\nData: ");
+            for(int j = 0; j < s_record.length - 3; j++)
+            {
+                printf("%02x", s_record.data[j]);
+            }
+                printf("\n");
         }
         
     }
