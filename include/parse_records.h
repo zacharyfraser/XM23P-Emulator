@@ -22,24 +22,27 @@
 
 /* Returns true if type is a valid record type */
 #define IS_VALID_TYPE(type) \
-                    type - '0' == NAME_TYPE || \
-                    type - '0' == INSTRUCTION_TYPE || \
-                    type - '0' == DATA_TYPE || \
-                    type - '0' == ADDRESS_TYPE\
+                    type == NAME_TYPE || \
+                    type == INSTRUCTION_TYPE || \
+                    type == DATA_TYPE || \
+                    type == ADDRESS_TYPE\
 
-/* Read two characters and interpret them as a single byte. Increases byte pointer */
-#define Read_Byte(byte_pointer) ( \
-    ((isdigit(*byte_pointer) ? (*byte_pointer++ - '0') : (toupper(*byte_pointer++) - 'A' + 10)) << 4) + \
-    (isdigit(*byte_pointer) ? (*byte_pointer++ - '0') : (toupper(*byte_pointer++) - 'A' + 10)) \
+/* Read two characters and interpret them as a single byte. Increases character pointer */
+#define Read_Byte(character_pointer) ( \
+    ((isdigit(*character_pointer) ? (*character_pointer++ - '0') \
+    : (toupper(*character_pointer++) - 'A' + 10)) << 4) + \
+    \
+    (isdigit(*character_pointer) ? (*character_pointer++ - '0') \
+    : (toupper(*character_pointer++) - 'A' + 10)) \
 )
 
-/* Valid Record Types */
+/* Valid Record Types - Stored as Characters*/
 enum
 {
-NAME_TYPE = 0,
-INSTRUCTION_TYPE = 1,
-DATA_TYPE = 2,
-ADDRESS_TYPE = 9
+NAME_TYPE           = 0 + '0',
+INSTRUCTION_TYPE    = 1 + '0',
+DATA_TYPE           = 2 + '0',
+ADDRESS_TYPE        = 9 + '0'
 };
 
 /* S_Record States*/

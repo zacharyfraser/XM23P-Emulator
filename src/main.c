@@ -39,12 +39,12 @@ int main(int argc, char **argv)
             int record_status = parse_record(input_record, &s_record);
             if (record_status != 0)
             {
-                printf("Invalid Line: >%s< Error: >%d<\n", input_record, record_status);
+                printf("Invalid Line: %s Error: %d\n", input_record, record_status);
                 continue;
             }
-            printf("Valid Line: >%s<\n", input_record);
-            printf("Type: >%d<\n", s_record.type);
-            printf("Length: >%d<\n", s_record.length);
+            printf("Valid Line: %s", input_record);
+            printf("Type: %c\n", s_record.type);
+            printf("Length: %d\n", s_record.length);
             printf("Address: ");
             for(int j = 0; j < ADDRESS_LENGTH; j++)
             {
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
             {
                 printf("%02x", s_record.data[j]);
             }
-                printf("\n");
+                printf("\n\n");
         }
         
     }

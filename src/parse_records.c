@@ -17,13 +17,13 @@
  */
 int parse_record(char* input_record, s_record_t *s_record)
 {
-    char* byte_pointer;
+    char* character_pointer;
     int state = S_STATE;
     byte_t sum = 0x00;
     int return_status = 0;
     int byte = 0;
 
-    byte_pointer = input_record;
+    character_pointer = input_record;
 
     /* Check for Null pointers */
     if(input_record == NULL || s_record == NULL)
@@ -37,7 +37,8 @@ int parse_record(char* input_record, s_record_t *s_record)
         switch (state)
         {
         case S_STATE:
-            if(*byte_pointer != 'S')
+            /* Check that first character is an 'S' */
+            if(*character_pointer != 'S')
             {
                 /* Input record is not an s-record */
                 return_status = -2;
@@ -46,13 +47,14 @@ int parse_record(char* input_record, s_record_t *s_record)
             else
             {
                 /* Increment pointer and move to next state */
-                *byte_pointer++;
+                *character_pointer++;
                 state++;
             }
             break;
 
         case TYPE_STATE:
-            if(!(IS_VALID_TYPE(*byte_pointer)))
+            /* Check that next character is a valid type [0, 1, 2, 9] */
+            if(!(IS_VALID_TYPE(*character_pointer)))
             {
                 /* Invalid Record Type */
                 return_status = -3;
@@ -61,16 +63,17 @@ int parse_record(char* input_record, s_record_t *s_record)
             else
             {
                 /* Assign Record Type to struct */
-                s_record->type = *byte_pointer - '0';
+                s_record->type = *character_pointer;
                 /* Increment pointer and move to next state */
-                *byte_pointer++;
+                *character_pointer++;
                 state++;
             }
             break;
 
         case LENGTH_STATE:
-            byte = Read_Byte(byte_pointer);
-            printf("Length: %02x\n", byte);
+            /* Read next two characters as a byte.  Increments pointer 2 characters */
+            byte = Read_Byte(character_pointer);
+            /* Check if length is less than max record length */
             if(byte > MAX_RECORD_LENGTH)
             {
                 /* Record too long */
@@ -89,44 +92,39 @@ int parse_record(char* input_record, s_record_t *s_record)
             break;
 
         case ADDRESS_STATE:
-            printf("Address: ");
             for (int i = 0; i < ADDRESS_LENGTH; i++)
             {
-                byte = Read_Byte(byte_pointer);
-                printf("%02x", byte);
-                /* Read Address byte into 0-indexed address and increment pointer */
+                /* Read next two characters as a byte.  Increments pointer 2 characters */
+                byte = Read_Byte(character_pointer);
+                /* Read Address byte into address */
                 s_record->address[i] = (byte_t) byte;
                 /* Add byte to sum */
                 sum += (byte_t) byte;
             }
             /* Move to next state */
-            printf("\n");
             state++;
             break;
 
         case DATA_STATE:
             /* Assign Data to struct until length met - account for address and checksum */
-            printf("Data: ");
             for (int i = ADDRESS_LENGTH; i < s_record->length - 1; i++)
             {
-                byte = Read_Byte(byte_pointer);
-                printf("%02x", byte);
+                /* Read next two characters as a byte.  Increments pointer 2 characters */
+                byte = Read_Byte(character_pointer);
                 /* Store Data in 0-indexed Data Array */
                 s_record->data[i - ADDRESS_LENGTH] = (byte_t) byte;
                 /* Add byte to sum and increment pointer */
                 sum += (byte_t) byte;
             }
             /* Move to next state */
-            printf("\n");
             state++;
             break;
 
         case CHECKSUM_STATE:
-            byte = Read_Byte(byte_pointer);
-            printf("Checksum: %02x\n", byte);
+            /* Read next two characters as a byte.  Increments pointer 2 characters */
+            byte = Read_Byte(character_pointer);
             /* Add byte to sum */
             sum += (byte_t) byte;
-            printf("Sum: %02x\n", sum);
             /* Check if checksum is correct */
             if(sum != CHECKSUM_VALUE)
             {
@@ -138,13 +136,13 @@ int parse_record(char* input_record, s_record_t *s_record)
             break;
         
         default:
-        /* Impossible State */
-        printf("Invalid State: %d", state);
+        /* Impossible State - Code Error */
         return_status = -6;
         state = END_STATE;
             break;
         }
     }
 
+    /* Return Success (0) or Failure (< 0) */
     return return_status;
 }
