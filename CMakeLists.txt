@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 #Define variable Project_Name
-set(Project_Name Project)
+set(Project_Name Loader)
 
 # Set the project name and specify that it uses C
 project(${Project_Name} C)
