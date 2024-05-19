@@ -39,7 +39,7 @@ int main(int argc, char **argv)
             int record_status = parse_record(input_record, &s_record);
             if (record_status != 0)
             {
-                printf("Invalid Line: %s Error: %d\n", input_record, record_status);
+                perror("Invalid Line: %s Error: %d\n", input_record, record_status);
                 continue;
             }
             printf("Valid Line: %s", input_record);
