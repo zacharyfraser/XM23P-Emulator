@@ -38,8 +38,14 @@ int main(int argc, char **argv)
         {
             if (parse_record(input_record, &s_record) != 0)
             {
+                printf("Invalid Line: >%s<\n", input_record);
                 continue;
             }
+            printf("Valid Line: >%s<\n", input_record);
+            printf("Type: >%c<\n", s_record.type);
+            printf("Length: >%c<\n", s_record.length);
+            printf("Address: >%s<\n", s_record.address);
+            printf("Data: >%s<\n", s_record.data);
         }
         
     }

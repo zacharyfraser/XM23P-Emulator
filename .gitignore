@@ -2,6 +2,8 @@
 obj/
 build/
 bin/
+
+*.lis
 *.o
 *.obj
 *.exe
