@@ -39,10 +39,10 @@
 /* Valid Record Types - Stored as Characters*/
 enum
 {
-NAME_TYPE           = 0 + '0',
-INSTRUCTION_TYPE    = 1 + '0',
-DATA_TYPE           = 2 + '0',
-ADDRESS_TYPE        = 9 + '0'
+NAME_TYPE           = '0',
+INSTRUCTION_TYPE    = '1',
+DATA_TYPE           = '2',
+ADDRESS_TYPE        = '9'
 };
 
 /* S_Record States*/

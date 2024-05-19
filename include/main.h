@@ -12,4 +12,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define KILOBYTE (1 << 10) /* 1024 bytes */
+#define INSTRUCTION_MEMORY_LENGTH (64 * KILOBYTE)
+#define DATA_MEMORY_LENGTH (64 * KILOBYTE)
+
 #endif
