@@ -18,6 +18,7 @@
 #define MAX_RECORD_LENGTH 32
 
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
+#define CHECKSUM_LENGTH 1
 #define CHECKSUM_VALUE 0xFF /* Expected value of sum of record bytes */
 
 /* Returns true if type is a valid record type */
@@ -27,7 +28,8 @@
                     type == DATA_TYPE || \
                     type == ADDRESS_TYPE\
 
-/* Read two characters and interpret them as a single byte. Increases character pointer */
+/* Read two characters and interpret them as a single byte. 
+                                Increases character pointer */
 #define Read_Byte(character_pointer) ( \
     ((isdigit(*character_pointer) ? (*character_pointer++ - '0') \
     : (toupper(*character_pointer++) - 'A' + 10)) << 4) + \
@@ -39,10 +41,10 @@
 /* Valid Record Types - Stored as Characters*/
 enum
 {
-NAME_TYPE           = 0 + '0',
-INSTRUCTION_TYPE    = 1 + '0',
-DATA_TYPE           = 2 + '0',
-ADDRESS_TYPE        = 9 + '0'
+NAME_TYPE           = '0',
+INSTRUCTION_TYPE    = '1',
+DATA_TYPE           = '2',
+ADDRESS_TYPE        = '9'
 };
 
 /* S_Record States*/
