@@ -28,7 +28,8 @@
                     type == DATA_TYPE || \
                     type == ADDRESS_TYPE\
 
-/* Read two characters and interpret them as a single byte. Increases character pointer */
+/* Read two characters and interpret them as a single byte. 
+                                Increases character pointer */
 #define Read_Byte(character_pointer) ( \
     ((isdigit(*character_pointer) ? (*character_pointer++ - '0') \
     : (toupper(*character_pointer++) - 'A' + 10)) << 4) + \

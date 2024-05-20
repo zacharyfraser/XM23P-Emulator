@@ -28,7 +28,7 @@ byte_t starting_address[ADDRESS_LENGTH];
  * @brief Parse every file provided in argv
  * 
  * @param argc Number of entrypoint arguments
- * @param argv entrypoint arguments - argv[0] is name of loader executable, 
+ * @param argv entrypoint arguments - argv[0] is name of loader executable,
  *      argv[1+] is name of xme executable file
  * @return Exit Status - [0 = success, 1 = failure]
  */
@@ -54,7 +54,9 @@ int main(int argc, char **argv)
             error_status = parse_record(input_record, &s_record);
             if (error_status != 0)
             {
-                printf("Invalid Line: %s Error: %d\n", input_record, error_status);
+                printf("Invalid Line: %s Error: %d\n", 
+                    input_record, error_status);
+
                 continue;
             }
 
@@ -71,7 +73,7 @@ int main(int argc, char **argv)
                 break;
 
             case INSTRUCTION_TYPE:
-                /* Load Instructions from record data into instruction memory */
+                /* Load Instructions from record data to instruction memory */
                 error_status = load_record_data(&s_record, instruction_memory);
                 if(error_status != 0)
                 {
@@ -91,7 +93,9 @@ int main(int argc, char **argv)
             case ADDRESS_TYPE:
                 /* Load Starting Address from record address 
                     into instruction memory */
-                error_status = load_record_address(&s_record, starting_address);
+                error_status = 
+                    load_record_address(&s_record, starting_address);
+
                 if(error_status != 0)
                 {
                     printf("Error loading address into starting_address");

@@ -15,9 +15,11 @@
  * @param source Pointer to source array
  * @param destination Pointer to destination array
  * @param length Number of bytes in array
+ * @param offset Index of destination array to start copying
  * @return int [0 = Success, < 0 = Failure]
  */
-int copy_byte_array(byte_t *source, byte_t *destination, int length, int offset)
+int copy_byte_array(
+    byte_t *source, byte_t *destination, int length, int offset)
 {
     int error_status = 0;
     for (int i = 0; i < length; i++)
@@ -26,7 +28,6 @@ int copy_byte_array(byte_t *source, byte_t *destination, int length, int offset)
         if(source != NULL && destination != NULL)
         {
             destination[offset] = *source++;
-            printf("<%02x>", destination[i + offset]);
             destination++;
         }
         else
@@ -64,10 +65,12 @@ int load_record_data(s_record_t *s_record, byte_t *destination)
     /* Convert Byte array to integer sum */
     for (int i = 0; i < ADDRESS_LENGTH; i++)
     {
-        memory_offset += s_record->address[i] << (8 * (ADDRESS_LENGTH - i - 1));
+        memory_offset += s_record->address[i] << 
+            (8 * (ADDRESS_LENGTH - i - 1));
     }
     
-    /* Data length = record length - length of address - length of checksum checksum */
+    /* Data length = record length - length of address 
+            - length of checksum checksum */
     return copy_byte_array
         (
         s_record->data, destination, 
@@ -95,7 +98,7 @@ int load_record_name(s_record_t *s_record, byte_t *destination)
         if(!error_status)
         {
             /* This could throw an exception if the destination array is 
-                    smaller than this evaluated index. */
+                    smaller than the index. */
             destination[
                 s_record->length - ADDRESS_LENGTH - CHECKSUM_LENGTH] = NUL;
         }

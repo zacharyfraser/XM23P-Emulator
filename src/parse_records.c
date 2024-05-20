@@ -71,7 +71,8 @@ int parse_record(char* input_record, s_record_t *s_record)
             break;
 
         case LENGTH_STATE:
-            /* Read next two characters as a byte.  Increments pointer 2 characters */
+            /* Read next two characters as a byte.  
+                    Increments pointer 2 characters */
             byte = Read_Byte(character_pointer);
             /* Check if length is less than max record length */
             if(byte > MAX_RECORD_LENGTH)
@@ -94,7 +95,8 @@ int parse_record(char* input_record, s_record_t *s_record)
         case ADDRESS_STATE:
             for (int i = 0; i < ADDRESS_LENGTH; i++)
             {
-                /* Read next two characters as a byte.  Increments pointer 2 characters */
+                /* Read next two characters as a byte.  
+                        Increments pointer 2 characters */
                 byte = Read_Byte(character_pointer);
                 /* Read Address byte into address */
                 s_record->address[i] = (byte_t) byte;
@@ -106,10 +108,12 @@ int parse_record(char* input_record, s_record_t *s_record)
             break;
 
         case DATA_STATE:
-            /* Assign Data to struct until length met - account for address and checksum */
+            /* Assign Data to struct until length met - 
+                        account for address and checksum */
             for (int i = ADDRESS_LENGTH; i < s_record->length - 1; i++)
             {
-                /* Read next two characters as a byte.  Increments pointer 2 characters */
+                /* Read next two characters as a byte.  
+                        Increments pointer 2 characters */
                 byte = Read_Byte(character_pointer);
                 /* Store Data in 0-indexed Data Array */
                 s_record->data[i - ADDRESS_LENGTH] = (byte_t) byte;
@@ -121,7 +125,8 @@ int parse_record(char* input_record, s_record_t *s_record)
             break;
 
         case CHECKSUM_STATE:
-            /* Read next two characters as a byte.  Increments pointer 2 characters */
+            /* Read next two characters as a byte.  
+                    Increments pointer 2 characters */
             byte = Read_Byte(character_pointer);
             /* Add byte to sum */
             sum += (byte_t) byte;
