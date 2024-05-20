@@ -9,8 +9,11 @@
 #ifndef load_memory_H
 #define load_memory_H
 
-int copy_byte_array(byte_t *source, byte_t *destination, int length);
+#define NUL '\0'
+
+int copy_byte_array(byte_t *source, byte_t *destination, int length, int offset);
 int load_record_address(s_record_t *s_record, byte_t *destination);
 int load_record_data(s_record_t *s_record, byte_t *destination);
+int load_record_name(s_record_t *s_record, byte_t *destination);
 
 #endif

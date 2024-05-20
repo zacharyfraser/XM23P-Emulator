@@ -22,7 +22,7 @@ byte_t data_memory[DATA_MEMORY_LENGTH];
 
 /* Executable Name and Program Starting Address 
         Populated from S0 and S9 Records        */
-char executable_name[MAX_RECORD_LENGTH];
+byte_t executable_name[MAX_RECORD_LENGTH];
 byte_t starting_address[ADDRESS_LENGTH];
 /**
  * @brief Parse every file provided in argv
@@ -34,6 +34,11 @@ byte_t starting_address[ADDRESS_LENGTH];
  */
 int main(int argc, char **argv)
 {
+    if(argc < 2)
+    {
+        printf("No File Supplied - Terminating Program");
+        return EXIT_FAILURE;
+    }
     for (int i = 1; i < argc; i++)
     {
         /* Open File for Reading */
@@ -58,7 +63,7 @@ int main(int argc, char **argv)
             {
             case NAME_TYPE:
                 /* Load name from record data into executable name */
-                error_status = load_record_data(&s_record, executable_name);
+                error_status = load_record_name(&s_record, executable_name);
                 if(error_status != 0)
                 {
                     printf("Error loading data into executable_name");
@@ -67,7 +72,7 @@ int main(int argc, char **argv)
 
             case INSTRUCTION_TYPE:
                 /* Load Instructions from record data into instruction memory */
-                load_record_data(&s_record, instruction_memory);
+                error_status = load_record_data(&s_record, instruction_memory);
                 if(error_status != 0)
                 {
                     printf("Error loading data into instruction_memory");
@@ -84,7 +89,8 @@ int main(int argc, char **argv)
                 break;
 
             case ADDRESS_TYPE:
-                /* Load Starting Address from record address into instruction memory */
+                /* Load Starting Address from record address 
+                    into instruction memory */
                 error_status = load_record_address(&s_record, starting_address);
                 if(error_status != 0)
                 {
@@ -116,6 +122,28 @@ int main(int argc, char **argv)
                 printf("\n\n");
 #endif
         }
+
+        for (int j = 0x00; j < 0x04; j++)
+        {
+            printf("%04x:  ", j * 0x10 + 0x0100);
+            for (int k = 0x00; k < 0x10; k++)
+            {
+                printf("%02x ", instruction_memory[j * 0x10 + k + 0x0100]);
+            }
+            printf("\n");
+        }
+
+        printf("Name: <%s>\n", executable_name);
+
+        printf("Starting Address: ");
+        for (int j = 0; j < ADDRESS_LENGTH; j++)
+        {
+            printf("%02x", starting_address[j]);
+        }
+        printf("\n");
+        
+        
+        
         
     }
 

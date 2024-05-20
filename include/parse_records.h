@@ -18,6 +18,7 @@
 #define MAX_RECORD_LENGTH 32
 
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
+#define CHECKSUM_LENGTH 1
 #define CHECKSUM_VALUE 0xFF /* Expected value of sum of record bytes */
 
 /* Returns true if type is a valid record type */
