@@ -9,12 +9,12 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-//#define DEBUG
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 
-#define KILOBYTE (1 << 10) /* 1024 bytes */
+#include "definitions.h"
+
 #define INSTRUCTION_MEMORY_LENGTH (64 * KILOBYTE)
 #define DATA_MEMORY_LENGTH (64 * KILOBYTE)
 
