@@ -6,6 +6,8 @@
  * @date 2024-05-20
  */
 
+#include "display_memory.h"
+
 int display_memory(byte_t *memory_array, int lower_bound, int upper_bound)
 {
 
