@@ -15,7 +15,7 @@
 #define byte_t unsigned char
 #define NUL '\0'
 
-#define MAX_RECORD_LENGTH 32
+#define MAX_RECORD_LENGTH 256
 
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1

@@ -55,8 +55,8 @@ int main(int argc, char **argv)
             error_status = parse_record(input_record, &s_record);
             if (error_status != 0)
             {
-                printf("Invalid Line: %s Error: %d\n", 
-                    input_record, error_status);
+                printf("Invalid Line: %s\n", 
+                    input_record);
 
                 continue;
             }
@@ -127,26 +127,36 @@ int main(int argc, char **argv)
                 printf("\n\n");
 #endif
         }
-
-        for (int j = 0x00; j < 0x04; j++)
-        {
-            printf("%04x:  ", j * 0x10 + 0x0100);
-            for (int k = 0x00; k < 0x10; k++)
+        while(1)
+        {   
+            int start_address, ending_address;
+            char address_type;
+            while(1)
             {
-                printf("%02x ", instruction_memory[j * 0x10 + k + 0x0100]);
+                printf("Please Enter Address Type - I or D: ");
+                scanf_s("%c", &address_type, 1);
+                if(address_type != 'I' && address_type != 'D')
+                {
+                    printf("Invalid Type - Press Enter");
+                    (void) getchar();
+                    continue;
+                }
+
+                break;
             }
-            printf("\n");
-        }
 
-        printf("Name: <%s>\n", executable_name);
-
-        printf("Starting Address: ");
-        for (int j = 0; j < ADDRESS_LENGTH; j++)
-        {
-            printf("%02x", starting_address[j]);
+            printf("\nPlease Enter Starting and ending addresses: ");
+            scanf_s("%x %x", &start_address, &ending_address);
+            if(address_type == 'I')
+            {
+                display_memory(instruction_memory, start_address, ending_address);
+            }
+            else if (address_type == 'D')
+            {
+                display_memory(data_memory, start_address, ending_address);
+            }
+            (void)getchar();
         }
-        printf("\n");
-        
         
         
         
