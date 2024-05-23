@@ -55,7 +55,7 @@ int main(int argc, char **argv)
             error_status = parse_record(input_record, &s_record);
             if (error_status != 0)
             {
-                printf("Invalid Line: %s\n", 
+                printf("Invalid Line: %s", 
                     input_record);
 
                 continue;
@@ -145,7 +145,7 @@ int main(int argc, char **argv)
                 break;
             }
 
-            printf("\nPlease Enter Starting and ending addresses: ");
+            printf("Please Enter Starting and ending addresses: ");
             scanf_s("%x %x", &start_address, &ending_address);
             if(address_type == 'I')
             {
