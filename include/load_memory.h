@@ -7,10 +7,12 @@
  * @date 2024-05-19
  */
 
-#ifndef load_memory_H
-#define load_memory_H
+#ifndef LOAD_MEMORY_H
+#define LOAD_MEMORY_H
 
-#define NUL '\0'
+#include <stddef.h>
+
+#include "definitions.h"
 
 int copy_byte_array(
     byte_t *source, byte_t *destination, int length, int offset);

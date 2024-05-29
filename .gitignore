@@ -6,7 +6,6 @@ bin/
 *.lis
 *.o
 *.obj
-*.exe
 *.out
 
 # Ignore IDE specific files
