@@ -26,6 +26,9 @@
 #define DATA_MEMORY '1'
 #define PROGRAM_COUNTER 7
 
+#define INSTRUCTION_MEMORY_LENGTH (64 * KILOBYTE)
+#define DATA_MEMORY_LENGTH (64 * KILOBYTE)
+
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1
 #define CHECKSUM_VALUE 0xFF /* Expected value of sum of record bytes */
@@ -76,5 +79,19 @@ int starting_address;
 byte_t executable_name[MAX_RECORD_LENGTH];
 
 }program_t;
+/**
+ * @brief Structure representing an instruction.
+ * 
+ * This structure holds information about an instruction, including its type, and other parameters.
+ */
+typedef struct instruction
+{
+    instruction_type_t type;
+    byte_t source;
+    byte_t destination;
+    byte_t byte;
+    byte_t rc;
+    byte_t wc;
+} instruction_t;
 
 #endif
