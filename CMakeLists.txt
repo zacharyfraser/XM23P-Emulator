@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 
 #Define variable Project_Name
-set(Project_Name Project)
+set(Project_Name Loader)
 
 # Set the project name and specify that it uses C
 project(${Project_Name} C)
+
+include(CTest)
 
 # Set the C standard
 set(CMAKE_C_STANDARD 11)
@@ -38,3 +40,11 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     arget_compile_definitions(${Project_Name} PRIVATE LINUX)
     target_compile_options(${Project_Name} PRIVATE -Wall -Wextra -Wpedantic)
 endif()
+
+# Testing
+
+# Test Files
+file(GLOB_RECURSE TESTS "tests/*.xme")
+
+#Add Test
+add_test(   NAME Test_01 COMMAND ${Project_Name} ${TESTS})
