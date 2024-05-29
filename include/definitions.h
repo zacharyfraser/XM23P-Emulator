@@ -13,9 +13,13 @@
 
 #define KILOBYTE (1 << 10) /* 1024 bytes */
 #define byte_t unsigned char
+#define word_t unsigned short
 #define NUL '\0'
 
 #define MAX_RECORD_LENGTH 256
+
+#define INSTRUCTION_MEMORY_LENGTH (64 * KILOBYTE)
+#define DATA_MEMORY_LENGTH (64 * KILOBYTE)
 
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1
@@ -48,5 +52,20 @@ byte_t length;
 byte_t address[2];
 byte_t data[MAX_RECORD_LENGTH];
 }s_record_t;
+
+/**
+ * @brief Structure representing an instruction.
+ * 
+ * This structure holds information about an instruction, including its type, and other parameters.
+ */
+typedef struct instruction
+{
+    instruction_type_t type;
+    byte_t source;
+    byte_t destination;
+    byte_t byte;
+    byte_t rc;
+    byte_t wc;
+} instruction_t;
 
 #endif
