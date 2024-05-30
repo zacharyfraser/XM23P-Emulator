@@ -50,37 +50,37 @@ int decode_instruction(instruction_t *instruction,
     {
         /* Decode First Three Bits */
         temp_word = instruction_word;
-        switch (temp_word >> 13)
+        switch ((temp_word >> FOURTEENTH_BIT) & THREE_BITS)
         {
         /* Move Instructions */
         case MOVE_CODE:
             /* Decode Opcode from next two bits */
-            instruction->type = mov_table[(temp_word >> 10) & TWO_BITS];
+            instruction->type = mov_table[(temp_word >> TWELFTH_BIT) & TWO_BITS];
             /* Decode source byte from next 8 bits */
-            instruction->source = (temp_word >> 5) & EIGHT_BITS;
+            instruction->source = (temp_word >> FOURTH_BIT) & EIGHT_BITS;
             /* Decode destination register from last 3 bits */
-            instruction->destination = temp_word & THREE_BITS;
+            instruction->destination = (temp_word >> FIRST_BIT) & THREE_BITS;
             break;
 
         case REGISTER_CODE:
             /* Read Next Five Bits */
-            if(((temp_word >> 8) & FIVE_BITS) < ARITHMETIC_REGISTER_CODE)
+            if(((temp_word >> NINTH_BIT) & FIVE_BITS) < ARITHMETIC_REGISTER_CODE)
             {
                 /* Arithmetic Register Instruction */
-                instruction->type = arithmetic_register_table[(temp_word >> 8) & FIVE_BITS];
+                instruction->type = arithmetic_register_table[(temp_word >> NINTH_BIT) & FIVE_BITS];
                 /* Register/Constant Select */
-                instruction->rc = (temp_word >> 7) & ONE_BIT;
+                instruction->rc = (temp_word >> EIGHTH_BIT) & ONE_BIT;
                 /* Word/Byte Select */
-                instruction->wb = (temp_word >> 6) & ONE_BIT;
+                instruction->wb = (temp_word >> SEVENTH_BIT) & ONE_BIT;
                 /* Source Register */
-                instruction->source = (temp_word >> 5) & THREE_BITS;
+                instruction->source = (temp_word >> FOURTH_BIT) & THREE_BITS;
                 /* Destination Register */
-                instruction->destination = temp_word & THREE_BITS;
+                instruction->destination = (temp_word >> FIRST_BIT) & THREE_BITS;
             }
-            else if (((temp_word >> 8) & FIVE_BITS) == SWAP_REGISTER_CODE)
+            else if (((temp_word >> NINTH_BIT) & FIVE_BITS) == SWAP_REGISTER_CODE)
             {
                 /* MOV/Swap Instruction */
-                if((temp_word >> 6) & ONE_BIT)
+                if((temp_word >> SEVENTH_BIT) & ONE_BIT)
                 {
                     /* Swap Instruction */
                     instruction->type = SWAP;
@@ -90,22 +90,22 @@ int decode_instruction(instruction_t *instruction,
                     /* Mov Instruction */
                     instruction->type = MOV;
                     /* Word/Byte Select */
-                    instruction->wb = (temp_word >> 6) & ONE_BIT;
+                    instruction->wb = (temp_word >> SEVENTH_BIT) & ONE_BIT;
                 }
                 /* Source Register */
-                instruction->source = (temp_word >> 5) & THREE_BITS;
+                instruction->source = (temp_word >> FOURTH_BIT) & THREE_BITS;
                 /* Destination Register */
-                instruction->destination = temp_word & THREE_BITS;
+                instruction->destination = (temp_word >> FIRST_BIT) & THREE_BITS;
             }
-            else if (((temp_word >> 8) & FIVE_BITS) == SHIFT_REGISTER_CODE)
+            else if (((temp_word >> NINTH_BIT) & FIVE_BITS) == SHIFT_REGISTER_CODE)
             {
                 /* Shift Register Instruction */
                 /* Word/Byte Select */
-                instruction->wb = (temp_word >> 6) & ONE_BIT;
+                instruction->wb = (temp_word >> SEVENTH_BIT) & ONE_BIT;
                 /* Decode Type */
-                instruction->type = shift_register_table[(temp_word >> 5) & THREE_BITS];
+                instruction->type = shift_register_table[(temp_word >> FOURTH_BIT) & THREE_BITS];
                 /* Destination Register */
-                instruction->destination = temp_word & THREE_BITS;
+                instruction->destination = (temp_word >> FIRST_BIT) & THREE_BITS;
                 /* Check if instruction is undefined */
                 if(instruction->type == UNDEFINED)
                 {
@@ -134,5 +134,5 @@ int decode_instruction(instruction_t *instruction,
     }
     
 
-    return error_status;
+    return 0;
 }
