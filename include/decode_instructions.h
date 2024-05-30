@@ -6,35 +6,21 @@
  * @date 2024-05-29
  */
 
+#ifndef DECODE_INSTRUCTION_H
+#define DECODE_INSTRUCTION_H
+
 #define MOV_INSTRUCTION_COUNT 4
 #define ARITHMETIC_REGISTER_INSTRUCTION_COUNT 12
-#define SHIFT_REGISTER_INSTRUCTION_COUNT 4
+#define SHIFT_REGISTER_INSTRUCTION_COUNT 8
 
 #define REGISTER_CODE 0b010
 #define MOVE_CODE 0b110
+#define ARITHMETIC_REGISTER_CODE 0x0C
+#define SWAP_REGISTER_CODE 0x0C
+#define SHIFT_REGISTER_CODE 0x0D
 
 #include "definitions.h"
-
-/**
- * @brief Enumeration representing different types of instructions.
- * 
- * This enumeration defines the various types of instructions that can be decoded.
- * Each instruction type is represented by a unique value.
- */
-typedef enum instruction_type 
-{
-    UNDEFINED, BL, BEQ, BNE,
-    BC, BNC, BN, BGE,
-    BLT, BRA, ADD, ADDC,
-    SUB, SUBC, DADD, CMP,
-    XOR, AND, OR, BIT,
-    BIC, BIS, MOV, SWAP,
-    SRA, RRC, SWPB, SXT,
-    SETPRI, SVC, SETCC, CLRCC,
-    CEX, LD, ST, MOVL,
-    MOVLZ, MOVLS, MOVH, LDR,
-    STR
-} instruction_type_t;
+#include "read_memory.h"
 
 /**
  * @brief Array of MOV instructions.
@@ -80,8 +66,14 @@ instruction_type_t shift_register_table[SHIFT_REGISTER_INSTRUCTION_COUNT] =
 {
     SRA,
     RRC,
+    UNDEFINED,
     SWPB,
-    SXT
+    SXT,
+    UNDEFINED,
+    UNDEFINED,
+    UNDEFINED
 };
 
 int decode_instruction(instruction_t *instruction, byte_t *memory, int program_counter);
+
+#endif
