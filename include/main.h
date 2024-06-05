@@ -15,7 +15,4 @@
 
 #include "definitions.h"
 
-#define INSTRUCTION_MEMORY_LENGTH (64 * KILOBYTE)
-#define DATA_MEMORY_LENGTH (64 * KILOBYTE)
-
 #endif

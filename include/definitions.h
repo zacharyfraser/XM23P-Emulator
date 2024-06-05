@@ -16,6 +16,12 @@
 #define NUL '\0'
 
 #define MAX_RECORD_LENGTH 256
+#define INSTRUCTION_MEMORY_LENGTH (64 * KILOBYTE)
+#define DATA_MEMORY_LENGTH (64 * KILOBYTE)
+#define REGISTER_FILE_LENGTH 8
+
+#define INSTRUCTION_MEMORY '0'
+#define DATA_MEMORY '1'
 
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1
