@@ -9,7 +9,9 @@
 #ifndef DISPLAY_MEMORY_H
 #define DISPLAY_MEMORY_H
 
-#include "main.h"
+#include <stdio.h>
+
+#include "definitions.h"
 
 #define BYTES_PER_LINE 16
 

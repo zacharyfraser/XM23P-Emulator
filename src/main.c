@@ -10,6 +10,7 @@
 #include "parse_records.h"
 #include "load_memory.h"
 #include "display_memory.h"
+#include "operating_system.h"
 
 FILE *file;
 char input_record[MAX_RECORD_LENGTH];
@@ -25,6 +26,11 @@ byte_t data_memory[DATA_MEMORY_LENGTH];
         Populated from S0 and S9 Records        */
 byte_t executable_name[MAX_RECORD_LENGTH];
 byte_t starting_address[ADDRESS_LENGTH];
+
+byte_t register_file[2 * REGISTER_FILE_LENGTH];
+
+int breakpoint = -1;
+
 /**
  * @brief Parse every file provided in argv
  * 
@@ -109,58 +115,9 @@ int main(int argc, char **argv)
                 continue;
                 break;
             }
-            /* Debug Print Record Members */
-#ifdef DEBUG
-            printf("Valid Line: %s", input_record);
-            printf("Type: %c\n", s_record.type);
-            printf("Length: %d\n", s_record.length);
-            printf("Address: ");
-            for(int j = 0; j < ADDRESS_LENGTH; j++)
-            {
-                printf("%02x", s_record.address[j]);
-            }
-            printf("\nData: ");
-            for(int j = 0; j < s_record.length - 3; j++)
-            {
-                printf("%02x", s_record.data[j]);
-            }
-                printf("\n\n");
-#endif
-        }
-        while(1)
-        {   
-            int start_address, ending_address;
-            char address_type;
-            while(1)
-            {
-                printf("Please Enter Address Type - I or D: ");
-                scanf_s("%c", &address_type, 1);
-                if(address_type != 'I' && address_type != 'D')
-                {
-                    printf("Invalid Type - Press Enter");
-                    (void) getchar();
-                    continue;
-                }
-
-                break;
-            }
-
-            printf("Please Enter Starting and ending addresses: ");
-            scanf_s("%x %x", &start_address, &ending_address);
-            if(address_type == 'I')
-            {
-                display_memory(instruction_memory, start_address, ending_address);
-            }
-            else if (address_type == 'D')
-            {
-                display_memory(data_memory, start_address, ending_address);
-            }
-            (void)getchar();
-        }
-        
-        
-        
+        }   
     }
-
+    
+    run_operating_system(instruction_memory, data_memory, register_file, &breakpoint);
     return EXIT_SUCCESS;
 }
