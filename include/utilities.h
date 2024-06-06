@@ -20,8 +20,8 @@
 void load_memory(program_t *program, char *supplied_path);
 void memory_dump(byte_t *instruction_memory, byte_t *data_memory);
 void memory_write(byte_t *instruction_memory, byte_t *data_memory);
-void register_dump(byte_t *register_file);
-void register_set(byte_t *register_file);
+void register_dump(word_t *register_file);
+void register_set(word_t *register_file);
 void set_breakpoint(int *breakpoint);
 void run(program_t *program);
 
