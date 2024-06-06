@@ -46,6 +46,13 @@
 #define INSTRUCTION_MEMORY_LENGTH (64 * KILOBYTE)
 #define DATA_MEMORY_LENGTH (64 * KILOBYTE)
 
+#define REGISTER_FILE_LENGTH 8
+#define MAX_PATH_LENGTH 256
+
+#define INSTRUCTION_MEMORY '0'
+#define DATA_MEMORY '1'
+
+
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1
 #define CHECKSUM_VALUE 0xFF /* Expected value of sum of record bytes */
@@ -88,6 +95,27 @@ byte_t length;
 byte_t address[2];
 byte_t data[MAX_RECORD_LENGTH];
 }s_record_t;
+
+
+/* Program Struct */
+typedef struct program_t
+{
+    /* Memory Space */
+byte_t instruction_memory[INSTRUCTION_MEMORY_LENGTH];
+byte_t data_memory[DATA_MEMORY_LENGTH];
+
+/* Register File */
+byte_t register_file[2 * REGISTER_FILE_LENGTH];
+
+/* Breakpoint Address */
+int breakpoint;
+int starting_address;
+int program_counter;
+
+/* Executable Name */
+byte_t executable_name[MAX_RECORD_LENGTH];
+
+}program_t;
 
 /**
  * @brief Enumeration representing different types of instructions.

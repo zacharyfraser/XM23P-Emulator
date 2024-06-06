@@ -40,15 +40,24 @@ int copy_byte_array(
 }
 
 /**
- * @brief Copy record address member to destination array
+ * @brief Copy record address member from byte array to int
  * 
  * @param s_record Pointer to S_Record
- * @param destination Pointer to destination array
+ * @param destination Pointer to destination int
  * @return int [0 = Success, < 0 = Failure]
  */
-int load_record_address(s_record_t *s_record, byte_t *destination)
+int load_record_address(s_record_t *s_record, int *destination)
 {
-    return copy_byte_array(s_record->address, destination, ADDRESS_LENGTH, 0);
+    int error_status = 0;
+
+    if (s_record != NULL && destination != NULL) 
+    {
+        *destination = (s_record->address[0] << 8) | s_record->address[1];
+    } else {
+        /* Invalid input */
+        error_status = -1;
+    }
+    return error_status;
 }
 
 /**
