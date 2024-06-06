@@ -46,12 +46,14 @@ void run_operating_system(program_t *program)
                 break;
             case MEMORY_DUMP:
                 memory_dump(program->instruction_memory, program->data_memory);
+                (void)getchar();
                 break;
             case MEMORY_WRITE:
                 memory_write(program->instruction_memory, program->data_memory);
                 break;
             case REGISTER_DUMP:
                 register_dump(program->register_file);
+                (void)getchar();
                 break;
             case REGISTER_SET:
                 register_set(program->register_file);
@@ -61,15 +63,15 @@ void run_operating_system(program_t *program)
                 break;
             case RUN:
                 run(program);
+                (void)getchar();
                 break;
             case EXIT:
                 end = 1;
                 break;
             default:
-                printf("\nInvalid Utility - Press Enter");
                 break;
         }
         printf("\n");
-        (void) getchar();
+        (void)getchar();
     }
 }

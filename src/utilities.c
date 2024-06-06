@@ -168,11 +168,11 @@ void run(program_t *program)
         byte_t instruction[2];
         instruction[0] = program->instruction_memory[program->program_counter];
         instruction[1] = program->instruction_memory[program->program_counter + 1];
-        program->program_counter += 2;
         /* Decode */
         /* Execute */
         /* Store */
-        printf("Instruction: %02x %02x\n", instruction[0], instruction[1]);
+        printf("%04x:  %02x %02x\n", program->program_counter, instruction[1], instruction[0]);
+        program->program_counter += 2;
         if(instruction[0] == 0x00 && instruction[1] == 0x00)
         {
             break;
