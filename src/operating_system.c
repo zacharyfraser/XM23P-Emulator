@@ -15,6 +15,7 @@
 void display_utilities()
 {
         printf("Available Utilities:\n");
+        printf("l - Load Program\n");
         printf("m - Memory Dump\n");
         printf("w - Memory Write\n");
         printf("r - Register Dump\n");
@@ -40,6 +41,9 @@ void run_operating_system(program_t *program)
         printf("\n");
         switch(utility)
         {
+            case LOAD:
+                load_memory(program, NULL);
+                break;
             case MEMORY_DUMP:
                 memory_dump(program->instruction_memory, program->data_memory);
                 break;

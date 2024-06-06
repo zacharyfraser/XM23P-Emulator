@@ -179,3 +179,97 @@ void run(program_t *program)
         }
     }
 }
+
+/**
+ * @brief Load Memory Utility - Loads data and instructions from xme file into memory
+ * 
+ * @param program Context struct for the program
+ * @param supplied_path Path to the xme file - NULL if not supplied
+ */
+void load_memory(program_t *program, char *supplied_path)
+{
+    /* Clear Program */
+    memset(program, 0, sizeof(program_t));
+    int error_status = 0;
+    char program_path[MAX_PATH_LENGTH];
+    char input_record[MAX_RECORD_LENGTH];
+    FILE *file;
+    s_record_t s_record;
+
+    /* If Loaded From OS*/
+    if(supplied_path == NULL)
+    {
+    printf("Load Memory Utility\n");
+    printf("Enter Program Path: ");
+    scanf_s("%s", program_path, MAX_PATH_LENGTH);
+    }
+    else
+    /* If Supplied to Executable */
+    {
+        strcpy_s(program_path, MAX_PATH_LENGTH, supplied_path);
+        printf("Loading Program From: %s\n", program_path);
+    }
+
+    /* Check for errors opening file */
+    if(fopen_s(&file, program_path, "r") != 0)
+    {
+        printf("Error Opening File\n");
+        return;
+    }
+
+    /* Parse Each Record in File*/
+    while(fgets(input_record, sizeof(input_record), file))
+    {
+        error_status = parse_record(input_record, &s_record);
+        if(error_status != 0)
+        {
+            printf("Invalid Line: %s", input_record);
+            continue;
+        }
+        switch (s_record.type)
+        {
+        case NAME_TYPE:
+            /* Load name from record data into executable name */
+            error_status = load_record_name(&s_record, program->executable_name);
+            if(error_status != 0)
+            {
+                printf("Error loading data into executable_name");
+            }
+            break;
+        case INSTRUCTION_TYPE:
+            /* Load Instructions from record data to instruction memory */
+            error_status = load_record_data(&s_record, program->instruction_memory);
+            if(error_status != 0)
+            {
+                printf("Error loading data into instruction_memory");
+            }
+            break;
+        case DATA_TYPE:
+            /* Load Data from record data into data memory */
+            error_status = load_record_data(&s_record, program->data_memory);
+            if(error_status != 0)
+            {
+                printf("Error loading data into data_memory");
+            }
+            break;
+
+        case ADDRESS_TYPE:
+            /* Load Starting Address from record address 
+                into starting_address */
+            error_status = load_record_address(&s_record, &program->starting_address);
+
+            if(error_status != 0)
+            {
+                printf("Error loading data into starting_address");
+            }
+            break;
+
+        default:
+            /* If invalid type, print warning and move to next record */
+            printf("Invalid Record Type: %c", s_record.type);
+            continue;
+            break;
+        }
+    }
+    fclose(file);
+}

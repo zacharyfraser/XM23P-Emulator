@@ -16,6 +16,7 @@
  */
 enum utilities
 {
+    LOAD            = 'l',
     MEMORY_DUMP     = 'm',
     MEMORY_WRITE    = 'w',
     REGISTER_DUMP   = 'r',
