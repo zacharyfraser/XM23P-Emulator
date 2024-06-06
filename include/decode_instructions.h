@@ -19,61 +19,17 @@
 #define SWAP_REGISTER_CODE 0x0C
 #define SHIFT_REGISTER_CODE 0x0D
 
+#include <stdio.h>
+#include <string.h>
+
 #include "definitions.h"
-#include "read_memory.h"
 
-/**
- * @brief Array of MOV instructions.
- * 
- * This array represents the MOV instructions supported by the system.
- */
-instruction_type_t mov_table[MOV_INSTRUCTION_COUNT] = 
-{
-    MOVL, 
-    MOVLZ, 
-    MOVLS, 
-    MOVH
-};
 
-/**
- * @brief Table of arithmetic register instructions.
- * 
- * This table stores the arithmetic register instructions supported by the system.
- * The instructions are stored in the order they appear in the instruction set.
- */
-instruction_type_t arithmetic_register_table[ARITHMETIC_REGISTER_INSTRUCTION_COUNT] = 
-{
-    ADD, 
-    ADDC, 
-    SUB, 
-    SUBC, 
-    DADD, 
-    CMP,
-    XOR,
-    AND,
-    OR,
-    BIT,
-    BIC,
-    BIS,
-};
+extern instruction_type_t mov_table[MOV_INSTRUCTION_COUNT];
+extern instruction_type_t arithmetic_register_table[ARITHMETIC_REGISTER_INSTRUCTION_COUNT];
+extern instruction_type_t shift_register_table[SHIFT_REGISTER_INSTRUCTION_COUNT];
 
-/**
- * @brief Table of shift register instructions.
- * 
- * This table stores the shift register instructions supported by the system.
- */
-instruction_type_t shift_register_table[SHIFT_REGISTER_INSTRUCTION_COUNT] = 
-{
-    SRA,
-    RRC,
-    UNDEFINED,
-    SWPB,
-    SXT,
-    UNDEFINED,
-    UNDEFINED,
-    UNDEFINED
-};
-
-int decode_instruction(instruction_t *instruction, byte_t *memory, int program_counter);
+int read_instruction(word_t *instruction, byte_t *memory, int program_counter);
+int decode_instruction(instruction_t *instruction, word_t instruction_register);
 
 #endif

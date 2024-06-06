@@ -161,18 +161,30 @@ void run(program_t *program)
     program->register_file[PROGRAM_COUNTER] = (word_t)program->starting_address;
     printf("Program Counter: %04x\n", program->register_file[PROGRAM_COUNTER]);
     printf("Breakpoint: %04x\n", program->breakpoint);
-    while(program->register_file[PROGRAM_COUNTER] != (program->breakpoint & 0xFFFE))
+    while(program->register_file[PROGRAM_COUNTER] != (program->breakpoint & ~(0x01)))
     {
+        instruction_t instruction;
         /* Fetch */
-        byte_t instruction[2];
-        instruction[0] = program->instruction_memory[program->register_file[PROGRAM_COUNTER]];
-        instruction[1] = program->instruction_memory[program->register_file[PROGRAM_COUNTER] + 1];
+        if(read_instruction(&program->instruction_register, program->instruction_memory, program->register_file[PROGRAM_COUNTER]))
+        {
+            printf("Error Reading Instruction\n");
+            break;
+        }
         /* Decode */
+        if(decode_instruction(&instruction, program->instruction_register))
+        {
+            printf("Error Decoding Instruction\n");
+            break;
+        }
         /* Execute */
-        /* Store */
-        printf("%04x:  %02x %02x\n", program->register_file[PROGRAM_COUNTER], instruction[1], instruction[0]);
+        if(execute_instruction(&instruction, program))
+        {
+            printf("Error Executing Instruction\n");
+            break;
+        }
+
         program->register_file[PROGRAM_COUNTER] += 2;
-        if(instruction[0] == 0x00 && instruction[1] == 0x00)
+        if(program->instruction_register == 0x0000)
         {
             break;
         }
@@ -187,6 +199,7 @@ void run(program_t *program)
  */
 void load_memory(program_t *program, char *supplied_path)
 {
+    printf("Load Memory Utility\n");
     /* Clear Program */
     memset(program, 0, sizeof(program_t));
     int error_status = 0;

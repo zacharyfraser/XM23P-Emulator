@@ -14,5 +14,7 @@
 #include <stddef.h>
 
 #include "definitions.h"
+#include "operating_system.h"
+#include "utilities.h"
 
 #endif

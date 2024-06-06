@@ -10,6 +10,7 @@
 #define OPERATING_SYSTEM_H
 
 #include <stdio.h>
+
 #include "utilities.h"
 /**
  * @brief Enum for Available Utilities

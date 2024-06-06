@@ -48,6 +48,7 @@
 
 #define REGISTER_FILE_LENGTH 8
 #define MAX_PATH_LENGTH 256
+#define NUM_OF_INSTRUCTIONS 41
 
 #define INSTRUCTION_MEMORY '0'
 #define DATA_MEMORY '1'
@@ -97,7 +98,11 @@ byte_t data[MAX_RECORD_LENGTH];
 }s_record_t;
 
 
-/* Program Struct */
+/**
+ * @brief Represents a program.
+ *
+ * The structure contains the program context.
+ */
 typedef struct program_t
 {
     /* Memory Space */
@@ -110,46 +115,12 @@ word_t register_file[REGISTER_FILE_LENGTH];
 /* Breakpoint Address */
 int breakpoint;
 int starting_address;
+word_t instruction_register;
 
 /* Executable Name */
 byte_t executable_name[MAX_RECORD_LENGTH];
 
 }program_t;
-/**
- * @brief Enumeration representing different types of instructions.
- * 
- * This enumeration defines the various types of instructions that can be decoded.
- * Each instruction type is represented by a unique value.
- */
-typedef enum instruction_type 
-{
-    UNDEFINED, BL, BEQ, BNE,
-    BC, BNC, BN, BGE,
-    BLT, BRA, ADD, ADDC,
-    SUB, SUBC, DADD, CMP,
-    XOR, AND, OR, BIT,
-    BIC, BIS, MOV, SWAP,
-    SRA, RRC, SWPB, SXT,
-    SETPRI, SVC, SETCC, CLRCC,
-    CEX, LD, ST, MOVL,
-    MOVLZ, MOVLS, MOVH, LDR,
-    STR
-} instruction_type_t;
-
-/**
- * @brief Structure representing an instruction.
- * 
- * This structure holds information about an instruction, including its type, and other parameters.
- */
-typedef struct instruction
-{
-    instruction_type_t type;
-    byte_t source;
-    byte_t destination;
-    byte_t byte;
-    byte_t rc;
-    byte_t wb;
-} instruction_t;
 
 /**
  * @brief Enumeration representing different types of instructions.
@@ -182,9 +153,8 @@ typedef struct instruction
     instruction_type_t type;
     byte_t source;
     byte_t destination;
-    byte_t byte;
     byte_t rc;
     byte_t wb;
 } instruction_t;
 
-#endif
+#endif /* DEFINITIONS_H */

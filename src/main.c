@@ -7,11 +7,6 @@
  */
 
 #include "main.h"
-#include "parse_records.h"
-#include "load_memory.h"
-#include "display_memory.h"
-#include "operating_system.h"
-#include "utilities.h"
 
 FILE *file;
 char input_record[MAX_RECORD_LENGTH];
