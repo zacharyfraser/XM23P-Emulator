@@ -13,6 +13,7 @@
 
 #define KILOBYTE (1 << 10) /* 1024 bytes */
 #define byte_t unsigned char
+#define word_t unsigned short
 #define NUL '\0'
 
 #define MAX_RECORD_LENGTH 256
@@ -23,6 +24,7 @@
 
 #define INSTRUCTION_MEMORY '0'
 #define DATA_MEMORY '1'
+#define PROGRAM_COUNTER 7
 
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1
@@ -64,12 +66,11 @@ byte_t instruction_memory[INSTRUCTION_MEMORY_LENGTH];
 byte_t data_memory[DATA_MEMORY_LENGTH];
 
 /* Register File */
-byte_t register_file[2 * REGISTER_FILE_LENGTH];
+word_t register_file[REGISTER_FILE_LENGTH];
 
 /* Breakpoint Address */
 int breakpoint;
 int starting_address;
-int program_counter;
 
 /* Executable Name */
 byte_t executable_name[MAX_RECORD_LENGTH];

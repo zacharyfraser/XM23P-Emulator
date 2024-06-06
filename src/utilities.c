@@ -99,12 +99,12 @@ void memory_write(byte_t *instruction_memory, byte_t *data_memory)
  * @brief Register Dump Utility - Dumps register file contents to the console
  * 
  */
-void register_dump(byte_t *register_file)
+void register_dump(word_t *register_file)
 {
     printf("Register Dump Utility\n");
     for(int i = 0; i < REGISTER_FILE_LENGTH; i++)
     {
-        printf("R%d: %02x %02x\n", i, register_file[2 * i], register_file[(2 * i) + 1]);
+        printf("R%d: %04x\n", i, register_file[i]);
     }
 }
 
@@ -112,7 +112,7 @@ void register_dump(byte_t *register_file)
  * @brief Register Set Utility - Sets register file contents
  * 
  */
-void register_set(byte_t *register_file)
+void register_set(word_t *register_file)
 {
     printf("Register Set Utility\n");
     printf("Enter Register Number: ");
@@ -123,8 +123,7 @@ void register_set(byte_t *register_file)
     scanf_s("%x", &register_value);
     if(register_number < REGISTER_FILE_LENGTH && register_number >= 0)
     {
-        register_file[2 * register_number] = (byte_t) (register_value >> 8);
-        register_file[2 * register_number + 1] = (byte_t) (register_value & 0xFF);
+        register_file[register_number] = (word_t) (register_value);
     }
     else
     {
@@ -159,20 +158,20 @@ void set_breakpoint(int *breakpoint)
 void run(program_t *program)
 {
     printf("Run Utility\n");
-    program->program_counter = program->starting_address;
-    printf("Program Counter: %04x\n", program->program_counter);
+    program->register_file[PROGRAM_COUNTER] = (word_t)program->starting_address;
+    printf("Program Counter: %04x\n", program->register_file[PROGRAM_COUNTER]);
     printf("Breakpoint: %04x\n", program->breakpoint);
-    while(program->program_counter != (program->breakpoint & 0xFFFE))
+    while(program->register_file[PROGRAM_COUNTER] != (program->breakpoint & 0xFFFE))
     {
         /* Fetch */
         byte_t instruction[2];
-        instruction[0] = program->instruction_memory[program->program_counter];
-        instruction[1] = program->instruction_memory[program->program_counter + 1];
+        instruction[0] = program->instruction_memory[program->register_file[PROGRAM_COUNTER]];
+        instruction[1] = program->instruction_memory[program->register_file[PROGRAM_COUNTER] + 1];
         /* Decode */
         /* Execute */
         /* Store */
-        printf("%04x:  %02x %02x\n", program->program_counter, instruction[1], instruction[0]);
-        program->program_counter += 2;
+        printf("%04x:  %02x %02x\n", program->register_file[PROGRAM_COUNTER], instruction[1], instruction[0]);
+        program->register_file[PROGRAM_COUNTER] += 2;
         if(instruction[0] == 0x00 && instruction[1] == 0x00)
         {
             break;
