@@ -20,6 +20,7 @@ void display_utilities()
         printf("r - Register Dump\n");
         printf("s - Register Set\n");
         printf("b - Set Breakpoint\n");
+        printf("g - Run\n");
         printf("x - Exit\n");
 }
 
@@ -27,7 +28,7 @@ void display_utilities()
  * @brief Select and run a utility
  * 
  */
-void run_operating_system(byte_t *instruction_memory, byte_t *data_memory, byte_t *register_file, int *breakpoint)
+void run_operating_system(program_t *program)
 {
     int end = 0;
     while(end != 1)
@@ -36,32 +37,35 @@ void run_operating_system(byte_t *instruction_memory, byte_t *data_memory, byte_
         display_utilities();
         printf("Please Enter Utility: ");
         scanf_s("%c", &utility, 1);
+        printf("\n");
         switch(utility)
         {
             case MEMORY_DUMP:
-                memory_dump(instruction_memory, data_memory);
+                memory_dump(program->instruction_memory, program->data_memory);
                 break;
             case MEMORY_WRITE:
-                memory_write(instruction_memory, data_memory);
+                memory_write(program->instruction_memory, program->data_memory);
                 break;
             case REGISTER_DUMP:
-                register_dump(register_file);
+                register_dump(program->register_file);
                 break;
             case REGISTER_SET:
-                register_set(register_file);
+                register_set(program->register_file);
                 break;
             case SET_BREAKPOINT:
-                set_breakpoint(breakpoint);
+                set_breakpoint(&program->breakpoint);
+                break;
+            case RUN:
+                run(program);
                 break;
             case EXIT:
                 end = 1;
-                (void) getchar();
                 break;
             default:
                 printf("\nInvalid Utility - Press Enter");
-                (void) getchar();
                 break;
         }
-
+        printf("\n");
+        (void) getchar();
     }
 }

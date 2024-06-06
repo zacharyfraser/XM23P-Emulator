@@ -55,4 +55,24 @@ byte_t address[2];
 byte_t data[MAX_RECORD_LENGTH];
 }s_record_t;
 
+/* Program Struct */
+typedef struct program_t
+{
+    /* Memory Space */
+byte_t instruction_memory[INSTRUCTION_MEMORY_LENGTH];
+byte_t data_memory[DATA_MEMORY_LENGTH];
+
+/* Register File */
+byte_t register_file[2 * REGISTER_FILE_LENGTH];
+
+/* Breakpoint Address */
+int breakpoint;
+int starting_address;
+int program_counter;
+
+/* Executable Name */
+byte_t executable_name[MAX_RECORD_LENGTH];
+
+}program_t;
+
 #endif

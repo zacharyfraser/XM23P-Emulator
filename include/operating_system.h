@@ -21,11 +21,12 @@ enum utilities
     REGISTER_DUMP   = 'r',
     REGISTER_SET    = 's',
     SET_BREAKPOINT  = 'b',
+    RUN             = 'g',
     EXIT            = 'x'
 };
 
 void display_utilities(void);
-void run_operating_system(byte_t *instruction_memory, byte_t *data_memory, byte_t *register_file, int *breakpoints);
+void run_operating_system(program_t *program);
 
 #endif
 

@@ -17,17 +17,8 @@ char input_record[MAX_RECORD_LENGTH];
 s_record_t s_record;
 
 int error_status = 0;
-/* Instruction and Data Memory Spaces 
-    Populated from S1 and S2 Records  */
-byte_t instruction_memory[INSTRUCTION_MEMORY_LENGTH];
-byte_t data_memory[DATA_MEMORY_LENGTH];
 
-/* Executable Name and Program Starting Address 
-        Populated from S0 and S9 Records        */
-byte_t executable_name[MAX_RECORD_LENGTH];
-byte_t starting_address[ADDRESS_LENGTH];
-
-byte_t register_file[2 * REGISTER_FILE_LENGTH];
+program_t program = {.breakpoint = -1};
 
 int breakpoint = -1;
 
@@ -72,7 +63,7 @@ int main(int argc, char **argv)
             {
             case NAME_TYPE:
                 /* Load name from record data into executable name */
-                error_status = load_record_name(&s_record, executable_name);
+                error_status = load_record_name(&s_record, program.executable_name);
                 if(error_status != 0)
                 {
                     printf("Error loading data into executable_name");
@@ -81,7 +72,7 @@ int main(int argc, char **argv)
 
             case INSTRUCTION_TYPE:
                 /* Load Instructions from record data to instruction memory */
-                error_status = load_record_data(&s_record, instruction_memory);
+                error_status = load_record_data(&s_record, program.instruction_memory);
                 if(error_status != 0)
                 {
                     printf("Error loading data into instruction_memory");
@@ -90,7 +81,7 @@ int main(int argc, char **argv)
 
             case DATA_TYPE:
                 /* Load Data from record data into data memory */
-                error_status = load_record_data(&s_record, data_memory);
+                error_status = load_record_data(&s_record, program.data_memory);
                 if(error_status != 0)
                 {
                     printf("Error loading data into data_memory");
@@ -99,9 +90,9 @@ int main(int argc, char **argv)
 
             case ADDRESS_TYPE:
                 /* Load Starting Address from record address 
-                    into instruction memory */
+                    into starting_address */
                 error_status = 
-                    load_record_address(&s_record, starting_address);
+                    load_record_address(&s_record, &program.starting_address);
 
                 if(error_status != 0)
                 {
@@ -118,6 +109,6 @@ int main(int argc, char **argv)
         }   
     }
     
-    run_operating_system(instruction_memory, data_memory, register_file, &breakpoint);
+    run_operating_system(&program);
     return EXIT_SUCCESS;
 }

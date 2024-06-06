@@ -150,5 +150,32 @@ void set_breakpoint(int *breakpoint)
     {
         printf("Invalid Breakpoint Address\n");
     }
-    (void) getchar();
+}
+
+/**
+ * @brief Run Utility - Runs the program
+ * 
+ */
+void run(program_t *program)
+{
+    printf("Run Utility\n");
+    program->program_counter = program->starting_address;
+    printf("Program Counter: %04x\n", program->program_counter);
+    printf("Breakpoint: %04x\n", program->breakpoint);
+    while(program->program_counter != (program->breakpoint & 0xFFFE))
+    {
+        /* Fetch */
+        byte_t instruction[2];
+        instruction[0] = program->instruction_memory[program->program_counter];
+        instruction[1] = program->instruction_memory[program->program_counter + 1];
+        program->program_counter += 2;
+        /* Decode */
+        /* Execute */
+        /* Store */
+        printf("Instruction: %02x %02x\n", instruction[0], instruction[1]);
+        if(instruction[0] == 0x00 && instruction[1] == 0x00)
+        {
+            break;
+        }
+    }
 }
