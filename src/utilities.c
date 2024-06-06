@@ -70,8 +70,8 @@ void memory_write(byte_t *instruction_memory, byte_t *data_memory)
     case INSTRUCTION_MEMORY:
         if(address + 1 < INSTRUCTION_MEMORY_LENGTH)
         {
-            instruction_memory[address] = (byte_t) (word >> 8);
-            instruction_memory[address + 1] = (byte_t) (word & 0xff);
+            instruction_memory[address + 1] = (byte_t) (word >> 8);
+            instruction_memory[address] = (byte_t) (word & 0xff);
         }
         else
         {
