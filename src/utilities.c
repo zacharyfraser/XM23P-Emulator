@@ -26,6 +26,7 @@ void memory_dump(byte_t *instruction_memory, byte_t *data_memory)
     printf("Enter Memory End Address: ");
     int end_address;
     scanf_s("%x", &end_address);
+    /* Could be simplified with 2D Array */
     switch (memory_type)
     {
     case INSTRUCTION_MEMORY:
@@ -81,8 +82,8 @@ void memory_write(byte_t *instruction_memory, byte_t *data_memory)
     case DATA_MEMORY:
         if(address + 1 < DATA_MEMORY_LENGTH)
         {
-            data_memory[address] = (byte_t) (word >> 8);
-            data_memory[address + 1] = (byte_t) (word & 0xFF);
+            data_memory[address + 1] = (byte_t) (word >> 8);
+            data_memory[address] = (byte_t) (word & 0xFF);
         }
         else
         {

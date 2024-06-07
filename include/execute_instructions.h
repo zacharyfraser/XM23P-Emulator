@@ -15,4 +15,8 @@
 
 extern char *instruction_names[NUM_OF_INSTRUCTIONS];
 
+int execute_instruction(instruction_t *instruction, program_t *program);
+
 #endif
+
+
