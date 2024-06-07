@@ -78,7 +78,7 @@ int read_instruction(word_t *instruction_word, byte_t *instruction_memory, int p
     }
 
     /* Read instruction from memory in little endian format */
-    *instruction_word = (instruction_memory[program_counter] | ((word_t)instruction_memory[++program_counter] << NINTH_BIT));
+    *instruction_word = (instruction_memory[program_counter] | (instruction_memory[program_counter + 1] << NINTH_BIT));
     return error_status;
 }
 
@@ -137,7 +137,7 @@ int decode_instruction(instruction_t *instruction,
         else if (((instruction_register >> NINTH_BIT) & FIVE_BITS) == SWAP_REGISTER_CODE)
         {
             /* MOV/Swap Instruction */
-            if((instruction_register >> SEVENTH_BIT) & ONE_BIT)
+            if((instruction_register >> EIGHTH_BIT) & ONE_BIT)
             {
                 /* Swap Instruction */
                 instruction->type = SWAP;
