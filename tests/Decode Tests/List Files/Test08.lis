@@ -1,0 +1,72 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test08.asm
+Time of assembly: Fri 7 Jun 2024 20:23:09 
+  1	    	     	;
+  2	    	     	; Loader Test 08 Register Instruction Decoding
+  3	    	     	;
+  4	    	     	
+  5	    	     	        org #100
+  6	    	     	Start
+  7	    	     	
+  8	0100	4001	        add     R0,R1
+  9	0102	40D3	        add.b   $2,R3
+ 10	0104	4125	        addc    R4,R5
+ 11	0106	41F7	        addc.b  $32,R7
+ 12	0108	4201	        sub     R0,R1
+ 13	010A	42D3	        sub.b   $2,R3
+ 14	010C	4325	        subc    R4,R5
+ 15	010E	43F7	        subc.b  $32,R7
+ 16	0110	4401	        dadd    R0,R1
+ 17	0112	44D3	        dadd.b  $2,R3
+ 18	0114	4525	        cmp     R4,R5
+ 19	0116	45F7	        cmp.b   $32,R7
+ 20	0118	4601	        xor     R0,R1
+ 21	011A	46D3	        xor.b   $2,R3
+ 22	011C	4725	        and     R4,R5
+ 23	011E	47F7	        and.b   $32,R7
+ 24	0120	4801	        or      R0,R1
+ 25	0122	48D3	        or.b    $2,R3
+ 26	0124	4925	        bit     R4,R5
+ 27	0126	49F7	        bit.b   $32,R7
+ 28	0128	4A01	        bic     R0,R1
+ 29	012A	4AD3	        bic.b   $2,R3
+ 30	012C	4B25	        bis     R4,R5
+ 31	012E	4BF7	        bis.b   $32,R7
+ 32	0130	4C01	        mov     R0,R1
+ 33	0132	4C53	        mov.b   R2,R3
+ 34	0134	4CA5	        swap    R4,R5
+ 35	0136	4D06	        sra     R6
+ 36	0138	4D47	        sra.b   R7
+ 37	013A	4D08	        rrc     R0
+ 38	013C	4D49	        rrc.b   R1
+ 39	013E	4D1A	        swpb    R2
+ 40	0140	4D23	        sxt     R3
+ 41	    	     	        end Start
+
+Successful completion of assembly - 1P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test08.xme
+

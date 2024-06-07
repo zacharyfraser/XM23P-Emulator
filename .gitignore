@@ -3,10 +3,5 @@ obj/
 build/
 bin/
 
-*.lis
-*.o
-*.obj
-*.out
-
 # Ignore IDE specific files
 .vscode/

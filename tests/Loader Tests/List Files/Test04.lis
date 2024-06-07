@@ -1,0 +1,52 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test04.asm
+Time of assembly: Fri 7 Jun 2024 20:27:26 
+  1	    	     	;
+  2	    	     	; Loader Test 04 Overwriting Data To Instruction and Data Memory
+  3	    	     	;
+  4	    	     	
+  5	    	     		Data
+  6	    	     		org	#800
+  7	    	     	
+  8	0800	EFBE		Word	#EFBE
+  9	    	     		org #800
+ 10	0800	FACE		Word	#FACE
+ 11	    	     	;
+ 12	    	     	;
+ 13	    	     	Start
+ 14	    	     		Code
+ 15	    	     		org #800
+ 16	    	     	
+ 17	0800	6901		Movlz	#20,R1	; R1 <- #0020
+ 18	    	     	
+ 19	    	     		org #800
+ 20	0800	4081		Add		#0,R1	; R1 += #0000
+ 21	    	     	end	Start
+
+Successful completion of assembly - 1P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+Start                              	REL	0802	2050	PRI
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test04.xme
+
