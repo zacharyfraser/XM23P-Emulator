@@ -78,7 +78,7 @@ int read_instruction(word_t *instruction_word, byte_t *instruction_memory, int p
     }
 
     /* Read instruction from memory in little endian format */
-    *instruction_word = (instruction_memory[program_counter] | (instruction_memory[program_counter + 1] << NINTH_BIT));
+    *instruction_word = (instruction_memory[program_counter] | (instruction_memory[program_counter + 1] << 8));
     return error_status;
 }
 
@@ -106,38 +106,39 @@ int decode_instruction(instruction_t *instruction,
     memset(instruction, 0, sizeof(instruction_t));
 
 
-    /* Decode First Three Bits */
-    switch ((instruction_register >> FOURTEENTH_BIT) & THREE_BITS)
+    /* Decode Bits Thirteen through Fifteen */
+    switch ((instruction_register >> 13) & THREE_BITS)
     {
     /* Move Instructions */
     case MOVE_CODE:
-        /* Decode Opcode from next two bits */
-        instruction->type = mov_table[(instruction_register >> TWELFTH_BIT) & TWO_BITS];
-        /* Decode source byte from next 8 bits */
-        instruction->source = (instruction_register >> FOURTH_BIT) & EIGHT_BITS;
-        /* Decode destination register from last 3 bits */
-        instruction->destination = (instruction_register >> FIRST_BIT) & THREE_BITS;
+        /* Decode Opcode from bits Eleven and Twelve */
+        instruction->type = mov_table[(instruction_register >> 11) & TWO_BITS];
+        /* Decode source byte from bits Three through Ten */
+        instruction->source = (instruction_register >> 3) & EIGHT_BITS;
+        /* Decode destination register from bits Zero through Two */
+        instruction->destination = (instruction_register >> 0) & THREE_BITS;
         break;
 
     case REGISTER_CODE:
-        /* Read Next Five Bits */
-        if(((instruction_register >> NINTH_BIT) & FIVE_BITS) < ARITHMETIC_REGISTER_CODE)
+        /* Read bits Eight through Twelve */
+        if(((instruction_register >> 8) & FIVE_BITS) < ARITHMETIC_REGISTER_CODE)
         {
-            /* Arithmetic Register Instruction */
-            instruction->type = arithmetic_register_table[(instruction_register >> NINTH_BIT) & FIVE_BITS];
-            /* Register/Constant Select */
-            instruction->rc = (instruction_register >> EIGHTH_BIT) & ONE_BIT;
-            /* Word/Byte Select */
-            instruction->wb = (instruction_register >> SEVENTH_BIT) & ONE_BIT;
-            /* Source Register */
-            instruction->source = (instruction_register >> FOURTH_BIT) & THREE_BITS;
-            /* Destination Register */
-            instruction->destination = (instruction_register >> FIRST_BIT) & THREE_BITS;
+            /* Arithmetic Register Instruction - Bits Eight through Twelve */
+            instruction->type = arithmetic_register_table[(instruction_register >> 8) & FIVE_BITS];
+            /* Register/Constant Select - Bit Seven */
+            instruction->rc = (instruction_register >> 7) & ONE_BIT;
+            /* Word/Byte Select - Bit Six */
+            instruction->wb = (instruction_register >> 6) & ONE_BIT;
+            /* Source Register - Bits Three through Five*/
+            instruction->source = (instruction_register >> 3) & THREE_BITS;
+            /* Destination Register - Bits Zero through Two */
+            instruction->destination = (instruction_register >> 0) & THREE_BITS;
         }
-        else if (((instruction_register >> NINTH_BIT) & FIVE_BITS) == SWAP_REGISTER_CODE)
+        /* Read Bits Eight through Twelve */
+        else if (((instruction_register >> 8) & FIVE_BITS) == SWAP_REGISTER_CODE)
         {
-            /* MOV/Swap Instruction */
-            if((instruction_register >> EIGHTH_BIT) & ONE_BIT)
+            /* MOV/Swap Instruction - Bit Seven */
+            if((instruction_register >> 7) & ONE_BIT)
             {
                 /* Swap Instruction */
                 instruction->type = SWAP;
@@ -146,23 +147,35 @@ int decode_instruction(instruction_t *instruction,
             {
                 /* Mov Instruction */
                 instruction->type = MOV;
-                /* Word/Byte Select */
-                instruction->wb = (instruction_register >> SEVENTH_BIT) & ONE_BIT;
+                /* Word/Byte Select - Bit Six*/
+                instruction->wb = (instruction_register >> 6) & ONE_BIT;
             }
-            /* Source Register */
-            instruction->source = (instruction_register >> FOURTH_BIT) & THREE_BITS;
-            /* Destination Register */
-            instruction->destination = (instruction_register >> FIRST_BIT) & THREE_BITS;
+            /* Source Register - Bits Three through Five */
+            instruction->source = (instruction_register >> 3) & THREE_BITS;
+            /* Destination Register - Bits Zero through Three */
+            instruction->destination = (instruction_register >> 0) & THREE_BITS;
         }
-        else if (((instruction_register >> NINTH_BIT) & FIVE_BITS) == SHIFT_REGISTER_CODE)
+        /* Read Bits Eight through Twelve */
+        else if (((instruction_register >> 8) & FIVE_BITS) == SHIFT_REGISTER_CODE)
         {
-            /* Shift Register Instruction */
-            /* Word/Byte Select */
-            instruction->wb = (instruction_register >> SEVENTH_BIT) & ONE_BIT;
-            /* Decode Type */
-            instruction->type = shift_register_table[(instruction_register >> FOURTH_BIT) & THREE_BITS];
-            /* Destination Register */
-            instruction->destination = (instruction_register >> FIRST_BIT) & THREE_BITS;
+            /* Read Bit Seven */
+            if(((instruction_register >> 7) & ONE_BIT))
+            {
+                /* CPU Instructions */
+                /* Instruction not implemented */
+                instruction->type = UNDEFINED;
+            }
+            else
+            {
+                /* Shift Register Instruction */
+                /* Word/Byte Select - Bit Six */
+                instruction->wb = (instruction_register >> 6) & ONE_BIT;
+                /* Decode Type */
+                instruction->type = shift_register_table[(instruction_register >> 3) & THREE_BITS];
+                /* Destination Register */
+                instruction->destination = (instruction_register >> 0) & THREE_BITS;
+
+            }
         }
         else
         {
