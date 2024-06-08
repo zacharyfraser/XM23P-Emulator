@@ -116,7 +116,7 @@ Pass.
 
 ### Test_11: Data Memory Dump
 **Purpose**\
-Test the printing of memory from data memory.
+Test the printing of memory from data memory.\
 **Configuration**
 1) Test10_Program_Debugging.xme was loaded into the emulator.
 2) `m` was entered to start the Memory Dumping Utility.
@@ -137,7 +137,7 @@ Pass.
 
 ### Test_12: Instruction Memory Write
 **Purpose**\
-Test the writing of memory to instruction memory.
+Test the writing of memory to instruction memory.\
 **Configuration**
 1) Test10_Program_Debugging was loaded into the emulator.
 2) `w` was entered to start the Memory Writing Utility.
@@ -162,7 +162,7 @@ Pass.
 
 ### Test_13: Data Memory Write
 **Purpose**\
-Test the writing of memory to data memory.
+Test the writing of memory to data memory.\
 **Configuration**
 1) Test10_Program_Debugging was loaded into the emulator.
 2) `w` was entered to start the Memory Writing Utility.
@@ -187,7 +187,7 @@ Pass.
 
 ### Test_14: Register Dump
 **Purpose**\
-Test the printing of register values.
+Test the printing of register values.\
 **Configuration**
 1) Test10_Program_Debugging was loaded into the emulator.
 2) `g` was entered to run the program and load the Program Counter.
@@ -206,8 +206,8 @@ Pass.
 
 ### Test_15: Register Set
 **Purpose**\
-Test the setting of register values.
-**Configuration**\
+Test the setting of register values.\
+**Configuration**
 1) Test10_Program_Debugging was loaded into the emulator.
 2) `s` was entered to start the Register Setting Utility.
 3) Register `1` was selected.
@@ -227,7 +227,7 @@ Pass.
 
 ### Test_16: Breakpoint Set
 **Purpose**\
-Test the setting of breakpoints.
+Test the setting of breakpoints.\
 **Configuration**
 1) Test10_Program_Debugging was loaded into the emulator.
 2) `b` was entered to start the Breakpoint Setting Utility.
