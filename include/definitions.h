@@ -53,6 +53,7 @@
 #define INSTRUCTION_MEMORY '0'
 #define DATA_MEMORY '1'
 #define PROGRAM_COUNTER 7
+#define INSTRUCTION_NOOP 0x0000
 
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1
@@ -73,6 +74,12 @@
     : (toupper(*character_pointer++) - 'A' + 10)) \
     )
 
+typedef enum cycle_state {
+    CYCLE_START = 0,
+    CYCLE_WAIT_0 = 1,
+    CYCLE_WAIT_1 = 2
+} cycle_state_t;
+
 /**
  * @brief Valid Record Types - Stored as Characters
  */
@@ -91,36 +98,11 @@ ADDRESS_TYPE        = '9'
  */
 typedef struct s_record_t
 {
-byte_t type;
-byte_t length;
-byte_t address[2];
-byte_t data[MAX_RECORD_LENGTH];
+    byte_t type;
+    byte_t length;
+    byte_t address[2];
+    byte_t data[MAX_RECORD_LENGTH];
 }s_record_t;
-
-
-/**
- * @brief Represents a program.
- *
- * The structure contains the program context.
- */
-typedef struct program_t
-{
-    /* Memory Space */
-byte_t instruction_memory[INSTRUCTION_MEMORY_LENGTH];
-byte_t data_memory[DATA_MEMORY_LENGTH];
-
-/* Register File */
-word_t register_file[REGISTER_FILE_LENGTH];
-
-/* Breakpoint Address */
-int breakpoint;
-int starting_address;
-word_t instruction_register;
-
-/* Executable Name */
-byte_t executable_name[MAX_RECORD_LENGTH];
-
-}program_t;
 
 /**
  * @brief Enumeration representing different types of instructions.
@@ -151,10 +133,40 @@ typedef enum instruction_type
 typedef struct instruction
 {
     instruction_type_t type;
+    word_t opcode;
+    int program_counter;
+
     byte_t source;
     byte_t destination;
     byte_t rc;
     byte_t wb;
 } instruction_t;
+
+/**
+ * @brief Represents a program.
+ *
+ * The structure contains the program context.
+ */
+typedef struct program_t
+{
+    /* Memory Space */
+    byte_t instruction_memory[INSTRUCTION_MEMORY_LENGTH];   /* 64KiB Instruction Memory */
+    byte_t data_memory[DATA_MEMORY_LENGTH];                 /* 64KiB Data Memory */
+
+    word_t register_file[REGISTER_FILE_LENGTH]; /* 8 CPU Registers */
+    word_t program_status_word;                 /* Status Indicators */
+    word_t instruction_memory_address_register; /* Holds the address of the instruction to be fetched */
+    word_t instruction_memory_buffer_register;  /* Has the read from location specified in IMAR */
+    word_t instruction_control_register;        /* Indicates if an instruction is to be read from address in IMAR */
+    word_t instruction_register;                /* Holds the instruction to be decoded */
+
+    instruction_t instruction;                  /* Current Instruction */
+    cycle_state_t cycle_state;                  /* Current State of the CPU Cycle */
+    int breakpoint;                             /* Address of the Breakpoint */
+    int starting_address;                       /* Starting Address of the Program */
+    int clock_cycles;                           /* Number of Clock Cycles */
+
+    byte_t executable_name[MAX_RECORD_LENGTH];  /* Name of the Executable */
+}program_t;
 
 #endif /* DEFINITIONS_H */

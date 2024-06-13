@@ -14,7 +14,7 @@ s_record_t s_record;
 
 int error_status = 0;
 
-program_t program = {.breakpoint = -1};
+program_t program = {.breakpoint = -1, .clock_cycles = 0};
 
 int breakpoint = -1;
 

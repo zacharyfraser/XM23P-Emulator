@@ -159,36 +159,46 @@ void set_breakpoint(int *breakpoint)
 void run(program_t *program)
 {
     printf("Run Utility\n");
-    program->register_file[PROGRAM_COUNTER] = (word_t)program->starting_address;
-    printf("Program Counter: %04x\n", program->register_file[PROGRAM_COUNTER]);
-    printf("Breakpoint: %04x\n", program->breakpoint);
-    while(program->register_file[PROGRAM_COUNTER] != (program->breakpoint & ~(0x01)))
+    int breakpoint_flag = 0;
+    /* Start XM23P Pipelined Instruction Cycle */
+    program->cycle_state = CYCLE_START;
+    /* Loop Until Breakpoint Reached */
+    while(breakpoint_flag == 0)
     {
-        instruction_t instruction;
-        /* Fetch */
-        if(read_instruction(&program->instruction_register, program->instruction_memory, program->register_file[PROGRAM_COUNTER]))
+        switch(program->cycle_state)
         {
-            printf("Error Reading Instruction\n");
-            break;
+            case CYCLE_START:
+                /* Initialize with NOOP */
+                program->instruction_register = INSTRUCTION_NOOP;
+                /* FETCH_0 */
+                fetch_instruction(program, 0);
+                /* DECODE_0 */
+                decode_instruction(&program->instruction, program->instruction_register);
+                program->cycle_state = CYCLE_WAIT_0;
+                break;
+            case CYCLE_WAIT_0:
+                /* FETCH_1 */
+                fetch_instruction(program, 1);
+                /* EXECUTE_0 */
+                execute_instruction(&program->instruction, program);
+                program->cycle_state = CYCLE_WAIT_1;
+                /* Check for Breakpoint */
+                if(program->register_file[PROGRAM_COUNTER] - 2 == program->breakpoint)
+                {
+                    breakpoint_flag = 1;
+                }
+                break;
+            case CYCLE_WAIT_1:
+                /* FETCH_0 */
+                fetch_instruction(program, 0);
+                /* DECODE_0 */
+                decode_instruction(&program->instruction, program->instruction_register);
+                program->cycle_state = CYCLE_WAIT_0;
+                break;
+            default:
+                break;
         }
-        /* Decode */
-        if(decode_instruction(&instruction, program->instruction_register))
-        {
-            printf("Error Decoding Instruction\n");
-            break;
-        }
-        /* Execute */
-        if(execute_instruction(&instruction, program))
-        {
-            printf("Error Executing Instruction\n");
-            break;
-        }
-
-        program->register_file[PROGRAM_COUNTER] += 2;
-        if(program->instruction_register == 0x0000)
-        {
-            break;
-        }
+        program->clock_cycles++;
     }
 }
 
@@ -285,4 +295,6 @@ void load_memory(program_t *program, char *supplied_path)
         }
     }
     fclose(file);
+    /* Load Starting Address into Program Counter */
+    program->register_file[PROGRAM_COUNTER] = (word_t)program->starting_address;
 }

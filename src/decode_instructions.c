@@ -82,6 +82,24 @@ int read_instruction(word_t *instruction_word, byte_t *instruction_memory, int p
     return error_status;
 }
 
+int reset_instruction(instruction_t *instruction)
+{
+    if(instruction == NULL)
+    {
+        /* Invalid instruction pointer */
+        return -1;
+    }
+
+    instruction->type = UNDEFINED;
+    instruction->source = 0;
+    instruction->destination = 0;
+    instruction->rc = 0;
+    instruction->wb = 0;
+
+    return 0;
+
+}
+
 /**
  * @brief Decode an instruction from a memory address
  * 
@@ -92,8 +110,7 @@ int read_instruction(word_t *instruction_word, byte_t *instruction_memory, int p
  * @param instruction_register Instruction word to decode
  * @return Exit Status - [0 = success, <= 0 failure]
  */
-int decode_instruction(instruction_t *instruction, 
-    word_t instruction_register)
+int decode_instruction(instruction_t *instruction, word_t instruction_register)
 {
     
     if(instruction == NULL)
@@ -103,9 +120,8 @@ int decode_instruction(instruction_t *instruction,
     }
 
     /* Clear Instruction Struct */
-    memset(instruction, 0, sizeof(instruction_t));
-
-
+    reset_instruction(instruction);
+    instruction->opcode = instruction_register;
     /* Decode Bits Thirteen through Fifteen */
     switch ((instruction_register >> 13) & THREE_BITS)
     {
