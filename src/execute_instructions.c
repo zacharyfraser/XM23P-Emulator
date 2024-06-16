@@ -34,13 +34,11 @@ int execute_instruction(instruction_t *instruction, program_t *program)
     if(instruction->type == UNDEFINED)
     {
         /* Instruction Not Implemented - Print Address and Instruction Register */
-        printf("%04x: %04x\n", instruction->program_counter, instruction->opcode);
+        printf("Unknown Instruction\n");
     }
     else
     {
-        printf("%04x: %04x - %-5s RC: %01x WB: %01x Source: %02x Destination: %02x\n", 
-            instruction->program_counter, 
-            instruction->opcode,
+        printf("%-5s RC: %01x WB: %01x Source: %02x Destination: %02x\n", 
             instruction_names[instruction->type], 
             instruction->rc, 
             instruction->wb, 

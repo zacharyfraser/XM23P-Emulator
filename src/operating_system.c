@@ -22,6 +22,7 @@ void display_utilities()
         printf("s - Register Set\n");
         printf("b - Set Breakpoint\n");
         printf("g - Run\n");
+        printf("v - Restart Program\n");
         printf("x - Exit\n");
 }
 
@@ -63,6 +64,10 @@ void run_operating_system(program_t *program)
                 break;
             case RUN:
                 run(program);
+                (void)getchar();
+                break;
+            case RESTART:
+                restart_program(program);
                 (void)getchar();
                 break;
             case EXIT:

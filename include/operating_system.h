@@ -24,6 +24,7 @@ enum utilities
     REGISTER_SET    = 's',
     SET_BREAKPOINT  = 'b',
     RUN             = 'g',
+    RESTART         = 'v',
     EXIT            = 'x'
 };
 

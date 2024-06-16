@@ -61,43 +61,24 @@ instruction_type_t shift_register_table[SHIFT_REGISTER_INSTRUCTION_COUNT] =
 };
 
 /**
- * @brief Read an instruction from memory stored in little endian format
+ * @brief Reset instruction arguments to 0
  * 
- * @param instruction_word Reference to the instruction word to store the read instruction
- * @param instruction_memory Memory containing the instruction
- * @param program_counter Address of the instruction in memory
- * @return Exit Status [0 = success, <= 0 failure]
+ * @param instruction - Pointer to instruction struct
+ * @return int - [0 = Success, -1 = Null Pointer]
  */
-int read_instruction(word_t *instruction_word, byte_t *instruction_memory, int program_counter)
-{
-    int error_status = 0;
-    if(instruction_memory == NULL || instruction_word == NULL)
-    {
-        /* Invalid memory or instruction word pointer */
-        error_status = -1;
-    }
-
-    /* Read instruction from memory in little endian format */
-    *instruction_word = (instruction_memory[program_counter] | (instruction_memory[program_counter + 1] << 8));
-    return error_status;
-}
-
-int reset_instruction(instruction_t *instruction)
+int reset_instruction_arguments(instruction_t *instruction)
 {
     if(instruction == NULL)
     {
-        /* Invalid instruction pointer */
         return -1;
     }
 
-    instruction->type = UNDEFINED;
-    instruction->source = 0;
-    instruction->destination = 0;
     instruction->rc = 0;
     instruction->wb = 0;
+    instruction->source = 0;
+    instruction->destination = 0;
 
     return 0;
-
 }
 
 /**
@@ -120,8 +101,7 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
     }
 
     /* Clear Instruction Struct */
-    reset_instruction(instruction);
-    instruction->opcode = instruction_register;
+    reset_instruction_arguments(instruction);
     /* Decode Bits Thirteen through Fifteen */
     switch ((instruction_register >> 13) & THREE_BITS)
     {
