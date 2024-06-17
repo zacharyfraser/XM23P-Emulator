@@ -22,6 +22,7 @@ void display_utilities()
         printf("s - Register Set\n");
         printf("b - Set Breakpoint\n");
         printf("g - Run\n");
+        printf("v - Restart Program\n");
         printf("x - Exit\n");
 }
 
@@ -32,11 +33,11 @@ void display_utilities()
 void run_operating_system(program_t *program)
 {
     int end = 0;
+    display_utilities();
     while(end != 1)
     {
         char utility;
-        display_utilities();
-        printf("Please Enter Utility: ");
+        printf("User>");
         scanf_s("%c", &utility, 1);
         printf("\n");
         switch(utility)
@@ -46,14 +47,12 @@ void run_operating_system(program_t *program)
                 break;
             case MEMORY_DUMP:
                 memory_dump(program->instruction_memory, program->data_memory);
-                (void)getchar();
                 break;
             case MEMORY_WRITE:
                 memory_write(program->instruction_memory, program->data_memory);
                 break;
             case REGISTER_DUMP:
                 register_dump(program->register_file);
-                (void)getchar();
                 break;
             case REGISTER_SET:
                 register_set(program->register_file);
@@ -63,7 +62,9 @@ void run_operating_system(program_t *program)
                 break;
             case RUN:
                 run(program);
-                (void)getchar();
+                break;
+            case RESTART:
+                restart_program(program);
                 break;
             case EXIT:
                 end = 1;

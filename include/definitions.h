@@ -16,6 +16,7 @@
 #define word_t unsigned short
 #define NUL '\0'
 
+/* Bit Groupings */
 #define ONE_BIT 0x01
 #define TWO_BITS 0x03
 #define THREE_BITS 0x07
@@ -25,6 +26,7 @@
 #define SEVEN_BITS 0x7F
 #define EIGHT_BITS 0xFF
 
+/* Bit Masks */
 #define Bit_0   0x0001
 #define Bit_1   0x0002
 #define Bit_2   0x0004
@@ -74,6 +76,10 @@
     : (toupper(*character_pointer++) - 'A' + 10)) \
     )
 
+/**
+ * @brief Pipeline Cycle States
+ * 
+ */
 typedef enum cycle_state {
     CYCLE_START = 0,
     CYCLE_WAIT_0 = 1,
@@ -82,6 +88,7 @@ typedef enum cycle_state {
 
 /**
  * @brief Valid Record Types - Stored as Characters
+ * 
  */
 enum
 {
@@ -94,7 +101,6 @@ ADDRESS_TYPE        = '9'
 /**
  * @brief Represents an S-Record.
  *
- * The S-Record struct contains the necessary fields to represent an S-Record.
  */
 typedef struct s_record_t
 {
@@ -105,10 +111,9 @@ typedef struct s_record_t
 }s_record_t;
 
 /**
- * @brief Enumeration representing different types of instructions.
+ * @brief Enumeration of all XM23P Instructions
  * 
- * This enumeration defines the various types of instructions that can be decoded.
- * Each instruction type is represented by a unique value.
+ * Contiguous encoding of each instruction to be used with lookup table
  */
 typedef enum instruction_type 
 {
@@ -128,18 +133,16 @@ typedef enum instruction_type
 /**
  * @brief Structure representing an instruction.
  * 
- * This structure holds information about an instruction, including its type, and other parameters.
+ * Contains instruction type and arguments
  */
 typedef struct instruction
 {
     instruction_type_t type;
-    word_t opcode;
-    int program_counter;
 
-    byte_t source;
-    byte_t destination;
-    byte_t rc;
-    byte_t wb;
+    byte_t source; /* Source Register/Constant Code */
+    byte_t destination; /* Destination Register Code */
+    byte_t rc; /* [0 = Register, 1 = Constant] */
+    byte_t wb; /* [0 = Word, 1 = Byte ] */
 } instruction_t;
 
 /**
@@ -160,8 +163,8 @@ typedef struct program_t
     word_t instruction_control_register;        /* Indicates if an instruction is to be read from address in IMAR */
     word_t instruction_register;                /* Holds the instruction to be decoded */
 
-    instruction_t instruction;                  /* Current Instruction */
     cycle_state_t cycle_state;                  /* Current State of the CPU Cycle */
+    instruction_t instruction;                  /* Current Instruction */
     int breakpoint;                             /* Address of the Breakpoint */
     int starting_address;                       /* Starting Address of the Program */
     int clock_cycles;                           /* Number of Clock Cycles */

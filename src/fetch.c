@@ -15,8 +15,6 @@ int fetch_instruction(program_t *program, int stage)
     case 0:
         /* Set IMAR to PC */
         program->instruction_memory_address_register = program->register_file[PROGRAM_COUNTER];
-        /* Set Instruction Program Counter for Printing */
-        program->instruction.program_counter = program->register_file[PROGRAM_COUNTER] - 2;
         /* Set ICTRL to Read */
         program->instruction_control_register = CONTROL_READ;
         /* Increment PC */

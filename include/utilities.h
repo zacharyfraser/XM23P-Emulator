@@ -27,5 +27,6 @@ void register_dump(word_t *register_file);
 void register_set(word_t *register_file);
 void set_breakpoint(int *breakpoint);
 void run(program_t *program);
+void restart_program(program_t *program);
 
 #endif
