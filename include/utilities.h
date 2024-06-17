@@ -14,11 +14,10 @@
 
 #include "definitions.h"
 #include "display_memory.h"
-#include "parse_records.h"
 #include "load_memory.h"
 #include "decode_instructions.h"
 #include "execute_instructions.h"
-#include "fetch.h"
+#include "fetch_instructions.h"
 
 void load_memory(program_t *program, char *supplied_path);
 void memory_dump(byte_t *instruction_memory, byte_t *data_memory);

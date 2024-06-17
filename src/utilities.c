@@ -195,11 +195,11 @@ void run(program_t *program)
                 program->cycle_state = CYCLE_WAIT_1;
 
                 /* Check for Breakpoint - PC Incremented in previous cycle */
-                if(program->register_file[PROGRAM_COUNTER] - 2 == (program->breakpoint & 0xFFFE))
+                if(program->PROGRAM_COUNTER - 2 == (program->breakpoint & 0xFFFE))
                 {
                     pause_cycle = 1;
                     /* Decrement PC for resuming execution */
-                    program->register_file[PROGRAM_COUNTER] -= 2;
+                    program->PROGRAM_COUNTER -= 2;
                     continue;
                 }
                 break;
@@ -224,7 +224,7 @@ void run(program_t *program)
  */
 void restart_program(program_t *program)
 {
-    program->register_file[PROGRAM_COUNTER] = (word_t)program->starting_address;
+    program->PROGRAM_COUNTER = (word_t)program->starting_address;
 }
 
 /**
@@ -238,6 +238,7 @@ void load_memory(program_t *program, char *supplied_path)
     printf("Load Memory Utility\n");
     /* Clear Program */
     memset(program, 0, sizeof(program_t));
+    initialize_register_file(program->register_file);
     int error_status = 0;
     char program_path[MAX_PATH_LENGTH];
     char input_record[MAX_RECORD_LENGTH];
@@ -321,5 +322,5 @@ void load_memory(program_t *program, char *supplied_path)
     }
     fclose(file);
     /* Load Starting Address into Program Counter */
-    program->register_file[PROGRAM_COUNTER] = (word_t)program->starting_address;
+    program->PROGRAM_COUNTER = (word_t)program->starting_address;
 }

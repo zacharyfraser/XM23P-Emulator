@@ -16,63 +16,66 @@ void display_utilities()
 {
         printf("Available Utilities:\n");
         printf("l - Load Program\n");
+        printf("v - Restart Program\n");
+        printf("g - Run\n");
+        printf("b - Set Breakpoint\n");
         printf("m - Memory Dump\n");
         printf("w - Memory Write\n");
         printf("r - Register Dump\n");
         printf("s - Register Set\n");
-        printf("b - Set Breakpoint\n");
-        printf("g - Run\n");
-        printf("v - Restart Program\n");
         printf("x - Exit\n");
+        printf("h - Help\n");
 }
 
 /**
  * @brief Select and run a utility
  * 
+ * @param program - Pointer to program structure
  */
 void run_operating_system(program_t *program)
 {
-    int end = 0;
+    int exit = 0;
     display_utilities();
-    while(end != 1)
+    while(exit != 1)
     {
         char utility;
-        printf("User>");
-        scanf_s("%c", &utility, 1);
-        printf("\n");
+        printf("User> ");
+        scanf_s(" %c", &utility, 1);
         switch(utility)
         {
-            case LOAD:
-                load_memory(program, NULL);
-                break;
-            case MEMORY_DUMP:
-                memory_dump(program->instruction_memory, program->data_memory);
-                break;
-            case MEMORY_WRITE:
-                memory_write(program->instruction_memory, program->data_memory);
-                break;
-            case REGISTER_DUMP:
-                register_dump(program->register_file);
-                break;
-            case REGISTER_SET:
-                register_set(program->register_file);
-                break;
-            case SET_BREAKPOINT:
-                set_breakpoint(&program->breakpoint);
-                break;
-            case RUN:
-                run(program);
-                break;
-            case RESTART:
-                restart_program(program);
-                break;
-            case EXIT:
-                end = 1;
-                break;
-            default:
-                break;
+        case LOAD:
+            load_memory(program, NULL);
+            break;
+        case RESTART:
+            restart_program(program);
+            break;
+        case RUN:
+            run(program);
+            break;
+        case SET_BREAKPOINT:
+            set_breakpoint(&program->breakpoint);
+            break;
+        case MEMORY_DUMP:
+            memory_dump(program->instruction_memory, program->data_memory);
+            break;
+        case MEMORY_WRITE:
+            memory_write(program->instruction_memory, program->data_memory);
+            break;
+        case REGISTER_DUMP:
+            register_dump(program->register_file[REGISTER]);
+            break;
+        case REGISTER_SET:
+            register_set(program->register_file[REGISTER]);
+            break;
+        case EXIT:
+            exit = 1;
+            break;
+        case HELP:
+            display_utilities();
+            break;
+        default:
+            break;
         }
         printf("\n");
-        (void)getchar();
     }
 }

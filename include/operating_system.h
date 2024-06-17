@@ -25,12 +25,11 @@ enum utilities
     SET_BREAKPOINT  = 'b',
     RUN             = 'g',
     RESTART         = 'v',
-    EXIT            = 'x'
+    EXIT            = 'x',
+    HELP            = 'h'
 };
 
 void display_utilities(void);
 void run_operating_system(program_t *program);
 
 #endif
-
-
