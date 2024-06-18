@@ -56,22 +56,22 @@
 #define EIGHT_BITS 0xFF
 
 /* Bit Masks */
-#define Bit_0   0x0001
-#define Bit_1   0x0002
-#define Bit_2   0x0004
-#define Bit_3   0x0008
-#define Bit_4   0x0010
-#define Bit_5   0x0020
-#define Bit_6   0x0040
-#define Bit_7   0x0080
-#define Bit_8   0x0100
-#define Bit_9   0x0200
-#define Bit_10  0x0400
-#define Bit_11  0x0800
-#define Bit_12  0x1000
-#define Bit_13  0x2000
-#define Bit_14  0x4000
-#define Bit_15  0x8000
+#define BIT_0   0x0001
+#define BIT_1   0x0002
+#define BIT_2   0x0004
+#define BIT_3   0x0008
+#define BIT_4   0x0010
+#define BIT_5   0x0020
+#define BIT_6   0x0040
+#define BIT_7   0x0080
+#define BIT_8   0x0100
+#define BIT_9   0x0200
+#define BIT_10  0x0400
+#define BIT_11  0x0800
+#define BIT_12  0x1000
+#define BIT_13  0x2000
+#define BIT_14  0x4000
+#define BIT_15  0x8000
 
 /* Macros */
 /**
@@ -177,12 +177,23 @@ typedef struct s_record_t
  */
 typedef struct instruction
 {
+    word_t opcode;          /* Instruction Opcode */
+    word_t address;         /* Program Counter */
+
     instruction_type_t type;/* Instruction Type */
     byte_t source;          /* Source Register/Constant Code */
     byte_t destination;     /* Destination Register Code */
     byte_t rc;              /* [0 = Register, 1 = Constant] */
     byte_t wb;              /* [0 = Word, 1 = Byte ] */
 } instruction_t;
+
+typedef struct status_register
+{
+    byte_t carry;           /* Carry Flag */
+    byte_t zero;            /* Zero Flag */
+    byte_t negative;        /* Negative Flag */
+    byte_t overflow;        /* Overflow Flag */
+} status_register_t;
 
 /**
  * @brief Represents a program.
@@ -196,11 +207,12 @@ typedef struct program_t
     byte_t data_memory[DATA_MEMORY_LENGTH];                         /* 64KiB Data Memory */
 
     word_t register_file[CONSTANT_SELECT][REGISTER_FILE_LENGTH];    /* 8 CPU Registers */
-    word_t program_status_word;                                     /* Status Indicators */
     word_t instruction_memory_address_register;                     /* Holds the address of the instruction to be fetched */
     word_t instruction_memory_buffer_register;                      /* Has the read from location specified in IMAR */
     word_t instruction_control_register;                            /* Indicates if an instruction is to be read from address in IMAR */
     word_t instruction_register;                                    /* Holds the instruction to be decoded */
+
+    status_register_t program_status_word;                          /* Status Indicators */
 
     cycle_state_t cycle_state;                                      /* Current State of the CPU Cycle */
     instruction_t instruction;                                      /* Current Instruction */

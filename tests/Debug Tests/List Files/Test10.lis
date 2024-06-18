@@ -1,6 +1,6 @@
 X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
 Input file name: Test10.asm
-Time of assembly: Fri 7 Jun 2024 22:40:09 
+Time of assembly: Tue 18 Jun 2024 12:18:52 
   1	    	     	;
   2	    	     	; Loader Test 10 Program Debugging
   3	    	     	;
@@ -23,32 +23,32 @@ Time of assembly: Fri 7 Jun 2024 22:40:09
  20	0108	4001	Regs    add     R0,R1
  21	010A	40D3	        add.b   $2,R3
  22	010C	4125	        addc    R4,R5
- 23	010E	41F7	        addc.b  $32,R7
+ 23	010E	41F0	        addc.b  $32,R0
  24	0110	4201	        sub     R0,R1
  25	0112	42D3	        sub.b   $2,R3
  26	0114	4325	        subc    R4,R5
- 27	0116	43F7	        subc.b  $32,R7
+ 27	0116	43F0	        subc.b  $32,R0
  28	0118	4401	        dadd    R0,R1
  29	011A	44D3	        dadd.b  $2,R3
  30	011C	4525	        cmp     R4,R5
- 31	011E	45F7	        cmp.b   $32,R7
+ 31	011E	45F0	        cmp.b   $32,R0
  32	0120	4601	        xor     R0,R1
  33	0122	46D3	        xor.b   $2,R3
  34	0124	4725	        and     R4,R5
- 35	0126	47F7	        and.b   $32,R7
+ 35	0126	47F0	        and.b   $32,R0
  36	0128	4801	        or      R0,R1
  37	012A	48D3	        or.b    $2,R3
  38	012C	4925	        bit     R4,R5
- 39	012E	49F7	        bit.b   $32,R7
+ 39	012E	49F0	        bit.b   $32,R0
  40	0130	4A01	        bic     R0,R1
  41	0132	4AD3	        bic.b   $2,R3
  42	0134	4B25	        bis     R4,R5
- 43	0136	4BF7	        bis.b   $32,R7
+ 43	0136	4BF0	        bis.b   $32,R0
  44	0138	4C01	        mov     R0,R1
  45	013A	4C53	        mov.b   R2,R3
  46	013C	4CA5	        swap    R4,R5
  47	013E	4D06	        sra     R6
- 48	0140	4D47	        sra.b   R7
+ 48	0140	4D40	        sra.b   R0
  49	0142	4D08	        rrc     R0
  50	0144	4D49	        rrc.b   R1
  51	0146	4D1A	        swpb    R2

@@ -188,6 +188,8 @@ void run(program_t *program)
                 program->cycle_state = CYCLE_WAIT_0;
                 break;
             case CYCLE_WAIT_0:
+                /* Set Current Instruction Address for Debugging */
+                program->instruction.address = program->PROGRAM_COUNTER - 4;
                 /* FETCH_1 */
                 fetch_instruction(program, 1);
                 /* EXECUTE_0 */
