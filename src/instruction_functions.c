@@ -291,18 +291,142 @@ int execute_subc(instruction_t *instruction, program_t *program)
 
 int execute_dadd(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    printf("Decimal Add\n");
-    return -1;
+    /* Refactor to use a loop */
+    word_t source = program->register_file[instruction->rc][instruction->source];
+    word_t destination = program->register_file[REGISTER][instruction->destination];
+
+    byte_t source_digit = source & 0x000F;
+    byte_t destination_digit = destination & 0x000F;
+    word_t sum = 0x0000;
+    word_t result = 0x0000;
+
+    /* Add 1's Digits */
+    result = source_digit + destination_digit + program->program_status_word.carry;
+    if(result > 0x0009)
+    {
+        result -= 0x000A;
+        program->program_status_word.carry = 1;
+    }
+    else
+    {
+        program->program_status_word.carry = 0;
+    }
+    
+    sum |= result;
+    /* Add 10's Digits */
+    source_digit = (source >> 4) & 0x000F;
+    destination_digit = (destination >> 4) & 0x000F;
+    result = source_digit + destination_digit + program->program_status_word.carry;
+    if(result > 0x0009)
+    {
+        result -= 0x000A;
+        program->program_status_word.carry = 1;
+    }
+    else
+    {
+        program->program_status_word.carry = 0;
+    }
+    
+    sum |= result << 4;
+
+    if(instruction->wb == 0) /* Word Operation */
+    {    
+        /* Add 100's Digits */
+        source_digit = (source >> 8) & 0x000F;
+        destination_digit = (destination >> 8) & 0x000F;
+        result = source_digit + destination_digit + program->program_status_word.carry;
+        if(result > 0x0009)
+        {
+            result -= 0x000A;
+            program->program_status_word.carry = 1;
+        }
+        else
+        {
+            program->program_status_word.carry = 0;
+        }
+        
+        sum |= result << 8;
+        /* Add 1000's Digits */
+        source_digit = (source >> 12) & 0x000F;
+        destination_digit = (destination >> 12) & 0x000F;
+        result = source_digit + destination_digit + program->program_status_word.carry;
+        if(result > 0x0009)
+        {
+            result -= 0x000A;
+            program->program_status_word.carry = 1;
+        }
+        else
+        {
+            program->program_status_word.carry = 0;
+        }
+        
+        sum |= result << 12;
+
+        /* Set Destination */
+        program->register_file[REGISTER][instruction->destination] = sum;
+
+        /* Test for Zero */
+        program->program_status_word.zero = (sum == 0);
+        /* Test for Negative */
+        program->program_status_word.negative = (sum >> 15) & 0x01;
+        /* Test for Overflow */
+        /* I Don't Know What To Do Here */
+
+    }
+    else if(instruction->wb == 1) /* Byte Operation */
+    {
+        /* Clear Low Byte of Destination */
+        program->register_file[REGISTER][instruction->destination] &= 0xFF00;
+        /* Set Low Byte of Destination */
+        program->register_file[REGISTER][instruction->destination] |= (sum & 0x00FF);
+
+        /* Test for Zero */
+        program->program_status_word.zero = ((sum & 0x00FF) == 0);
+        /* Test for Negative */
+        program->program_status_word.negative = (sum >> 7) & 0x01;
+        /* Test for Overflow */
+        /* I Don't Know What To Do Here */
+    }
+
+    return 0;
 }
 
 int execute_cmp(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    printf("Compare\n");
-    return -1;
+    word_t source = program->register_file[instruction->rc][instruction->source];
+    /* 2's Compliment Source */
+    source = ~source + 1;
+    word_t destination = program->register_file[REGISTER][instruction->destination];
+    int result;
+
+    if(instruction->wb == 0) /* Word Operation */
+    {
+        result = source + destination;
+        
+        /* Test for PSW Flags */
+        program->program_status_word.carry = (result > 0xFFFF); /* Test Result exceeds word */
+        program->program_status_word.zero = ((short)result == 0); /* Test Low Word for Zero */
+        program->program_status_word.negative = (word_t)((result >> 15) & 0x01); /* Test MSb */
+        program->program_status_word.overflow = 
+            (((short)source > 0 && (short)destination > 0 && (short)result < 0) ||
+            ((short)source < 0 && (short)destination < 0 && (short)result > 0)); /* Test for incorrectly flipped sign */
+    }
+    else if(instruction->wb == 1) /* Byte Operation */
+    {
+        source &= 0x00FF;
+        destination &= 0x00FF;
+        result = source + destination;
+
+        /* Test for PSW Flags */
+        program->program_status_word.carry = (result > 0xFF); /* Test Result exceeds byte */
+        program->program_status_word.zero = ((byte_t)result == 0); /* Test Low Byte for Zero */
+        program->program_status_word.negative = (word_t)((result >> 7) & 0x01); /* Test MSb */
+        program->program_status_word.overflow = 
+            (((signed char)source > 0 && (signed char)destination > 0 && (signed char)result < 0) ||
+            ((signed char)source < 0 && (signed char)destination < 0 && (signed char)result > 0)); /* Test for incorrectly flipped sign */
+    }
+
+    return 0;
 }
 
 /**
@@ -619,20 +743,95 @@ int execute_swap(instruction_t *instruction, program_t *program)
     return 0;
 }
 
+/**
+ * @brief Shift Right Arithmetic Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_sra(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    printf("Shift Right Arithmetic\n");
-    return -1;
+    if(instruction->wb == 0) /* Word Operation */
+    {
+        short temp = program->register_file[REGISTER][instruction->destination];
+        /* Arithmetic Shift Right */
+        temp >>= 1;
+        program->register_file[REGISTER][instruction->destination] = (word_t)temp;
+
+        /* Test Zero */
+        program->program_status_word.zero = (temp == 0);
+        /* Test MSb */
+        program->program_status_word.negative = (temp >> 15) & 0x01;
+    }
+    else if(instruction->wb == 1) /* Byte Operation */
+    {
+        signed char temp = (signed char)program->register_file[REGISTER][instruction->destination];
+        /* Arithmetic Shift Right */
+        temp >>= 1;
+        /* Clear LSB of DST */
+        program->register_file[REGISTER][instruction->destination] &= 0xFF00;
+        /* Set LSB of DST */
+        program->register_file[REGISTER][instruction->destination] |= (word_t)(temp & 0x00FF);
+
+        /* Test Zero */
+        program->program_status_word.zero = (temp == 0);
+        /* Test MSb */
+        program->program_status_word.negative = (temp >> 7) & 0x01;
+    } 
+    
+    return 0;
 }
 
+/**
+ * @brief Rotate Right through Carry Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_rrc(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    printf("Rotate Right Through Carry\n");
-    return -1;
+    /* Save LSb */
+    byte_t new_carry = program->register_file[REGISTER][instruction->destination] & 0x0001;
+
+    if(instruction->wb == 0) /* Word Operation */
+    {
+        /* Arithmetic Shift Right */
+        program->register_file[REGISTER][instruction->destination] >>= 1;
+        /* Set MSb */
+        program->register_file[REGISTER][instruction->destination] |= (program->program_status_word.carry << 15);
+        
+        /* Set Carry */
+        program->program_status_word.carry = new_carry;
+        /* Test Zero */
+        program->program_status_word.zero = (program->register_file[REGISTER][instruction->destination] == 0);
+        /* Test MSb */
+        program->program_status_word.negative = 
+            (program->register_file[REGISTER][instruction->destination] >> 15) & 0x01;
+    }
+    else if(instruction->wb == 1) /* Byte Operation */
+    {
+        /* Save LSB */
+        byte_t temp = program->register_file[REGISTER][instruction->destination] & 0x00FF;
+        /* Clear LSB of DST */
+        program->register_file[REGISTER][instruction->destination] &= 0xFF00;
+        /* Arithmetic Shift Right */
+        temp >>= 1;
+        /* Set MSb */
+        program->register_file[REGISTER][instruction->destination] |= (program->program_status_word.carry << 7);
+        /* set LSB */
+        program->register_file[REGISTER][instruction->destination] |= (temp & 0x00FF);
+        
+        /* Set Carry */
+        program->program_status_word.carry = new_carry;
+        /* Test Zero */
+        program->program_status_word.zero = (temp == 0);
+        /* Test MSb */
+        program->program_status_word.negative = (temp >> 7) & 0x01;
+    } 
+    
+    return 0;
 }
 
 /**
@@ -661,10 +860,22 @@ int execute_swpb(instruction_t *instruction, program_t *program)
 
 int execute_sxt(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    printf("Sign Extend\n");
-    return -1;
+    if(program->register_file[REGISTER][instruction->destination] & 0x8000)
+    {
+        program->register_file[REGISTER][instruction->destination] |= 0xFFFF0000;
+    }
+    else
+    {
+        program->register_file[REGISTER][instruction->destination] &= 0x0000FFFF;
+    }
+
+    /* Test Zero */
+    program->program_status_word.zero = (program->register_file[REGISTER][instruction->destination] == 0);
+    /* Test MSb */
+    program->program_status_word.negative = 
+        (program->register_file[REGISTER][instruction->destination] >> 15) & 0x01;
+
+    return 0;
 }
 
 int execute_setpri(instruction_t *instruction, program_t *program)

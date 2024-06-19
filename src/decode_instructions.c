@@ -102,6 +102,8 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
 
     /* Clear Instruction Struct */
     reset_instruction_arguments(instruction);
+    instruction->opcode = instruction_register;
+    
     /* Decode Bits Thirteen through Fifteen */
     switch ((instruction_register >> 13) & THREE_BITS)
     {
