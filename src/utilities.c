@@ -217,6 +217,9 @@ void run(program_t *program)
         }
         program->clock_cycles++;
     }
+    printf("Breakpoint Reached. CVNZ: %d%d%d%d\n", 
+        program->program_status_word.carry, program->program_status_word.overflow, 
+        program->program_status_word.negative, program->program_status_word.zero);
 }
 
 /**
@@ -226,6 +229,7 @@ void run(program_t *program)
  */
 void restart_program(program_t *program)
 {
+    memset(program->register_file, 0, sizeof(word_t) * REGISTER_FILE_LENGTH);
     program->PROGRAM_COUNTER = (word_t)program->starting_address;
 }
 

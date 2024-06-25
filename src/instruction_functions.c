@@ -367,11 +367,6 @@ int execute_dadd(instruction_t *instruction, program_t *program)
 
         /* Test for Zero */
         program->program_status_word.zero = (sum == 0);
-        /* Test for Negative */
-        program->program_status_word.negative = (sum >> 15) & 0x01;
-        /* Test for Overflow */
-        /* I Don't Know What To Do Here */
-
     }
     else if(instruction->wb == 1) /* Byte Operation */
     {
@@ -379,14 +374,13 @@ int execute_dadd(instruction_t *instruction, program_t *program)
         program->register_file[REGISTER][instruction->destination] &= 0xFF00;
         /* Set Low Byte of Destination */
         program->register_file[REGISTER][instruction->destination] |= (sum & 0x00FF);
-
         /* Test for Zero */
         program->program_status_word.zero = ((sum & 0x00FF) == 0);
-        /* Test for Negative */
-        program->program_status_word.negative = (sum >> 7) & 0x01;
-        /* Test for Overflow */
-        /* I Don't Know What To Do Here */
     }
+    /* Clear Negative */
+    program->program_status_word.negative = 0;
+    /* Clear Overflow */
+    program->program_status_word.overflow = 0;
 
     return 0;
 }
@@ -858,15 +852,22 @@ int execute_swpb(instruction_t *instruction, program_t *program)
     return 0;
 }
 
+/**
+ * @brief Sign Extend Byte to Word
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_sxt(instruction_t *instruction, program_t *program)
 {
-    if(program->register_file[REGISTER][instruction->destination] & 0x8000)
+    if((program->register_file[REGISTER][instruction->destination] >> 7) & 0x01)
     {
-        program->register_file[REGISTER][instruction->destination] |= 0xFFFF0000;
+        program->register_file[REGISTER][instruction->destination] |= 0xFF00;
     }
     else
     {
-        program->register_file[REGISTER][instruction->destination] &= 0x0000FFFF;
+        program->register_file[REGISTER][instruction->destination] &= 0x00FF;
     }
 
     /* Test Zero */
