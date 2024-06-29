@@ -1,0 +1,5 @@
+l .\tests\Execute_Tests\Test21_SwapByte_SignExtend.xme
+b 10a
+g
+r
+x

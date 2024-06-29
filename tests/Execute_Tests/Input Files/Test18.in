@@ -1,0 +1,5 @@
+l .\tests\Execute_Tests\Test18_Addition.xme
+b 10a
+g
+r
+x

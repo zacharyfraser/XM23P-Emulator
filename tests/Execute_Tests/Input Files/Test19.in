@@ -1,0 +1,5 @@
+l .\tests\Execute_Tests\Test19_Decimal_Addition.xme
+b 10a
+g
+r
+x

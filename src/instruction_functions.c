@@ -8,11 +8,24 @@
 
 #include "instruction_functions.h"
 
+byte_t test_overflow(word_t source, word_t destination, word_t result, int wb)
+{
+    if(wb == 0) /* Word Operation */
+    {
+        return source >> 15 && destination >> 15 && !(result >> 15) || !(source >> 15) && !(destination >> 15) && result >> 15;
+    }
+    else if(wb == 1) /* Byte Operation */
+    {
+        return source >> 7 && destination >> 7 && !(result >> 7) || !(source >> 7) && !(destination >> 7) && result >> 7;
+    }
+    return 2;
+}
+
 int execute_undefined(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x:\t%04x - Undefined Instruction\n", instruction->address, instruction->opcode);
+    //printf("%04x:\t%04x - Undefined Instruction\n", instruction->address, instruction->opcode);
     return -1;
 }
 
@@ -110,9 +123,7 @@ int execute_add(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFFFF); /* Test Result exceeds word */
         program->program_status_word.zero = ((short)result == 0); /* Test Low Word for Zero */
         program->program_status_word.negative = (word_t)((result >> 15) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((short)source > 0 && (short)destination > 0 && (short)result < 0) ||
-            ((short)source < 0 && (short)destination < 0 && (short)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
     else if(instruction->wb == 1) /* Byte Operation */
     {
@@ -129,9 +140,7 @@ int execute_add(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFF); /* Test Result exceeds byte */
         program->program_status_word.zero = ((byte_t)result == 0); /* Test Low Byte for Zero */
         program->program_status_word.negative = (word_t)((result >> 7) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((signed char)source > 0 && (signed char)destination > 0 && (signed char)result < 0) ||
-            ((signed char)source < 0 && (signed char)destination < 0 && (signed char)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
 
     return 0;
@@ -159,9 +168,7 @@ int execute_addc(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFFFF); /* Test Result exceeds word */
         program->program_status_word.zero = ((short)result == 0); /* Test Low Word for Zero */
         program->program_status_word.negative = (word_t)((result >> 15) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((short)source > 0 && (short)destination > 0 && (short)result < 0) ||
-            ((short)source < 0 && (short)destination < 0 && (short)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
     else if(instruction->wb == 1) /* Byte Operation */
     {
@@ -178,9 +185,7 @@ int execute_addc(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFF); /* Test Result exceeds byte */
         program->program_status_word.zero = ((byte_t)result == 0); /* Test Low Byte for Zero */
         program->program_status_word.negative = (word_t)((result >> 7) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((signed char)source > 0 && (signed char)destination > 0 && (signed char)result < 0) ||
-            ((signed char)source < 0 && (signed char)destination < 0 && (signed char)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
 
     return 0;
@@ -210,9 +215,7 @@ int execute_sub(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFFFF); /* Test Result exceeds word */
         program->program_status_word.zero = ((short)result == 0); /* Test Low Word for Zero */
         program->program_status_word.negative = (word_t)((result >> 15) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((short)source > 0 && (short)destination > 0 && (short)result < 0) ||
-            ((short)source < 0 && (short)destination < 0 && (short)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
     else if(instruction->wb == 1) /* Byte Operation */
     {
@@ -229,9 +232,7 @@ int execute_sub(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFF); /* Test Result exceeds byte */
         program->program_status_word.zero = ((byte_t)result == 0); /* Test Low Byte for Zero */
         program->program_status_word.negative = (word_t)((result >> 7) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((signed char)source > 0 && (signed char)destination > 0 && (signed char)result < 0) ||
-            ((signed char)source < 0 && (signed char)destination < 0 && (signed char)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
 
     return 0;
@@ -262,9 +263,7 @@ int execute_subc(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFFFF); /* Test Result exceeds word */
         program->program_status_word.zero = ((short)result == 0); /* Test Low Word for Zero */
         program->program_status_word.negative = (word_t)((result >> 15) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((short)source > 0 && (short)destination > 0 && (short)result < 0) ||
-            ((short)source < 0 && (short)destination < 0 && (short)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
     else if(instruction->wb == 1) /* Byte Operation */
     {
@@ -281,14 +280,19 @@ int execute_subc(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFF); /* Test Result exceeds byte */
         program->program_status_word.zero = ((byte_t)result == 0); /* Test Low Byte for Zero */
         program->program_status_word.negative = (word_t)((result >> 7) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((signed char)source > 0 && (signed char)destination > 0 && (signed char)result < 0) ||
-            ((signed char)source < 0 && (signed char)destination < 0 && (signed char)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
 
     return 0;
 }
 
+/**
+ * @brief Decimal Add Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_dadd(instruction_t *instruction, program_t *program)
 {
     /* Refactor to use a loop */
@@ -401,9 +405,7 @@ int execute_cmp(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFFFF); /* Test Result exceeds word */
         program->program_status_word.zero = ((short)result == 0); /* Test Low Word for Zero */
         program->program_status_word.negative = (word_t)((result >> 15) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((short)source > 0 && (short)destination > 0 && (short)result < 0) ||
-            ((short)source < 0 && (short)destination < 0 && (short)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
     else if(instruction->wb == 1) /* Byte Operation */
     {
@@ -415,9 +417,7 @@ int execute_cmp(instruction_t *instruction, program_t *program)
         program->program_status_word.carry = (result > 0xFF); /* Test Result exceeds byte */
         program->program_status_word.zero = ((byte_t)result == 0); /* Test Low Byte for Zero */
         program->program_status_word.negative = (word_t)((result >> 7) & 0x01); /* Test MSb */
-        program->program_status_word.overflow = 
-            (((signed char)source > 0 && (signed char)destination > 0 && (signed char)result < 0) ||
-            ((signed char)source < 0 && (signed char)destination < 0 && (signed char)result > 0)); /* Test for incorrectly flipped sign */
+        program->program_status_word.overflow = test_overflow(source, destination, (word_t)result, instruction->wb); /* Test for incorrectly flipped sign */
     }
 
     return 0;

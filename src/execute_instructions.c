@@ -45,13 +45,6 @@ int execute_instruction(instruction_t *instruction, program_t *program)
         /* Invalid input pointers */
         return -1;
     }
-    printf("%04x\t%-5s RC: %01x WB: %01x Source: %02x Destination: %02x\n", 
-        instruction->address,
-        instruction_names[instruction->type], 
-        instruction->rc, 
-        instruction->wb, 
-        instruction->source, 
-        instruction->destination);
     execute_table[instruction->type](instruction, program);
 
     return 0;

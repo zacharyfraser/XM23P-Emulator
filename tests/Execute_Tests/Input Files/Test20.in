@@ -1,0 +1,5 @@
+l .\tests\Execute_Tests\Test20_Swap_Instructions.xme
+b 10a
+g
+r
+x
