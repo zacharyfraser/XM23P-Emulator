@@ -61,25 +61,24 @@ instruction_type_t shift_register_table[SHIFT_REGISTER_INSTRUCTION_COUNT] =
 };
 
 /**
- * @brief Read an instruction from memory stored in little endian format
+ * @brief Reset instruction arguments to 0
  * 
- * @param instruction_word Reference to the instruction word to store the read instruction
- * @param instruction_memory Memory containing the instruction
- * @param program_counter Address of the instruction in memory
- * @return Exit Status [0 = success, <= 0 failure]
+ * @param instruction - Pointer to instruction struct
+ * @return int - [0 = Success, -1 = Null Pointer]
  */
-int read_instruction(word_t *instruction_word, byte_t *instruction_memory, int program_counter)
+int reset_instruction_arguments(instruction_t *instruction)
 {
-    int error_status = 0;
-    if(instruction_memory == NULL || instruction_word == NULL)
+    if(instruction == NULL)
     {
-        /* Invalid memory or instruction word pointer */
-        error_status = -1;
+        return -1;
     }
 
-    /* Read instruction from memory in little endian format */
-    *instruction_word = (instruction_memory[program_counter] | (instruction_memory[program_counter + 1] << 8));
-    return error_status;
+    instruction->rc = 0;
+    instruction->wb = 0;
+    instruction->source = 0;
+    instruction->destination = 0;
+
+    return 0;
 }
 
 /**
@@ -92,8 +91,7 @@ int read_instruction(word_t *instruction_word, byte_t *instruction_memory, int p
  * @param instruction_register Instruction word to decode
  * @return Exit Status - [0 = success, <= 0 failure]
  */
-int decode_instruction(instruction_t *instruction, 
-    word_t instruction_register)
+int decode_instruction(instruction_t *instruction, word_t instruction_register)
 {
     
     if(instruction == NULL)
@@ -103,9 +101,9 @@ int decode_instruction(instruction_t *instruction,
     }
 
     /* Clear Instruction Struct */
-    memset(instruction, 0, sizeof(instruction_t));
-
-
+    reset_instruction_arguments(instruction);
+    instruction->opcode = instruction_register;
+    
     /* Decode Bits Thirteen through Fifteen */
     switch ((instruction_register >> 13) & THREE_BITS)
     {

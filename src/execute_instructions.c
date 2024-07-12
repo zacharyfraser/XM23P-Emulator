@@ -23,6 +23,21 @@ char *instruction_names[NUM_OF_INSTRUCTIONS] =
     "STR"
 };
 
+execute_instruction_t execute_table[NUM_OF_INSTRUCTIONS] = 
+{
+    execute_undefined, execute_bl, execute_beq, execute_bne,
+    execute_bc, execute_bnc, execute_bn, execute_bge,
+    execute_blt, execute_bra, execute_add, execute_addc,
+    execute_sub, execute_subc, execute_dadd, execute_cmp,
+    execute_xor, execute_and, execute_or, execute_bit,
+    execute_bic, execute_bis, execute_mov, execute_swap,
+    execute_sra, execute_rrc, execute_swpb, execute_sxt,
+    execute_setpri, execute_svc, execute_setcc, execute_clrcc,
+    execute_cex, execute_ld, execute_st, execute_movl,
+    execute_movlz, execute_movls, execute_movh, execute_ldr,
+    execute_str
+};
+
 int execute_instruction(instruction_t *instruction, program_t *program)
 {
     if(instruction == NULL || program == NULL)
@@ -30,24 +45,7 @@ int execute_instruction(instruction_t *instruction, program_t *program)
         /* Invalid input pointers */
         return -1;
     }
-
-    if(instruction->type == UNDEFINED)
-    {
-        /* Instruction Not Implemented - Print Address and Instruction Register */
-        printf("%04x: %04x\n", program->register_file[PROGRAM_COUNTER], program->instruction_register);
-    }
-    else
-    {
-        printf("%04x: %04x - %-5s RC: %01x WB: %01x Source: %02x Destination: %02x\n", 
-            program->register_file[PROGRAM_COUNTER], 
-            program->instruction_register,
-            instruction_names[instruction->type], 
-            instruction->rc, 
-            instruction->wb, 
-            instruction->source, 
-            instruction->destination);
-    }
+    execute_table[instruction->type](instruction, program);
 
     return 0;
-    
 }

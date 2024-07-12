@@ -1,0 +1,39 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test18.asm
+Time of assembly: Tue 25 Jun 2024 13:04:07 
+  1	    	     	;Test 18 - Addition Instructions
+  2	    	     	        org #100
+  3	    	     	Start
+  4	0100	6668	        movl #abcd,R0
+  5	0102	7D58	        movh #abcd,R0
+  6	0104	4001	        add  R0,R1      ;R1 <- abcd, Negative = 1
+  7	0106	40B9	        add  $-1,R1     ;R1 <- abcc, Negative = 1, Carry = 1
+  8	0108	43B9	        subc $-1,R1     ;R1 <- abcd, Negative = 1
+  9	    	     	        end Start
+Successful completion of assembly - 1P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test18.xme
+

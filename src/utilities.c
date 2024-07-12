@@ -9,8 +9,12 @@
 #include "utilities.h"
 
 /**
- * @brief Memory Dump Utility - Dumps memory to the console
+ * @brief Memory Dump Utility - Prompts user for starting and ending addresses, and prints memory between addresses.
+ * Select either instruction or data memory.
+ * Prints memory in chunks of 16 bytes.
  * 
+ * @param instruction_memory
+ * @param data_memory
  */
 void memory_dump(byte_t *instruction_memory, byte_t *data_memory)
 {
@@ -50,6 +54,8 @@ void memory_dump(byte_t *instruction_memory, byte_t *data_memory)
 /**
  * @brief Memory Write Utility - Writes to memory
  * 
+ * @param instruction_memory - Pointer to start of program instruction memory
+ * @param data_memory - Pointer to start of program data memory
  */
 void memory_write(byte_t *instruction_memory, byte_t *data_memory)
 {
@@ -72,7 +78,7 @@ void memory_write(byte_t *instruction_memory, byte_t *data_memory)
         if(address + 1 < INSTRUCTION_MEMORY_LENGTH)
         {
             instruction_memory[address + 1] = (byte_t) (word >> 8);
-            instruction_memory[address] = (byte_t) (word & 0xff);
+            instruction_memory[address] = (byte_t) (word & EIGHT_BITS);
         }
         else
         {
@@ -83,7 +89,7 @@ void memory_write(byte_t *instruction_memory, byte_t *data_memory)
         if(address + 1 < DATA_MEMORY_LENGTH)
         {
             data_memory[address + 1] = (byte_t) (word >> 8);
-            data_memory[address] = (byte_t) (word & 0xFF);
+            data_memory[address] = (byte_t) (word & EIGHT_BITS);
         }
         else
         {
@@ -97,8 +103,9 @@ void memory_write(byte_t *instruction_memory, byte_t *data_memory)
 }
 
 /**
- * @brief Register Dump Utility - Dumps register file contents to the console
+ * @brief Register Dump Utility - Print contents of register file to console
  * 
+ * @param register_file - Pointer to program register file
  */
 void register_dump(word_t *register_file)
 {
@@ -110,8 +117,9 @@ void register_dump(word_t *register_file)
 }
 
 /**
- * @brief Register Set Utility - Sets register file contents
+ * @brief Register Set Utility - Modify register file contents
  * 
+ * @param register_file - Pointer to program register file
  */
 void register_set(word_t *register_file)
 {
@@ -133,8 +141,10 @@ void register_set(word_t *register_file)
 }
 
 /**
- * @brief Set Breakpoint Utility - Sets a breakpoint
+ * @brief Set Breakpoint Utility - Set the address to stop the program counter.  
+ * Execution stops after previous instruction.
  * 
+ * @param breakpoint - Pointer to breakpoint register
  */
 void set_breakpoint(int *breakpoint)
 {
@@ -153,43 +163,74 @@ void set_breakpoint(int *breakpoint)
 }
 
 /**
- * @brief Run Utility - Runs the program
+ * @brief Run Utility - Start the pipelined instruction execution
  * 
+ * @param program - Program context struct
  */
 void run(program_t *program)
 {
     printf("Run Utility\n");
-    program->register_file[PROGRAM_COUNTER] = (word_t)program->starting_address;
-    printf("Program Counter: %04x\n", program->register_file[PROGRAM_COUNTER]);
-    printf("Breakpoint: %04x\n", program->breakpoint);
-    while(program->register_file[PROGRAM_COUNTER] != (program->breakpoint & ~(0x01)))
+    int pause_cycle = 0;
+    /* Start XM23P Pipelined Instruction Cycle */
+    program->cycle_state = CYCLE_START;
+    /* Loop Until Breakpoint Reached */
+    while(pause_cycle == 0)
     {
-        instruction_t instruction;
-        /* Fetch */
-        if(read_instruction(&program->instruction_register, program->instruction_memory, program->register_file[PROGRAM_COUNTER]))
+        switch(program->cycle_state)
         {
-            printf("Error Reading Instruction\n");
-            break;
-        }
-        /* Decode */
-        if(decode_instruction(&instruction, program->instruction_register))
-        {
-            printf("Error Decoding Instruction\n");
-            break;
-        }
-        /* Execute */
-        if(execute_instruction(&instruction, program))
-        {
-            printf("Error Executing Instruction\n");
-            break;
-        }
+            case CYCLE_START:
+                /* Initialize with NOOP */
+                program->instruction_register = INSTRUCTION_NOOP;
+                /* FETCH_0 */
+                fetch_instruction(program, 0);
+                /* DECODE_0 */
+                decode_instruction(&program->instruction, program->instruction_register);
+                program->cycle_state = CYCLE_WAIT_0;
+                break;
+            case CYCLE_WAIT_0:
+                /* Set Current Instruction Address for Debugging */
+                program->instruction.address = program->PROGRAM_COUNTER - 4;
+                /* FETCH_1 */
+                fetch_instruction(program, 1);
+                /* EXECUTE_0 */
+                execute_instruction(&program->instruction, program);
+                program->cycle_state = CYCLE_WAIT_1;
 
-        program->register_file[PROGRAM_COUNTER] += 2;
-        if(program->instruction_register == 0x0000)
-        {
-            break;
+                /* Check for Breakpoint - PC Incremented in previous cycle */
+                if(program->PROGRAM_COUNTER - 2 == (program->breakpoint & 0xFFFE))
+                {
+                    pause_cycle = 1;
+                    /* Decrement PC for resuming execution */
+                    program->PROGRAM_COUNTER -= 2;
+                    continue;
+                }
+                break;
+            case CYCLE_WAIT_1:
+                /* FETCH_0 */
+                fetch_instruction(program, 0);
+                /* DECODE_0 */
+                decode_instruction(&program->instruction, program->instruction_register);
+                program->cycle_state = CYCLE_WAIT_0;
+                break;
+            default:
+                break;
         }
+        program->clock_cycles++;
     }
+    printf("Breakpoint Reached. CVNZ: %d%d%d%d\n", 
+        program->program_status_word.carry, program->program_status_word.overflow, 
+        program->program_status_word.negative, program->program_status_word.zero);
+}
+
+/**
+ * @brief Restart program by resetting program counter to starting address
+ * 
+ * @param program 
+ */
+void restart_program(program_t *program)
+{
+    memset(program->register_file, 0, sizeof(word_t) * REGISTER_FILE_LENGTH);
+    program->PROGRAM_COUNTER = (word_t)program->starting_address;
 }
 
 /**
@@ -203,6 +244,7 @@ void load_memory(program_t *program, char *supplied_path)
     printf("Load Memory Utility\n");
     /* Clear Program */
     memset(program, 0, sizeof(program_t));
+    initialize_register_file(program->register_file);
     int error_status = 0;
     char program_path[MAX_PATH_LENGTH];
     char input_record[MAX_RECORD_LENGTH];
@@ -285,4 +327,6 @@ void load_memory(program_t *program, char *supplied_path)
         }
     }
     fclose(file);
+    /* Load Starting Address into Program Counter */
+    program->PROGRAM_COUNTER = (word_t)program->starting_address;
 }

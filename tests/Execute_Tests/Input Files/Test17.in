@@ -1,0 +1,5 @@
+l .\tests\Execute_Tests\Test17_Register_Initialization.xme
+b 104
+g
+r
+x

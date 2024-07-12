@@ -24,12 +24,12 @@ enum utilities
     REGISTER_SET    = 's',
     SET_BREAKPOINT  = 'b',
     RUN             = 'g',
-    EXIT            = 'x'
+    RESTART         = 'v',
+    EXIT            = 'x',
+    HELP            = 'h'
 };
 
 void display_utilities(void);
 void run_operating_system(program_t *program);
 
 #endif
-
-

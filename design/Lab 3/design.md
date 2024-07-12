@@ -84,7 +84,9 @@ CHAR            =   ['0'-'F']
 <div style="page-break-after: always;"></div>
 
 ## Testing
+
 The following tests were implemented:
+
 - Test_10: Instruction Memory Dump
 - Test_11: Data Memory Dump
 - Test_12: Instruction Memory Write
@@ -94,9 +96,11 @@ The following tests were implemented:
 - Test_16: Breakpoint Set
 
 ### Test_10: Instruction Memory Dump
+
 **Purpose**\
 Test the printing of memory from instruction memory.\
 **Configuration**
+
 1) Test10_Program_Debugging.xme was loaded into the emulator.
 2) `m` was entered to start the Memory Dumping Utility.
 3) `0` was entered to select Instruction Memory.

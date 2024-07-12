@@ -8,22 +8,12 @@
 
 #include "main.h"
 
-FILE *file;
-char input_record[MAX_RECORD_LENGTH];
-s_record_t s_record;
-
-int error_status = 0;
-
-program_t program = {.breakpoint = -1};
-
-int breakpoint = -1;
-
+program_t program;
 /**
- * @brief Parse every file provided in argv
+ * @brief XM23P CPU Emulator Entry Point
  * 
  * @param argc Number of entrypoint arguments
- * @param argv entrypoint arguments - argv[0] is name of loader executable,
- *      argv[1+] is name of xme executable file
+ * @param argv Entrypoint arguments - argv[0] = executable name, argv[1] = file path
  * @return Exit Status - [0 = success, 1 = failure]
  */
 int main(int argc, char **argv)

@@ -12,6 +12,10 @@
 #include <stdio.h>
 
 #include "definitions.h"
+#include "instruction_functions.h"
+
+/* Function Pointer Type for Instruction Execution */
+typedef int (*execute_instruction_t)(instruction_t *instruction, program_t *program);
 
 extern char *instruction_names[NUM_OF_INSTRUCTIONS];
 

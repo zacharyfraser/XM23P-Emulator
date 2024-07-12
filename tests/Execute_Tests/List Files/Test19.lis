@@ -1,0 +1,39 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test19.asm
+Time of assembly: Tue 25 Jun 2024 13:19:35 
+  1	    	     	;Test 19 - Decimal Addition Instructions
+  2	    	     	        org #100
+  3	    	     	Start
+  4	0100	64C8	        movl  #9999,R0
+  5	0102	7CC8	        movh  #9999,R0
+  6	0104	680A	        movlz $1,R2
+  7	0106	4401	        dadd  R0,R1    ;R1 <- 9999
+  8	0108	4411	        dadd  R2,R1    ;R1 <- 0000, Carry = 1, Zero = 1
+  9	    	     	        end Start
+Successful completion of assembly - 1P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test19.xme
+

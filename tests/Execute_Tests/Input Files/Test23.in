@@ -1,0 +1,8 @@
+l .\tests\Execute_Tests\Test23_Addition_PSW.xme
+b 108
+g
+r
+b 10a
+g
+r
+x
