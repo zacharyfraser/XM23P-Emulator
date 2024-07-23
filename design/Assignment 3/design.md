@@ -1,4 +1,4 @@
-# Assignment 2 - XM23P Instruction Pipeline
+# Assignment 3 - XM23P Data Pipeline
 
 <div style="position: absolute; top: 0; right: 0;">Zachary Fraser</div>
 
@@ -30,7 +30,39 @@ The design contains logic flowcharts detailing the CPU Loop, and the Fetch, Deco
 
 ### Data Dictionary
 
-``` Pseduocode
+```  PSEUDOCODE
+IMEM            =   32*2^10{WORD}32*2^10
+IMAR            =   ADDRESS
+ICTRL           =   [READ|WRITE]
+IMBR            =   WORD
+IR              =   WORD
+
+DMEM            =   64*2^10{BYTE}64*2^10
+DMAR            =   ADDRESS
+DCTRL           =   [READ|WRITE]
+DMBR            =   WORD
+
+REGFILE         =   3{GPR}3 + BP + LR + SP + PC
+GPR             =   WORD *General Purpose Register*
+BP              =   WORD *Base Pointer*
+LR              =   WORD *Link Register*
+SP              =   WORD *Stack Pointer*
+PC              =   WORD *Program Counter*
+
+PSW             =   PRV_PRI + 4{DC}4 + FLT + CUR_PRI + V + SLP + N + Z + C
+PRV_PRI         =   3{BIT}3 *Previous Priority*
+DC              =   BIT     *Don't Care*
+FLT             =   BIT     *Fault*
+CUR_PRI         =   3{BIT}3 *Current Priority*
+V               =   BIT     *Arithmetic overflow*
+SLP             =   BIT     *Sleep State*
+N               =   BIT     *Negative Result*
+Z               =   BIT     *Zero Result*
+C               =   BIT     *Carry*
+
+BREAKPOINT      =   ADDRESS
+START_ADDRESS   =   ADDRESS
+
 INSTRUCTION     =   CODE + 1{PARAMETER}4
 CODE            =   [0-20] *Contiguous encoding of instructions*
 PARAMETER       =   [RC|WB|SOURCE|DESTINATION|BYTE]
@@ -39,300 +71,52 @@ RC              =   BIT
 WB              =   BIT
 SOURCE          =   3{BIT}3
 DESTINATION     =   3{BIT}3
-
-IMEM            =   32*2^10{WORD}32*2^10
-IMAR            =   ADDRESS
-ICTRL           =   [READ|WRITE]
-IMBR            =   WORD
-IR              =   WORD
-
-ADDRESS         =   WORD
 READ            =   0x0000
 WRITE           =   0x0001
+
+ADDRESS         =   WORD
 WORD            =   2{BYTE}2
 BYTE            =   8{BIT}8
 BIT             =   [0|1]
 ```
 
+<!-- Page Break -->
+<div style="page-break-after: always;"></div>
+
 ## Testing
 
 The following tests were implemented:
 
-- Test_17: Register Initialization
-- Test_18: Addition
-- Test_19: Decimal Addition
-- Test_20: Swap Instructions
-- Test_21: Swap Byte Instructions
-- Test_22: Sign Extend Instructions
-- Test_23: Addition PSW
+- Test_XX: Test One Name
+- Test_XX: Test Two Name
+- Test_XX: Test Three Name
 
 <!-- Page Break -->
 <div style="page-break-after: always;"></div>
 
-### Test_17: Register Initialization
+### Test_XX: Test One Name
 
 #### Purpose
 
-Test the loading of a byte from instruction to CPU register.
+Test description.
 
 #### Configuration
 
-.\tests\Execute_Tests\Input_Files\Test17.in
+.\tests\Execute_Tests\Input_Files\TestXX.in
 
-1) Test17_Register_Initialization.xme was loaded into the emulator.
-2) `b 104` was entered to set a breakpoint at address `#0104`
+1) TestXX_Test_File.xme was loaded into the emulator.
+2) `b xxxx` was entered to set a breakpoint at address `#xxxx`
 3) `g` was entered to run the program
-4) `r` was entered to dump the CPU registers
+4) `m d xxxx yyyy` was entered to dump the data memory between address xxxx and yyyy.
 
 #### Expected Results
 
-The registers should hold these values:\
-R0: abcd\
-R1: 0000\
-R2: 0000\
-R3: 0000\
-R4: 0000\
-R5: 0000\
-R6: 0000\
-R7: 0104
+Expected Results
 
 #### Results
 
 The register contents correctly matched:\
-<img src="Test_17.png" alt="Test 17" width="50%">
-
-#### Pass/Fail
-
-Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-### Test_18: Addition
-
-#### Purpose
-
-Test addition instructions.
-
-#### Configuration
-
-.\tests\Execute_Tests\Input_Files\Test18.in
-
-1) Test18_Addition.xme was loaded into the emulator.
-2) `b 10a` was entered to set a breakpoint at address `#010a`
-3) `g` was entered to run the program
-4) `r` was entered to dump the CPU registers
-
-#### Expected Results
-
-The registers should hold these values:\
-R0: abcd\
-R1: abcd\
-R2: 0000\
-R3: 0000\
-R4: 0000\
-R5: 0000\
-R6: 0000\
-R7: 010a
-
-#### Results
-
-The register contents correctly matched:\
-<img src="Test_18.png" alt="Test 18" width="50%">
-
-#### Pass/Fail
-
-Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-### Test_19: Decimal Addition
-
-#### Purpose
-
-Test the decimal addition instruction.
-
-#### Configuration
-
-.\tests\Execute_Tests\Input_Files\Test19.in
-
-1) Test19_Decimal_Addition.xme was loaded into the emulator.
-2) `b 10a` was entered to set a breakpoint at address `#010a`
-3) `g` was entered to run the program
-4) `r` was entered to dump the CPU registers
-
-#### Expected Results
-
-The registers should hold these values:\
-R0: 9999\
-R1: 0000\
-R2: 0001\
-R3: 0000\
-R4: 0000\
-R5: 0000\
-R6: 0000\
-R7: 010a
-
-#### Results
-
-The register contents correctly matched:\
-<img src="Test_19.png" alt="Test 19" width="50%">
-
-#### Pass/Fail
-
-Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-### Test_20: Swap Instructions
-
-#### Purpose
-
-Test the swap and mov instructions.
-
-#### Configuration
-
-.\tests\Execute_Tests\Input_Files\Test20.in
-
-1) Test20_Swap_Instructions.xme was loaded into the emulator.
-2) `b 10a` was entered to set a breakpoint at address `#010a`
-3) `g` was entered to run the program
-4) `r` was entered to dump the CPU registers
-
-#### Expected Results
-
-The registers should hold these values:\
-R0: 0001\
-R1: 9999\
-R2: 9999\
-R3: 0000\
-R4: 0000\
-R5: 0000\
-R6: 0000\
-R7: 010a
-
-#### Results
-
-The register contents correctly matched:\
-<img src="Test_20.png" alt="Test 20" width="50%">
-
-#### Pass/Fail
-
-Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-### Test_21: Swap Byte Instructions
-
-#### Purpose
-
-Test the swap byte instructions.
-
-#### Configuration
-
-.\tests\Execute_Tests\Input_Files\Test21.in
-
-1) Test21_Swap_Byte_SignExtend.xme was loaded into the emulator.
-2) `b 10a` was entered to set a breakpoint at address `#010a`
-3) `g` was entered to run the program
-4) `r` was entered to dump the CPU registers
-
-#### Expected Results
-
-The registers should hold these values:\
-R0: cdab\
-R1: ff80\
-R2: 0000\
-R3: 0000\
-R4: 0000\
-R5: 0000\
-R6: 0000\
-R7: 010a
-
-#### Results
-
-The register contents correctly matched:\
-<img src="Test_21.png" alt="Test 21" width="50%">
-
-#### Pass/Fail
-
-Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-### Test_22: Sign Extend Instructions
-
-#### Purpose
-
-Test the sign extend instructions.
-
-#### Configuration
-
-.\tests\Execute_Tests\Input_Files\Test22.in
-
-1) Test21_Swap_Byte_SignExtend.xme was loaded into the emulator.
-2) `b 10a` was entered to set a breakpoint at address `#010a`
-3) `g` was entered to run the program
-4) `r` was entered to dump the CPU registers
-
-#### Expected Results
-
-The registers should hold these values:\
-R0: cdab\
-R1: ff80\
-R2: 0000\
-R3: 0000\
-R4: 0000\
-R5: 0000\
-R6: 0000\
-R7: 010a
-
-#### Results
-
-The register contents correctly matched:\
-<img src="Test_22.png" alt="Test 22" width="50%">
-
-#### Pass/Fail
-
-Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-### Test_23: Addition PSW
-
-#### Purpose
-
-Test the setting of PSW bits.
-
-#### Configuration
-
-.\tests\Execute_Tests\Input_Files\Test23.in
-
-1) Test23_Addition_PSW.xme was loaded into the emulator.
-2) `b 108` was entered to set a breakpoint at address `#0108`
-3) `g` was entered to run the program
-4) `r` was entered to dump the CPU registers
-2) `b 10a` was entered to set a breakpoint at address `#010a`
-3) `g` was entered to run the program
-4) `r` was entered to dump the CPU registers
-
-#### Expected Results
-
-- On the first pass the following bits should be set: Overflow, Carry, Zero
-- On the second pass the following bits should be set: Negative
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-#### Results
-
-The PSW bits correctly matched on each pass:\
-<img src="Test_23.png" alt="Test 23" width="50%">
+<img src="Test_XX.png" alt="Test XX" width="50%">
 
 #### Pass/Fail
 
