@@ -170,6 +170,15 @@ typedef struct s_record_t
     byte_t data[MAX_RECORD_LENGTH];
 } s_record_t;
 
+typedef struct status_register
+{
+    byte_t carry;           /* Carry Flag */
+    byte_t zero;            /* Zero Flag */
+    byte_t negative;        /* Negative Flag */
+    byte_t overflow;        /* Overflow Flag */
+    byte_t sleep;
+} status_register_t;
+
 /**
  * @brief Structure representing an instruction.
  * 
@@ -185,15 +194,8 @@ typedef struct instruction
     byte_t destination;     /* Destination Register Code */
     byte_t rc;              /* [0 = Register, 1 = Constant] */
     byte_t wb;              /* [0 = Word, 1 = Byte ] */
+    status_register_t status;/* Status bits */
 } instruction_t;
-
-typedef struct status_register
-{
-    byte_t carry;           /* Carry Flag */
-    byte_t zero;            /* Zero Flag */
-    byte_t negative;        /* Negative Flag */
-    byte_t overflow;        /* Overflow Flag */
-} status_register_t;
 
 /**
  * @brief Represents a program.
