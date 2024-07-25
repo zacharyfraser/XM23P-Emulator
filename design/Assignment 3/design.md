@@ -2,7 +2,19 @@
 
 <div style="position: absolute; top: 0; right: 0;">Zachary Fraser</div>
 
-This assignment aims to implement the data memory access pipeline for the XM23P emulator.  There are three stages: Fetch, Decode, and Execute.  In this assignment, the Execute stage is extended to allow for data memory access in a similar manner to the instruction memory access seen in the fetch stage.
+This assignment implements 9 branching instructions to the XM23P emulator:
+
+1. Branch with Link
+2. Branch if equal or zero
+3. Branch if not equal or not zero
+4. Branch if carry/higher or same (unsigned)
+5. Branch if no carry/lower (unsigned)
+6. Branch if negative
+7. Branch if greater or equal (signed)
+8. Branch if less (signed)
+9. Branch Always
+
+These instructions allow for programs with flow of control change using branching.
 
 ## Design
 
