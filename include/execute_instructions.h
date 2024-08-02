@@ -17,6 +17,7 @@
 /* Function Pointer Type for Instruction Execution */
 typedef int (*execute_instruction_t)(instruction_t *instruction, program_t *program);
 
+/* List of instruction names as strings */
 extern char *instruction_names[NUM_OF_INSTRUCTIONS];
 
 int execute_instruction(instruction_t *instruction, program_t *program);

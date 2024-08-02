@@ -18,6 +18,7 @@ void display_utilities()
         printf("l - Load Program\n");
         printf("v - Restart Program\n");
         printf("g - Run\n");
+        printf("d - Toggle Debug\n");
         printf("b - Set Breakpoint\n");
         printf("m - Memory Dump\n");
         printf("w - Memory Write\n");
@@ -51,6 +52,10 @@ void run_operating_system(program_t *program)
             break;
         case RUN:
             run(program);
+            break;
+        case DEBUG_TOGGLE:
+            program->debug_mode = !program->debug_mode;
+            printf("Debug Mode: %s\n", program->debug_mode ? "Enabled" : "Disabled");
             break;
         case SET_BREAKPOINT:
             set_breakpoint(&program->breakpoint);
