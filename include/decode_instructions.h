@@ -24,7 +24,7 @@
 
 #include "definitions.h"
 
-
+/* Instruction Lookup Tables */
 extern instruction_type_t mov_table[MOV_INSTRUCTION_COUNT];
 extern instruction_type_t arithmetic_register_table[ARITHMETIC_REGISTER_INSTRUCTION_COUNT];
 extern instruction_type_t shift_register_table[SHIFT_REGISTER_INSTRUCTION_COUNT];

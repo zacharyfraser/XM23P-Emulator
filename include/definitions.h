@@ -219,6 +219,7 @@ typedef struct program_t
     int breakpoint;                                                 /* Address of the Breakpoint */
     int starting_address;                                           /* Starting Address of the Program */
     int clock_cycles;                                               /* Number of Clock Cycles */
+    int debug_mode;                                                 /* Debug Mode Flag */
 
     byte_t executable_name[MAX_RECORD_LENGTH];                      /* Name of the Executable */
 } program_t;

@@ -21,6 +21,7 @@ enum utilities
     MEMORY_DUMP     = 'm',
     MEMORY_WRITE    = 'w',
     REGISTER_DUMP   = 'r',
+    DEBUG_TOGGLE    = 'd',
     REGISTER_SET    = 's',
     SET_BREAKPOINT  = 'b',
     RUN             = 'g',
