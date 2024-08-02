@@ -160,8 +160,45 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
             if(((instruction_register >> 7) & ONE_BIT))
             {
                 /* CPU Instructions */
-                /* Instruction not implemented */
-                instruction->type = UNDEFINED;
+                /* Read bit 6*/
+                if((instruction_register >> 6) & ONE_BIT)
+                {
+                    /* CLRCC */
+                    instruction->type = CLRCC;
+                    instruction->status.overflow = (instruction_register >> 4) & ONE_BIT;
+                    instruction->status.sleep = (instruction_register >> 3) & ONE_BIT;
+                    instruction->status.negative = (instruction_register >> 2) & ONE_BIT;
+                    instruction->status.zero = (instruction_register >> 1) & ONE_BIT;
+                    instruction->status.carry = (instruction_register >> 0) & ONE_BIT;
+                }
+                /* Read bit 5 */
+                else if ((instruction_register >> 5) & ONE_BIT)
+                {
+                    /* SETCC */
+                    instruction->type = SETCC;
+                    instruction->status.overflow = (instruction_register >> 4) & ONE_BIT;
+                    instruction->status.sleep = (instruction_register >> 3) & ONE_BIT;
+                    instruction->status.negative = (instruction_register >> 2) & ONE_BIT;
+                    instruction->status.zero = (instruction_register >> 1) & ONE_BIT;
+                    instruction->status.carry = (instruction_register >> 0) & ONE_BIT;
+                }
+                /* Read bit 4 */
+                else if ((instruction_register >> 4) & ONE_BIT)
+                {
+                    /* SVC */
+                    instruction->type = SVC;
+                }
+                /* Read bit 3 */
+                else if(((instruction_register >> 3) & ONE_BIT))
+                {
+                    /* Invalid Instruction */
+                    instruction->type = UNDEFINED;
+                }
+                else
+                {
+                    /* SETPRI */
+                    instruction->type = SETPRI;
+                }
             }
             else
             {

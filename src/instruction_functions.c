@@ -897,10 +897,12 @@ int execute_svc(instruction_t *instruction, program_t *program)
 
 int execute_setcc(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    printf("Set Condition Code\n");
-    return -1;
+    program->program_status_word.negative = instruction->status.negative;
+    program->program_status_word.zero = instruction->status.zero;
+    program->program_status_word.overflow = instruction->status.overflow;
+    program->program_status_word.sleep = instruction->status.sleep;
+    program->program_status_word.carry = instruction->status.carry;
+    return 0;
 }
 
 int execute_clrcc(instruction_t *instruction, program_t *program)
