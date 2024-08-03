@@ -173,6 +173,11 @@ void run(program_t *program)
     int pause_cycle = 0;
     /* Start XM23P Pipelined Instruction Cycle */
     program->cycle_state = CYCLE_START;
+    /* Debug logging table headers */
+    if(program->debug_mode == 1)
+    {
+        printf("Clock\t\tPC\t\tInstruction\tFetch\t\tDecode\t\tExecute\n");
+    }
     /* Loop Until Breakpoint Reached */
     while(pause_cycle == 0)
     {
@@ -181,11 +186,20 @@ void run(program_t *program)
             case CYCLE_START:
                 /* Initialize with NOOP */
                 program->instruction_register = INSTRUCTION_NOOP;
+                /* Perform Cycle_Wait_1 State */
+            case CYCLE_WAIT_1:
                 /* FETCH_0 */
                 fetch_instruction(program, 0);
                 /* DECODE_0 */
                 decode_instruction(&program->instruction, program->instruction_register);
                 program->cycle_state = CYCLE_WAIT_0;
+                /* Copy stage to program context for debug logging */
+                if(program->debug_mode)
+                {
+                    sprintf_s(program->instruction_decode, MAX_STAGE_LENGTH, "D0: %04x", program->instruction.opcode);
+                    /* Clear Execute Stage */
+                    sprintf_s(program->instruction_execute, MAX_STAGE_LENGTH, "\t");
+                }
                 break;
             case CYCLE_WAIT_0:
                 /* Set Current Instruction Address for Debugging */
@@ -196,6 +210,13 @@ void run(program_t *program)
                 execute_instruction(&program->instruction, program);
                 program->cycle_state = CYCLE_WAIT_1;
 
+                /* Copy stage to program context for debug logging */
+                if(program->debug_mode)
+                {
+                    /* Clear Decode Stage */
+                    sprintf_s(program->instruction_decode, MAX_STAGE_LENGTH, "\t");
+                }
+
                 /* Check for Breakpoint - PC Incremented in previous cycle */
                 if(program->PROGRAM_COUNTER - 2 == (program->breakpoint & 0xFFFE))
                 {
@@ -205,15 +226,15 @@ void run(program_t *program)
                     continue;
                 }
                 break;
-            case CYCLE_WAIT_1:
-                /* FETCH_0 */
-                fetch_instruction(program, 0);
-                /* DECODE_0 */
-                decode_instruction(&program->instruction, program->instruction_register);
-                program->cycle_state = CYCLE_WAIT_0;
-                break;
             default:
                 break;
+        }
+        if(program->debug_mode == 1)
+        {
+            printf("%04d\t\t%04x\t\t%04x\t\t%s\t%s\t%s\n", 
+            program->clock_cycles, program->PROGRAM_COUNTER, 
+            program->instruction_register, program->instruction_fetch, 
+            program->instruction_decode, program->instruction_execute);
         }
         program->clock_cycles++;
     }
@@ -223,7 +244,8 @@ void run(program_t *program)
 }
 
 /**
- * @brief Restart program by resetting program counter to starting address
+ * @brief Restart program by resetting program counter to starting address 
+ * and clearing clock cycles
  * 
  * @param program 
  */
@@ -231,6 +253,7 @@ void restart_program(program_t *program)
 {
     memset(program->register_file, 0, sizeof(word_t) * REGISTER_FILE_LENGTH);
     program->PROGRAM_COUNTER = (word_t)program->starting_address;
+    program->clock_cycles = 0;
 }
 
 /**
@@ -328,5 +351,5 @@ void load_memory(program_t *program, char *supplied_path)
     }
     fclose(file);
     /* Load Starting Address into Program Counter */
-    program->PROGRAM_COUNTER = (word_t)program->starting_address;
+    restart_program(program);
 }

@@ -9,6 +9,8 @@
 #ifndef FETCH_H
 #define FETCH_H
 
+#include <stdio.h>
+
 #include "definitions.h"
 
 int fetch_instruction(program_t *program, int stage);

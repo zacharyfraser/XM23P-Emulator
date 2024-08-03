@@ -224,7 +224,5 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
     instruction->type = UNDEFINED;
         break;
     }
-
-
     return 0;
 }

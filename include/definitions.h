@@ -40,6 +40,9 @@
 #define LR 5
 #define BP 4
 
+/* Pipeline Stage String Length */
+#define MAX_STAGE_LENGTH 10
+
 /* Address and Checksum Constants */
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1
@@ -223,6 +226,9 @@ typedef struct program_t
     int clock_cycles;                                               /* Number of Clock Cycles */
     int debug_mode;                                                 /* Debug Mode Flag */
 
+    char instruction_fetch[MAX_STAGE_LENGTH];
+    char instruction_decode[MAX_STAGE_LENGTH];
+    char instruction_execute[MAX_STAGE_LENGTH];
     byte_t executable_name[MAX_RECORD_LENGTH];                      /* Name of the Executable */
 } program_t;
 

@@ -45,6 +45,11 @@ int execute_instruction(instruction_t *instruction, program_t *program)
         /* Invalid input pointers */
         return -1;
     }
+    /* Copy stage to program context for debug logging */
+    if(program->debug_mode)
+    {
+        sprintf_s(program->instruction_execute, MAX_STAGE_LENGTH, "E0: %04x", instruction->opcode);
+    }
     execute_table[instruction->type](instruction, program);
 
     return 0;
