@@ -189,25 +189,25 @@ void run(program_t *program)
                 /* Perform Cycle_Wait_1 State */
             case CYCLE_WAIT_1:
                 /* FETCH_0 */
-                fetch_instruction(program, 0);
+                fetch_instruction(program, F0);
                 /* DECODE_0 */
                 decode_instruction(&program->instruction, program->instruction_register);
+                /* EXECUTE_1 */
+                execute_instruction(&program->instruction, program, E1);
                 program->cycle_state = CYCLE_WAIT_0;
                 /* Copy stage to program context for debug logging */
                 if(program->debug_mode)
                 {
                     sprintf_s(program->instruction_decode, MAX_STAGE_LENGTH, "D0: %04x", program->instruction.opcode);
-                    /* Clear Execute Stage */
-                    sprintf_s(program->instruction_execute, MAX_STAGE_LENGTH, "\t");
                 }
                 break;
             case CYCLE_WAIT_0:
                 /* Set Current Instruction Address for Debugging */
                 program->instruction.address = program->PROGRAM_COUNTER - 4;
                 /* FETCH_1 */
-                fetch_instruction(program, 1);
+                fetch_instruction(program, F1);
                 /* EXECUTE_0 */
-                execute_instruction(&program->instruction, program);
+                execute_instruction(&program->instruction, program, E0);
                 program->cycle_state = CYCLE_WAIT_1;
 
                 /* Copy stage to program context for debug logging */

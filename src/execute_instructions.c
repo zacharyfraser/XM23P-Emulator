@@ -38,19 +38,31 @@ execute_instruction_t execute_table[NUM_OF_INSTRUCTIONS] =
     execute_str
 };
 
-int execute_instruction(instruction_t *instruction, program_t *program)
+int execute_instruction(instruction_t *instruction, program_t *program, int stage)
 {
     if(instruction == NULL || program == NULL)
     {
         /* Invalid input pointers */
         return -1;
     }
-    /* Copy stage to program context for debug logging */
-    if(program->debug_mode)
+    if(stage == E0)
     {
-        sprintf_s(program->instruction_execute, MAX_STAGE_LENGTH, "E0: %04x", instruction->opcode);
+        /* Copy stage to program context for debug logging */
+        if(program->debug_mode)
+        {
+            sprintf_s(program->instruction_execute, MAX_STAGE_LENGTH, "E0: %04x", instruction->opcode);
+        }
+        execute_table[instruction->type](instruction, program);
     }
-    execute_table[instruction->type](instruction, program);
+    else if(stage == E1)
+    {
+        /* Copy stage to program context for debug logging */
+        if(program->debug_mode)
+        {
+            sprintf_s(program->instruction_execute, MAX_STAGE_LENGTH, "\t");
+        }
+    }
+    
 
     return 0;
 }

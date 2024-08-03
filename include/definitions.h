@@ -40,8 +40,13 @@
 #define LR 5
 #define BP 4
 
-/* Pipeline Stage String Length */
+/* Pipeline Stages */
 #define MAX_STAGE_LENGTH 10
+#define F0 0
+#define F1 1
+#define D0 0
+#define E0 0
+#define E1 1
 
 /* Address and Checksum Constants */
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
@@ -191,6 +196,19 @@ typedef struct instruction
 {
     word_t opcode;          /* Instruction Opcode */
     word_t address;         /* Program Counter */
+
+    word_t offset;          /* Data Memory Address Offset */
+
+    byte_t priority;        /* Priority Level */
+
+    byte_t sa;              /* Service Address */
+    byte_t decrement;       /* Decrement Flag */
+    byte_t increment;       /* Increment Flag */
+    byte_t prpo;            /* Pre/Post Increment Flag */
+
+    byte_t cc;              /* Condition Code*/
+    byte_t t_count;         /* True-Count */
+    byte_t f_count;         /* False-Count */
 
     instruction_type_t type;/* Instruction Type */
     byte_t source;          /* Source Register/Constant Code */

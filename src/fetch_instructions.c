@@ -8,11 +8,18 @@
 
 #include "fetch_instructions.h"
 
+/**
+ * @brief Pipelined fetch stage
+ * 
+ * @param program Program context
+ * @param stage Fetch stage selection
+ * @return int [0 = SUCCESS, < 0 = FAILURE]
+ */
 int fetch_instruction(program_t *program, int stage)
 {
-    switch (stage)
+    /* F0 Stage */
+    if(stage == F0)
     {
-    case 0:
         /* Set IMAR to PC */
         program->instruction_memory_address_register = program->PROGRAM_COUNTER;
         /* Set ICTRL to Read */
@@ -24,8 +31,10 @@ int fetch_instruction(program_t *program, int stage)
         {
             sprintf_s(program->instruction_fetch, MAX_STAGE_LENGTH, "F0: %04x", program->instruction_memory_address_register);
         }
-        break;
-    case 1:
+    }
+    /* F1 Stage */
+    else if(stage == F1)
+    {
         /* IMBR = IMEM[IMAR}] */
         program->instruction_memory_buffer_register = program->instruction_memory[program->instruction_memory_address_register];
         program->instruction_memory_buffer_register |= program->instruction_memory[program->instruction_memory_address_register + 1] << 8;
@@ -36,7 +45,6 @@ int fetch_instruction(program_t *program, int stage)
         {
             sprintf_s(program->instruction_fetch, MAX_STAGE_LENGTH, "F1: %04x", program->instruction_memory_buffer_register);
         }
-        break;
     }
     return 0;
 }

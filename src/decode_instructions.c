@@ -60,6 +60,18 @@ instruction_type_t shift_register_table[SHIFT_REGISTER_INSTRUCTION_COUNT] =
     UNDEFINED
 };
 
+instruction_type_t branch_table[BRANCH_INSTRUCTION_COUNT] = 
+{
+    BEQ, 
+    BNE, 
+    BC, 
+    BNC, 
+    BN, 
+    BGE, 
+    BLT, 
+    BRA
+};
+
 /**
  * @brief Reset instruction arguments to 0
  * 
@@ -105,38 +117,38 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
     instruction->opcode = instruction_register;
     
     /* Decode Bits Thirteen through Fifteen */
-    switch ((instruction_register >> 13) & THREE_BITS)
+    switch (READ_BITS(instruction_register, 13, 15))
     {
     /* Move Instructions */
     case MOVE_CODE:
         /* Decode Opcode from bits Eleven and Twelve */
-        instruction->type = mov_table[(instruction_register >> 11) & TWO_BITS];
+        instruction->type = mov_table[READ_BITS(instruction_register, 11, 12)];
         /* Decode source byte from bits Three through Ten */
-        instruction->source = (instruction_register >> 3) & EIGHT_BITS;
+        instruction->source = READ_BITS(instruction_register, 3, 10);
         /* Decode destination register from bits Zero through Two */
-        instruction->destination = (instruction_register >> 0) & THREE_BITS;
+        instruction->destination = READ_BITS(instruction_register, 0, 2);
         break;
 
     case REGISTER_CODE:
         /* Read bits Eight through Twelve */
-        if(((instruction_register >> 8) & FIVE_BITS) < ARITHMETIC_REGISTER_CODE)
+        if(READ_BITS(instruction_register, 8, 12) < ARITHMETIC_REGISTER_CODE)
         {
             /* Arithmetic Register Instruction - Bits Eight through Twelve */
-            instruction->type = arithmetic_register_table[(instruction_register >> 8) & FIVE_BITS];
+            instruction->type = arithmetic_register_table[READ_BITS(instruction_register, 8, 12)];
             /* Register/Constant Select - Bit Seven */
-            instruction->rc = (instruction_register >> 7) & ONE_BIT;
+            instruction->rc = READ_BITS(instruction_register, 7, 7);
             /* Word/Byte Select - Bit Six */
-            instruction->wb = (instruction_register >> 6) & ONE_BIT;
+            instruction->wb = READ_BITS(instruction_register, 6, 6);
             /* Source Register - Bits Three through Five*/
-            instruction->source = (instruction_register >> 3) & THREE_BITS;
+            instruction->source = READ_BITS(instruction_register, 3, 5);
             /* Destination Register - Bits Zero through Two */
-            instruction->destination = (instruction_register >> 0) & THREE_BITS;
+            instruction->destination = READ_BITS(instruction_register, 0, 2);
         }
         /* Read Bits Eight through Twelve */
-        else if (((instruction_register >> 8) & FIVE_BITS) == SWAP_REGISTER_CODE)
+        else if (READ_BITS(instruction_register, 8, 12) == SWAP_REGISTER_CODE)
         {
             /* MOV/Swap Instruction - Bit Seven */
-            if((instruction_register >> 7) & ONE_BIT)
+            if(READ_BITS(instruction_register, 7, 7))
             {
                 /* Swap Instruction */
                 instruction->type = SWAP;
@@ -146,50 +158,52 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
                 /* Mov Instruction */
                 instruction->type = MOV;
                 /* Word/Byte Select - Bit Six*/
-                instruction->wb = (instruction_register >> 6) & ONE_BIT;
+                instruction->wb = READ_BITS(instruction_register, 6, 6);
             }
             /* Source Register - Bits Three through Five */
-            instruction->source = (instruction_register >> 3) & THREE_BITS;
+            instruction->source = READ_BITS(instruction_register, 3, 5);
             /* Destination Register - Bits Zero through Three */
-            instruction->destination = (instruction_register >> 0) & THREE_BITS;
+            instruction->destination = READ_BITS(instruction_register, 0, 3);
         }
         /* Read Bits Eight through Twelve */
-        else if (((instruction_register >> 8) & FIVE_BITS) == SHIFT_REGISTER_CODE)
+        else if (READ_BITS(instruction_register, 8, 12) == SHIFT_REGISTER_CODE)
         {
             /* Read Bit Seven */
-            if(((instruction_register >> 7) & ONE_BIT))
+            if(READ_BITS(instruction_register, 7, 7) == 1)
             {
                 /* CPU Instructions */
                 /* Read bit 6*/
-                if((instruction_register >> 6) & ONE_BIT)
+                if(READ_BITS(instruction_register, 6, 6) == 1)
                 {
                     /* CLRCC */
                     instruction->type = CLRCC;
-                    instruction->status.overflow = (instruction_register >> 4) & ONE_BIT;
-                    instruction->status.sleep = (instruction_register >> 3) & ONE_BIT;
-                    instruction->status.negative = (instruction_register >> 2) & ONE_BIT;
-                    instruction->status.zero = (instruction_register >> 1) & ONE_BIT;
-                    instruction->status.carry = (instruction_register >> 0) & ONE_BIT;
+                    instruction->status.overflow = READ_BITS(instruction_register, 4, 4);
+                    instruction->status.sleep = READ_BITS(instruction_register, 3, 3);
+                    instruction->status.negative = READ_BITS(instruction_register, 2, 2);
+                    instruction->status.zero = READ_BITS(instruction_register, 1, 1);
+                    instruction->status.carry = READ_BITS(instruction_register, 0, 0);
                 }
                 /* Read bit 5 */
-                else if ((instruction_register >> 5) & ONE_BIT)
+                else if (READ_BITS(instruction_register, 5, 5) == 1)
                 {
                     /* SETCC */
                     instruction->type = SETCC;
-                    instruction->status.overflow = (instruction_register >> 4) & ONE_BIT;
-                    instruction->status.sleep = (instruction_register >> 3) & ONE_BIT;
-                    instruction->status.negative = (instruction_register >> 2) & ONE_BIT;
-                    instruction->status.zero = (instruction_register >> 1) & ONE_BIT;
-                    instruction->status.carry = (instruction_register >> 0) & ONE_BIT;
+                    instruction->status.overflow = READ_BITS(instruction_register, 4, 4);
+                    instruction->status.sleep = READ_BITS(instruction_register, 3, 3);
+                    instruction->status.negative = READ_BITS(instruction_register, 2, 2);
+                    instruction->status.zero = READ_BITS(instruction_register, 1, 1);
+                    instruction->status.carry = READ_BITS(instruction_register, 0, 0);
                 }
                 /* Read bit 4 */
-                else if ((instruction_register >> 4) & ONE_BIT)
+                else if (READ_BITS(instruction_register, 4, 4) == 1)
                 {
                     /* SVC */
                     instruction->type = SVC;
+                    /* Service Address - Bits Zero through Three */
+                    instruction->sa = READ_BITS(instruction_register, 0, 3);
                 }
                 /* Read bit 3 */
-                else if(((instruction_register >> 3) & ONE_BIT))
+                else if(READ_BITS(instruction_register, 3, 3) == 1)
                 {
                     /* Invalid Instruction */
                     instruction->type = UNDEFINED;
@@ -198,18 +212,71 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
                 {
                     /* SETPRI */
                     instruction->type = SETPRI;
+                    /* Priority Level - Bits Zero through Three */
                 }
             }
             else
             {
                 /* Shift Register Instruction */
                 /* Word/Byte Select - Bit Six */
-                instruction->wb = (instruction_register >> 6) & ONE_BIT;
-                /* Decode Type */
-                instruction->type = shift_register_table[(instruction_register >> 3) & THREE_BITS];
-                /* Destination Register */
-                instruction->destination = (instruction_register >> 0) & THREE_BITS;
+                instruction->wb = READ_BITS(instruction_register, 6, 6);
+                /* Decode Type from bits 3 through 5 */
+                instruction->type = shift_register_table[READ_BITS(instruction_register, 3, 5)];
+                /* Destination Register - Bits 0 through 2 */
+                instruction->destination = READ_BITS(instruction_register, 0, 2);
 
+            }
+        }
+        else if(READ_BITS(instruction_register, 12, 12) == 1)
+        {
+            switch(READ_BITS(instruction_register, 10, 11))
+            {
+                case CEX_CODE:
+                    /* CEX */
+                    instruction->type = CEX;
+                    /* Decode Condition Code */
+                    instruction->cc = READ_BITS(instruction_register, 6, 9);
+                    /* Decode True Count */
+                    instruction->t_count = READ_BITS(instruction_register, 3, 5);
+                    /* Decode False Count */
+                    instruction->f_count = READ_BITS(instruction_register, 0, 2);
+                    break;
+                case LD_CODE:
+                    /* LD */
+                    instruction->type = LD;
+                    /* Decode Pre/Post Increment Flag */
+                    instruction->prpo = READ_BITS(instruction_register, 9, 9);
+                    /* Decode Decrement Flag */
+                    instruction->decrement = READ_BITS(instruction_register, 8, 8);
+                    /* Decode Increment Flag */
+                    instruction->increment = READ_BITS(instruction_register, 7, 7);
+                    /* Decode Word/Byte Flag */
+                    instruction->wb = READ_BITS(instruction_register, 6, 6);
+                    /* Decode Source Register */
+                    instruction->source = READ_BITS(instruction_register, 3, 5);
+                    /* Decode Destination Register */
+                    instruction->destination = READ_BITS(instruction_register, 0, 2);
+                    break;
+                case ST_CODE:
+                    /* ST */
+                    instruction->type = ST;
+                    /* Decode Pre/Post Increment Flag */
+                    instruction->prpo = READ_BITS(instruction_register, 9, 9);
+                    /* Decode Decrement Flag */
+                    instruction->decrement = READ_BITS(instruction_register, 8, 8);
+                    /* Decode Increment Flag */
+                    instruction->increment = READ_BITS(instruction_register, 7, 7);
+                    /* Decode Word/Byte Flag */
+                    instruction->wb = READ_BITS(instruction_register, 6, 6);
+                    /* Decode Source Register */
+                    instruction->source = READ_BITS(instruction_register, 3, 5);
+                    /* Decode Destination Register */
+                    instruction->destination = READ_BITS(instruction_register, 0, 2);
+                    break;
+                default:
+                    /* Instruction not implemented */
+                    instruction->type = UNDEFINED;
+                    break;
             }
         }
         else
@@ -219,9 +286,49 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
         }
         
         break;
+    case BRANCH_CODE:
+        /* Decode Type from bits 10 - 12 */
+        instruction->type = branch_table[READ_BITS(instruction_register, 10, 12)];
+        /* Decode Branch Offset from bits 9 - 0 */
+        instruction->offset = READ_BITS(instruction_register, 0, 9);
+        break;
+    case LINK_CODE:
+        instruction->type = BL;
+        /* Decode Branch Offset from bits 0 - 12 */
+        instruction->offset = READ_BITS(instruction_register, 0, 12);
+        break;
     default:
-    /* Instruction not implemented */
-    instruction->type = UNDEFINED;
+        if(READ_BITS(instruction_register, 14, 15) == LOAD_RELATIVE_CODE)
+        {
+            /* Load Relative Instruction */
+            instruction->type = LDR;
+            /* Decode Offset from bits 7 - 13 */
+            instruction->offset = READ_BITS(instruction_register, 7, 13);
+            /* Decode Word/Byte Select from bit 6 */
+            instruction->wb = READ_BITS(instruction_register, 6, 6);
+            /* Decode Source Register from bits 3 - 5 */
+            instruction->source = READ_BITS(instruction_register, 3, 5);
+            /* Decode Destination Register from bits 0 - 3 */
+            instruction->destination = READ_BITS(instruction_register, 0, 2);
+        }
+        else if(READ_BITS(instruction_register, 14, 15) == STORE_RELATIVE_CODE)
+        {
+            /* Store Relative Instruction */
+            instruction->type = STR;
+            /* Decode Offset from bits 7 - 13 */
+            instruction->offset = READ_BITS(instruction_register, 7, 13);
+            /* Decode Word/Byte Select from bit 6 */
+            instruction->wb = READ_BITS(instruction_register, 6, 6);
+            /* Decode Source Register from bits 3 - 5 */
+            instruction->source = READ_BITS(instruction_register, 3, 5);
+            /* Decode Destination Register from bits 0 - 2 */
+            instruction->destination = READ_BITS(instruction_register, 0, 2);
+        }
+        else
+        {
+            /* Instruction not implemented */
+            instruction->type = UNDEFINED;
+        }
         break;
     }
     return 0;

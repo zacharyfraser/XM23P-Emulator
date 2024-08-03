@@ -25,7 +25,7 @@ int execute_undefined(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    //printf("%04x:\t%04x - Undefined Instruction\n", instruction->address, instruction->opcode);
+    printf("%04x:\t%04x - Undefined Instruction\n", instruction->address, instruction->opcode);
     return -1;
 }
 
@@ -33,7 +33,7 @@ int execute_bl(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Branch and Link\n");
+    printf("%04x\tBranch and Link\n", instruction->address);
     return -1;
 }
 
@@ -41,7 +41,7 @@ int execute_beq(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Branch if Equal\n");
+    printf("%04x\tBranch if Equal\n", instruction->address);
     return -1;
 }
 
@@ -49,7 +49,7 @@ int execute_bne(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Branch if Not Equal\n");
+    printf("%04x\tBranch if Not Equal\n", instruction->address);
     return -1;
 }
 
@@ -57,7 +57,7 @@ int execute_bc(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Branch if Carry\n");
+    printf("%04x\tBranch if Carry\n", instruction->address);
     return -1;
 }
 
@@ -65,7 +65,7 @@ int execute_bnc(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Branch if Not Carry\n");
+    printf("%04x\tBranch if Not Carry\n", instruction->address);
     return -1;
 }
 
@@ -73,7 +73,7 @@ int execute_bn(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Branch if Negative\n");
+    printf("%04x\tBranch if Negative\n", instruction->address);
     return -1;
 }
 
@@ -81,7 +81,7 @@ int execute_bge(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Branch if Greater or Equal\n");
+    printf("%04x\tBranch if Greater or Equal\n", instruction->address);
     return -1;
 }
 
@@ -89,7 +89,7 @@ int execute_blt(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Branch if Less Than\n");
+    printf("%04x\tBranch if Less Than\n", instruction->address);
     return -1;
 }
 
@@ -97,7 +97,7 @@ int execute_bra(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Branch Always\n");
+    printf("%04x\tBranch Always\n", instruction->address);
     return -1;
 }
 
@@ -883,7 +883,7 @@ int execute_setpri(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Set Priority\n");
+    printf("%04x\tSet Priority\n", instruction->address);
     return -1;
 }
 
@@ -891,33 +891,35 @@ int execute_svc(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Software Interrupt\n");
+    printf("%04x\tSoftware Interrupt\n", instruction->address);
     return -1;
 }
 
 int execute_setcc(instruction_t *instruction, program_t *program)
 {
-    program->program_status_word.negative = instruction->status.negative;
-    program->program_status_word.zero = instruction->status.zero;
-    program->program_status_word.overflow = instruction->status.overflow;
-    program->program_status_word.sleep = instruction->status.sleep;
-    program->program_status_word.carry = instruction->status.carry;
+    program->program_status_word.negative |= instruction->status.negative;
+    program->program_status_word.zero |= instruction->status.zero;
+    program->program_status_word.overflow |= instruction->status.overflow;
+    program->program_status_word.sleep |= instruction->status.sleep;
+    program->program_status_word.carry |= instruction->status.carry;
     return 0;
 }
 
 int execute_clrcc(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    printf("Clear Condition Code\n");
-    return -1;
+    program->program_status_word.negative &= ~(instruction->status.negative);
+    program->program_status_word.zero &= ~(instruction->status.zero);
+    program->program_status_word.overflow &= ~(instruction->status.overflow);
+    program->program_status_word.sleep &= ~(instruction->status.sleep);
+    program->program_status_word.carry &= ~(instruction->status.carry);
+    return 0;
 }
 
 int execute_cex(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Conditional Exchange\n");
+    printf("%04x\tConditional Exchange\n", instruction->address);
     return -1;
 }
 
@@ -925,7 +927,7 @@ int execute_ld(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Load\n");
+    printf("%04x\tLoad\n", instruction->address);
     return -1;
 }
 
@@ -933,7 +935,7 @@ int execute_st(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Store\n");
+    printf("%04x\tStore\n", instruction->address);
     return -1;
 }
 
@@ -1010,7 +1012,7 @@ int execute_ldr(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Load Register\n");
+    printf("%04x:\tLoad Relative\n", instruction->address);
     return -1;
 }
 
@@ -1018,6 +1020,6 @@ int execute_str(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("Store Register\n");
+    printf("%04x:\tStore Relative\n", instruction->address);
     return -1;
 }
