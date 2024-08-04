@@ -25,7 +25,7 @@ int execute_undefined(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x:\t%04x - Undefined Instruction\n", instruction->address, instruction->opcode);
+    //printf("%04x:\t%04x - Undefined Instruction\n", instruction->address, instruction->opcode);
     return -1;
 }
 
@@ -33,7 +33,7 @@ int execute_bl(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tBranch and Link\n", instruction->address);
+    //printf("%04x\tBranch and Link\n", instruction->address);
     return -1;
 }
 
@@ -41,7 +41,7 @@ int execute_beq(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tBranch if Equal\n", instruction->address);
+    //printf("%04x\tBranch if Equal\n", instruction->address);
     return -1;
 }
 
@@ -49,7 +49,7 @@ int execute_bne(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tBranch if Not Equal\n", instruction->address);
+    //printf("%04x\tBranch if Not Equal\n", instruction->address);
     return -1;
 }
 
@@ -57,7 +57,7 @@ int execute_bc(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tBranch if Carry\n", instruction->address);
+    //printf("%04x\tBranch if Carry\n", instruction->address);
     return -1;
 }
 
@@ -65,7 +65,7 @@ int execute_bnc(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tBranch if Not Carry\n", instruction->address);
+    //printf("%04x\tBranch if Not Carry\n", instruction->address);
     return -1;
 }
 
@@ -73,7 +73,7 @@ int execute_bn(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tBranch if Negative\n", instruction->address);
+    //printf("%04x\tBranch if Negative\n", instruction->address);
     return -1;
 }
 
@@ -81,7 +81,7 @@ int execute_bge(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tBranch if Greater or Equal\n", instruction->address);
+    //printf("%04x\tBranch if Greater or Equal\n", instruction->address);
     return -1;
 }
 
@@ -89,7 +89,7 @@ int execute_blt(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tBranch if Less Than\n", instruction->address);
+    //printf("%04x\tBranch if Less Than\n", instruction->address);
     return -1;
 }
 
@@ -97,7 +97,7 @@ int execute_bra(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tBranch Always\n", instruction->address);
+    //printf("%04x\tBranch Always\n", instruction->address);
     return -1;
 }
 
@@ -883,7 +883,7 @@ int execute_setpri(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tSet Priority\n", instruction->address);
+    //printf("%04x\tSet Priority\n", instruction->address);
     return -1;
 }
 
@@ -891,7 +891,7 @@ int execute_svc(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tSoftware Interrupt\n", instruction->address);
+    //printf("%04x\tSoftware Interrupt\n", instruction->address);
     return -1;
 }
 
@@ -919,7 +919,7 @@ int execute_cex(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tConditional Exchange\n", instruction->address);
+    //printf("%04x\tConditional Exchange\n", instruction->address);
     return -1;
 }
 
@@ -927,7 +927,7 @@ int execute_ld(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tLoad\n", instruction->address);
+    //printf("%04x\tLoad\n", instruction->address);
     return -1;
 }
 
@@ -935,7 +935,7 @@ int execute_st(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x\tStore\n", instruction->address);
+    //printf("%04x\tStore\n", instruction->address);
     return -1;
 }
 
@@ -1012,7 +1012,7 @@ int execute_ldr(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x:\tLoad Relative\n", instruction->address);
+    //printf("%04x:\tLoad Relative\n", instruction->address);
     return -1;
 }
 
@@ -1020,6 +1020,6 @@ int execute_str(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    printf("%04x:\tStore Relative\n", instruction->address);
+    //printf("%04x:\tStore Relative\n", instruction->address);
     return -1;
 }

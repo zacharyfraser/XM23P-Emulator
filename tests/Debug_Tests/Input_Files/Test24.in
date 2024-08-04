@@ -1,0 +1,10 @@
+l .\tests\Debug_Tests\Test10_Program_Debugging.xme
+b 104
+g
+v
+d
+g
+v
+d
+g
+x

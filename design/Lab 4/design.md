@@ -80,161 +80,114 @@ CHAR            =   ['0'-'F']
 
 The following tests were implemented:
 
-- Test_10: Instruction Memory Dump
-- Test_11: Data Memory Dump
-- Test_12: Instruction Memory Write
-- Test_13: Data Memory Write
-- Test_14: Register Dump
-- Test_15: Register Set
-- Test_16: Breakpoint Set
+- Test_24: Debug Toggle
+- Test_25: Pipeline Printing
+- Test_26: Set Condition Codes
+- Test_27: Clear Condition Codes
 
-### Test_10: Instruction Memory Dump
+Each test may be run from a powershell terminal with the following command:
+
+``` powershell
+Get-Content '.\Path\To\Input\File' | '.\Path\To\Executable'
+```
+
+### Test_24: Debug Toggle
 
 **Purpose**\
-Test the printing of memory from instruction memory.\
+Test the functionality of the debug toggle feature in the XM23P Emulator.\
 **Configuration**
+
+.\tests\Debug_Tests\Input_Files\test24.in
 
 1) Test10_Program_Debugging.xme was loaded into the emulator.
-2) `m` was entered to start the Memory Dumping Utility.
-3) `0` was entered to select Instruction Memory.
-4) Start Address of `0x0100` was entered.
-5) End Address of `0x0180` was entered.
+2) The program was executed without enabling the debug mode.
+3) The debug toggle was activated after program execution.
+4) The program was executed with debug mode enabled.
+5) The debug toggle was deactivated after program execution.
+6) The program was executed with debug mode disabled.
 
 **Expected Results**\
-The program should print the contents of memory between address `#0100` and `#0180`.\
+The first and third executions of the program should not display debug information.  The second execution should display debug information.\
 **Results**\
-The contents were correctly printed:\
-![Test 10](Test_10.png)\
+The debug toggle successfully enabled and disabled the debug mode.\
+
+![alt text](image.png)
+
 **Pass/Fail**\
 Pass.
 
 <!-- Page Break -->
 <div style="page-break-after: always;"></div>
 
-### Test_11: Data Memory Dump
+### Test_25: Pipeline Printing
+
 **Purpose**\
-Test the printing of memory from data memory.\
+Test the pipeline printing functionality in the XM23P Emulator.\
 **Configuration**
+
+.\tests\Debug_Tests\Input_Files\test25.in
+
 1) Test10_Program_Debugging.xme was loaded into the emulator.
-2) `m` was entered to start the Memory Dumping Utility.
-3) `1` was entered to select Data Memory.
-3) Start Address of `0x0800` was entered.
-4) End Address of `0x0810` was entered.
+2) The debug toggle was activated using `d`.
+3) A breakpoint was set at address `0110` using `b 110`
+4) The program was executed using `g`.
 
 **Expected Results**\
-The program should print the contents of memory between address `#0800` and `#0810`.\
+The pipeline printing should display the stages of the pipeline during program execution.  During the first clock cycle, stages F0 and D0 should run, and during the second clock cycle F1 and E0 should run.  The program counter should increment after every second clock tick.\
 **Results**\
-The contents were correctly printed:\
-![Test 11](Test_11.png)\
+The pipeline printing successfully displayed the stages of the pipeline as expected.\
+
+![alt text](image-1.png)
+
 **Pass/Fail**\
 Pass.
 
 <!-- Page Break -->
 <div style="page-break-after: always;"></div>
 
-### Test_12: Instruction Memory Write
+### Test_26: Set Condition Codes
+
 **Purpose**\
-Test the writing of memory to instruction memory.\
+Test the functionality of the setcc instruction in the XM23P Emulator.\
 **Configuration**
-1) Test10_Program_Debugging was loaded into the emulator.
-2) `w` was entered to start the Memory Writing Utility.
-3) `0` was entered to select Instruction Memory.
-4) Start Address of `0x0100` was entered.
-5) Data `0x1234` was entered.
-6) `m` was entered to start the Memory Dumping Utility.
-7) `0` was entered to select Instruction Memory.
-8) Start Address of `0x0100` was entered.
-9) End Address of `0x0180` was entered.
+
+.\tests\Execute_Tests\Input_Files\test26.in
+
+1) Test26_Condition_Codes.xme was loaded into the emulator.
+2) A breakpoint was set at address `0102` using `b 102`
+3) The program was executed using `g`.
 
 **Expected Results**\
-The program should write the data `0x1234` to memory address `#0100`.\
+The condition codes should be correctly set based on the executed instructions.\
 **Results**\
-The data was successfully written to memory in little endian format:\
-![Test 12](Test_12.png)\
+The condition codes were correctly set based on the executed instructions as expected.\
+
+![alt text](image-2.png)
+
 **Pass/Fail**\
 Pass.
 
 <!-- Page Break -->
 <div style="page-break-after: always;"></div>
 
-### Test_13: Data Memory Write
+### Test_27: Clear Condition Codes
+
 **Purpose**\
-Test the writing of memory to data memory.\
+Test the functionality of the clrcc instruction in the XM23P Emulator.\
 **Configuration**
-1) Test10_Program_Debugging was loaded into the emulator.
-2) `w` was entered to start the Memory Writing Utility.
-3) `1` was entered to select Data Memory.
-4) Start Address of `0x0200` was entered.
-5) Data `0xABCD` was entered.
-6) `m` was entered to start the Memory Dumping Utility.
-7) `1` was entered to select Data Memory.
-8) Start Address of `0x0200` was entered.
-9) End Address of `0x0210` was entered.
+
+.\tests\Execute_Tests\Input_Files\test27.in
+
+1) Test26_Condition_Codes.xme was loaded into the emulator.
+2) A breakpoint was set at address `0104` using `b 104`
+3) The program was executed using `g`.
 
 **Expected Results**\
-The program should write the data `0xABCD` to memory address `#0200`.\
+The condition codes should be cleared based on the executed instructions.\
 **Results**\
-The data was successfully written to memory in little endian format:\
-![Test 13](Test_13.png)\
+The condition codes were cleared based on the executed instructions as expected.\
+
+![alt text](image-3.png)
+
 **Pass/Fail**\
 Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-### Test_14: Register Dump
-**Purpose**\
-Test the printing of register values.\
-**Configuration**
-1) Test10_Program_Debugging was loaded into the emulator.
-2) `g` was entered to run the program and load the Program Counter.
-3) `r` was entered to start the Register Dumping Utility.
-
-**Expected Results**\
-The program should print the values of all registers, the program counter (register 7) should hold a non-zero value.\
-**Results**\
-The register values were correctly printed:\
-![Test 14](Test_14.png)\
-**Pass/Fail**\
-Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-### Test_15: Register Set
-**Purpose**\
-Test the setting of register values.\
-**Configuration**
-1) Test10_Program_Debugging was loaded into the emulator.
-2) `s` was entered to start the Register Setting Utility.
-3) Register `1` was selected.
-4) Data `0x5678` was entered.
-5) `r` was entered to start the Register Dumping Utility.
-
-**Expected Results**\
-The program should set the value of register `R1` to `0x5678`.\
-**Results**\
-The value of register `R1` was successfully set:\
-![Test 15](Test_15.png)\
-**Pass/Fail**\
-Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
-
-### Test_16: Breakpoint Set
-**Purpose**\
-Test the setting of breakpoints.\
-**Configuration**
-1) Test10_Program_Debugging was loaded into the emulator.
-2) `b` was entered to start the Breakpoint Setting Utility.
-3) Breakpoint address `0x0110` was entered.
-4) `g` was entered to Run the program.
-
-**Expected Results**\
-The program should set a breakpoint at address `0x0110`, and execution should stop at this point.\
-**Results**\
-The breakpoint was successfully set, and execution stopped at `0x0110`:\
-![Test 16](Test_16.png)\
-**Pass/Fail**\
-Pass

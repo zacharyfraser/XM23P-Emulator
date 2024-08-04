@@ -1,0 +1,4 @@
+l .\tests\Execute_Tests\Test26_Condition_Codes.xme
+b 102
+g
+x
