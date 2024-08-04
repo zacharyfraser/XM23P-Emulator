@@ -1,4 +1,4 @@
-# Lab 3 - Debugging Utilities
+# Lab 4 - Condition Codes and Debug Mode
 
 <div style="position: absolute; top: 0; right: 0;">Zachary Fraser</div>
 
