@@ -77,6 +77,3 @@ The register contents correctly matched:\
 #### Pass/Fail
 
 Pass.
-
-<!-- Page Break -->
-<div style="page-break-after: always;"></div>
