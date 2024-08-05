@@ -44,6 +44,7 @@ int fetch_instruction(program_t *program, int stage)
         if(program->bubble_flag)
         {
             /* Replace next instruction with NOOP */
+            printf("Bubblin'...\n");
             program->instruction_register = INSTRUCTION_NOOP;
             program->bubble_flag = 0;
         }

@@ -191,7 +191,7 @@ void run(program_t *program)
                 /* FETCH_0 */
                 fetch_instruction(program, F0);
                 /* DECODE_0 */
-                decode_instruction(&program->instruction, program->instruction_register);
+                decode_instruction(&program->instruction, program);
                 /* EXECUTE_1 */
                 execute_instruction(&program->instruction, program, E1);
                 program->cycle_state = CYCLE_WAIT_0;

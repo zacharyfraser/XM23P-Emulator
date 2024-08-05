@@ -109,14 +109,15 @@ int reset_instruction_arguments(instruction_t *instruction)
  * @param instruction_register Instruction word to decode
  * @return Exit Status - [0 = success, <= 0 failure]
  */
-int decode_instruction(instruction_t *instruction, word_t instruction_register)
-{
-    
-    if(instruction == NULL)
+int decode_instruction(instruction_t *instruction, program_t *program)
+{    
+    /* Check for NULL Pointer */
+    if(instruction == NULL || program == NULL)
     {
-        /* Invalid instruction pointer */
         return -1;
     }
+
+    word_t instruction_register = program->instruction_register;
 
     /* Clear Instruction Struct */
     reset_instruction_arguments(instruction);
@@ -278,6 +279,12 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
                     instruction->source = READ_BITS(instruction_register, 3, 5);
                     /* Decode Destination Register */
                     instruction->destination = READ_BITS(instruction_register, 0, 2);
+
+                    /* Check if destination is PC, and insert bubble */
+                    if(instruction->destination == PC)
+                    {
+                        program->bubble_flag = 1;
+                    }
                     break;
                 default:
                     /* Instruction not implemented */
@@ -329,6 +336,11 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
             instruction->source = READ_BITS(instruction_register, 3, 5);
             /* Decode Destination Register from bits 0 - 2 */
             instruction->destination = READ_BITS(instruction_register, 0, 2);
+            /* Check if destination is PC, and insert bubble */
+            if(instruction->destination == PC)
+            {
+                program->bubble_flag = 1;
+            }
         }
         else
         {
