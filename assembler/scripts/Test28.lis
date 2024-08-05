@@ -1,0 +1,41 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test28.asm
+Time of assembly: Mon 5 Aug 2024 01:33:51 
+  1	    	     	;Test 28 - Store
+  2	    	     	        org #100
+  3	    	     	Start
+  4	0100	6000	        MOVL    #1000,R0        ;Initialize R0 with #1000
+  5	0102	7880	        MOVH    #1000,R0
+  6	0104	6671	        MOVL    #FACE,R1        ;Initialize R1 with #FACE
+  7	0106	7FD1	        MOVH    #FACE,R1
+  8	0108	5EC8	        ST.B    R1,+R0          ;#1001 <- #FACE, R0 <- #1001
+  9	010A	C808	        STR.W   R1,R0,#10       ;#1011 <- #FACE
+ 10	    	     	        END Start
+
+Successful completion of assembly - 1P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test28.xme
+

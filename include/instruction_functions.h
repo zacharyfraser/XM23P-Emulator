@@ -13,6 +13,11 @@
 
 #include "definitions.h"
 
+#define READ_WRITE 2
+#define WORD_BYTE 2
+#define PRE 1
+#define POST 0
+
 /* Undefined Instruction Handling */
 int execute_undefined(instruction_t *instruction, program_t *program);
 /* Branch Instructions */

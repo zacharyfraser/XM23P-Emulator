@@ -48,6 +48,9 @@
 #define E0 0
 #define E1 1
 
+#define READ 0
+#define WRITE 1
+
 /* Address and Checksum Constants */
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1
@@ -165,6 +168,14 @@ typedef enum instruction_type
     STR
 } instruction_type_t;
 
+/* Available states for ICTRL and DCTRL registers */
+typedef enum control_state {
+    READ_BYTE = 0,
+    READ_WORD = 1,
+    WRITE_BYTE = 2,
+    WRITE_WORD = 3
+} control_state_t;
+
 /* Struct Definitions */
 /**
  * @brief Represents an S-Record.
@@ -216,6 +227,8 @@ typedef struct instruction
     byte_t rc;              /* [0 = Register, 1 = Constant] */
     byte_t wb;              /* [0 = Word, 1 = Byte ] */
     status_register_t status;/* Status bits */
+
+    byte_t data_flag;       /* Indicates if instruction accesses data memory */
 } instruction_t;
 
 /**
@@ -232,17 +245,23 @@ typedef struct program_t
     word_t register_file[CONSTANT_SELECT][REGISTER_FILE_LENGTH];    /* 8 CPU Registers */
     word_t instruction_memory_address_register;                     /* Holds the address of the instruction to be fetched */
     word_t instruction_memory_buffer_register;                      /* Has the read from location specified in IMAR */
-    word_t instruction_control_register;                            /* Indicates if an instruction is to be read from address in IMAR */
+    control_state_t instruction_control_register;                   /* Indicates if an instruction is to be read from address in IMAR */
     word_t instruction_register;                                    /* Holds the instruction to be decoded */
+
+    word_t data_memory_address_register;                            /* Holds the address of the data to be accessed */
+    word_t data_memory_buffer_register;                             /* Holds the data read from or to be written to the address in DMAR */
+    control_state_t data_control_register;                          /* Indicates if data is to be read or written from/to address in DMAR */
 
     status_register_t program_status_word;                          /* Status Indicators */
 
     cycle_state_t cycle_state;                                      /* Current State of the CPU Cycle */
     instruction_t instruction;                                      /* Current Instruction */
+    instruction_t previous_instruction;                             /* Copy of Previous Instruction */
     int breakpoint;                                                 /* Address of the Breakpoint */
     int starting_address;                                           /* Starting Address of the Program */
     int clock_cycles;                                               /* Number of Clock Cycles */
     int debug_mode;                                                 /* Debug Mode Flag */
+    int bubble_flag;                                                /* Indicates if bubble should be used to avoid Data Hazard */
 
     char instruction_fetch[MAX_STAGE_LENGTH];
     char instruction_decode[MAX_STAGE_LENGTH];

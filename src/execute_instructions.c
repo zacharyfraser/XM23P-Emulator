@@ -45,6 +45,7 @@ int execute_instruction(instruction_t *instruction, program_t *program, int stag
         /* Invalid input pointers */
         return -1;
     }
+
     if(stage == E0)
     {
         /* Copy stage to program context for debug logging */
@@ -53,16 +54,50 @@ int execute_instruction(instruction_t *instruction, program_t *program, int stag
             sprintf_s(program->instruction_execute, MAX_STAGE_LENGTH, "E0: %04x", instruction->opcode);
         }
         execute_table[instruction->type](instruction, program);
+        /* Copy instruction to previous instruction */
+        program->previous_instruction = *instruction;
     }
     else if(stage == E1)
     {
+        if(program->previous_instruction.data_flag)
+        {
+            /* Perform Memory Access */
+            switch(program->data_control_register)
+            {
+                case WRITE_BYTE:
+                    program->data_memory[program->data_memory_address_register] = program->data_memory_buffer_register & 0xFF;
+                    break;
+                case WRITE_WORD:
+                    program->data_memory[program->data_memory_address_register] = program->data_memory_buffer_register & 0xFF;
+                    program->data_memory[program->data_memory_address_register + 1] = (program->data_memory_buffer_register >> 8) & 0xFF;
+                    break;
+                case READ_BYTE:
+                    /* Read Byte from Data Memory to Data Memory Buffer */
+                    program->data_memory_buffer_register = program->data_memory[program->data_memory_address_register];
+                    /* Write result to destination register */
+                    program->register_file[REGISTER][program->previous_instruction.destination] = program->data_memory_buffer_register;
+                    break;
+                case READ_WORD:
+                    /* Read Word from Data Memory to Data Memory Buffer */
+                    program->data_memory_buffer_register = program->data_memory[program->data_memory_address_register];
+                    program->data_memory_buffer_register |= program->data_memory[program->data_memory_address_register + 1] << 8;
+                    /* Write result to destination register */
+                    program->register_file[REGISTER][program->previous_instruction.destination] = program->data_memory_buffer_register;
+                    break;
+                default:
+                    break;
+            }
+            /* Copy stage to program context for debug logging */
+            if(program->debug_mode)
+            {
+                sprintf_s(program->instruction_execute, MAX_STAGE_LENGTH, "E1: %04x", program->previous_instruction.opcode);
+            }
+        }
         /* Copy stage to program context for debug logging */
-        if(program->debug_mode)
+        else if(program->debug_mode)
         {
             sprintf_s(program->instruction_execute, MAX_STAGE_LENGTH, "\t");
         }
     }
-    
-
     return 0;
 }

@@ -80,15 +80,21 @@ instruction_type_t branch_table[BRANCH_INSTRUCTION_COUNT] =
  */
 int reset_instruction_arguments(instruction_t *instruction)
 {
+    /* Check for NULL Pointer */
     if(instruction == NULL)
     {
         return -1;
     }
+    /* Copy Opcode and Address */
+    word_t opcode = instruction->opcode;
+    word_t address = instruction->address;
+    
+    /* Clear Instruction Struct */
+    memset(instruction, 0, sizeof(instruction_t));
+    /* Restore Opcode and Address */
+    instruction->opcode = opcode;
+    instruction->address = address;
 
-    instruction->rc = 0;
-    instruction->wb = 0;
-    instruction->source = 0;
-    instruction->destination = 0;
 
     return 0;
 }
@@ -331,5 +337,6 @@ int decode_instruction(instruction_t *instruction, word_t instruction_register)
         }
         break;
     }
+
     return 0;
 }

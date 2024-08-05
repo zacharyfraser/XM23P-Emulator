@@ -8,6 +8,12 @@
 
 #include "instruction_functions.h"
 
+control_state_t control_table[READ_WRITE][WORD_BYTE] =
+{
+    {READ_WORD,     READ_BYTE},
+    {WRITE_WORD,    WRITE_BYTE}
+};
+
 byte_t test_overflow(word_t source, word_t destination, word_t result, int wb)
 {
     if(wb == 0) /* Word Operation */
@@ -879,6 +885,13 @@ int execute_sxt(instruction_t *instruction, program_t *program)
     return 0;
 }
 
+/**
+ * @brief Set Priority Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_setpri(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -887,6 +900,13 @@ int execute_setpri(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Vector Interrupt Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_svc(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -895,6 +915,13 @@ int execute_svc(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Set Condition Code Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_setcc(instruction_t *instruction, program_t *program)
 {
     program->program_status_word.negative |= instruction->status.negative;
@@ -905,6 +932,13 @@ int execute_setcc(instruction_t *instruction, program_t *program)
     return 0;
 }
 
+/**
+ * @brief Clear Condition Code Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_clrcc(instruction_t *instruction, program_t *program)
 {
     program->program_status_word.negative &= ~(instruction->status.negative);
@@ -915,6 +949,13 @@ int execute_clrcc(instruction_t *instruction, program_t *program)
     return 0;
 }
 
+/**
+ * @brief Conditional Execution Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_cex(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -923,20 +964,94 @@ int execute_cex(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Load Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_ld(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tLoad\n", instruction->address);
-    return -1;
+    word_t increment_size = 2 - instruction->wb;
+    /* Handle Pre Inc/Dec */
+    if(instruction->prpo == PRE)
+    {
+        if(instruction->increment == 1)
+        {
+            program->register_file[REGISTER][instruction->source]+=increment_size;
+        }
+        else if(instruction->decrement == 1)
+        {
+            program->register_file[REGISTER][instruction->source]-=increment_size;
+        }
+    }
+    /* Copy Memory Source Address to DMAR */
+    program->data_memory_address_register = program->register_file[REGISTER][instruction->source];
+    /* Handle Pose Inc/Dec */
+    if(instruction->prpo == POST)
+    {
+        if(instruction->increment == 1)
+        {
+            program->register_file[REGISTER][instruction->source]-=increment_size;
+        }
+        else if(instruction->decrement == 1)
+        {
+            program->register_file[REGISTER][instruction->source]-=increment_size;
+        }
+    }
+    /* Set DCTRL to Read */
+    program->data_control_register = control_table[READ][instruction->wb];
+    /* Set Data Flag*/
+    instruction->data_flag = 1;
+
+    return 0;
 }
 
+/**
+ * @brief Store Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_st(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tStore\n", instruction->address);
-    return -1;
+    word_t increment_size = 2 - instruction->wb;
+    /* Handle Pre Inc/Dec */
+    if(instruction->prpo == PRE)
+    {
+        if(instruction->increment == 1)
+        {
+            program->register_file[REGISTER][instruction->destination]+=increment_size;
+        }
+        else if(instruction->decrement == 1)
+        {
+            program->register_file[REGISTER][instruction->destination]-=increment_size;
+        }
+    }
+    /* Copy Memory Destination Address to DMAR */
+    program->data_memory_address_register = program->register_file[REGISTER][instruction->destination];
+    /* Copy Source Data to Data Memory Buffer */
+    program->data_memory_buffer_register = program->register_file[REGISTER][instruction->source];
+    /* Handle Pose Inc/Dec */
+    if(instruction->prpo == POST)
+    {
+        if(instruction->increment == 1)
+        {
+            program->register_file[REGISTER][instruction->destination]-=increment_size;
+        }
+        else if(instruction->decrement == 1)
+        {
+            program->register_file[REGISTER][instruction->destination]-=increment_size;
+        }
+    }
+    /* Set DCTRL to Write */
+    program->data_control_register = control_table[WRITE][instruction->wb];
+    /* Set Data Flag*/
+    instruction->data_flag = 1;
+
+    return 0;
 }
 
 /**
@@ -1008,18 +1123,50 @@ int execute_movh(instruction_t *instruction, program_t *program)
     return 0;
 }
 
+/**
+ * @brief Load Relative Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_ldr(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x:\tLoad Relative\n", instruction->address);
-    return -1;
+    /* Sign Extend Offset */
+    signed short offset = (signed short)((signed char)(instruction->offset));
+    /* Calculate Effective Address */
+    word_t effective_address = program->register_file[REGISTER][instruction->source] + offset;
+    /* Copy Memory Source Address to DMAR */
+    program->data_memory_address_register = effective_address;
+    /* Set DCTRL to Read */
+    program->data_control_register = control_table[READ][instruction->wb];
+    /* Set Data Flag*/
+    instruction->data_flag = 1;
+
+    return 0;
 }
 
+/**
+ * @brief Store Relative Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int 
+ */
 int execute_str(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x:\tStore Relative\n", instruction->address);
-    return -1;
+    /* Sign Extend Offset */
+    signed short offset = (signed short)((signed char)(instruction->offset));
+    /* Calculate Effective Address */
+    word_t effective_address = program->register_file[REGISTER][instruction->destination] + offset;
+    /* Copy Memory Source Address to DMAR */
+    program->data_memory_address_register = effective_address;
+    /* Copy Source Data to Data Memory Buffer */
+    program->data_memory_buffer_register = program->register_file[REGISTER][instruction->source];
+    /* Set DCTRL to Read */
+    program->data_control_register = control_table[WRITE][instruction->wb];
+    /* Set Data Flag*/
+    instruction->data_flag = 1;
+
+    return 0;
 }
