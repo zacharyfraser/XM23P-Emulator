@@ -13,6 +13,7 @@
 
 #include "definitions.h"
 
+/* Function Prototypes */
 int fetch_instruction(program_t *program, int stage);
 
 #endif /* FETCH_H */

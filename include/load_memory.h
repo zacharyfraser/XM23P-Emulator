@@ -33,6 +33,7 @@ enum
     END_STATE
 };
 
+/* Function Prototypes */
 int initialize_register_file(word_t register_file[CONSTANT_SELECT][REGISTER_FILE_LENGTH]);
 int parse_record(char *input_record, s_record_t *s_record);
 int copy_byte_array(

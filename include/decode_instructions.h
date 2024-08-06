@@ -40,6 +40,7 @@ extern instruction_type_t mov_table[MOV_INSTRUCTION_COUNT];
 extern instruction_type_t arithmetic_register_table[ARITHMETIC_REGISTER_INSTRUCTION_COUNT];
 extern instruction_type_t shift_register_table[SHIFT_REGISTER_INSTRUCTION_COUNT];
 
+/* Function Prototypes */
 int reset_instruction_arguments(instruction_t *instruction);
 int decode_instruction(instruction_t *instruction, program_t *instruction_register);
 

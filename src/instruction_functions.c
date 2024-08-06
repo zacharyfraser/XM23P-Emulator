@@ -8,12 +8,25 @@
 
 #include "instruction_functions.h"
 
+/**
+ * @brief Lookup table for Memory Control Settings
+ * 
+ */
 control_state_t control_table[READ_WRITE][WORD_BYTE] =
 {
     {READ_WORD,     READ_BYTE},
     {WRITE_WORD,    WRITE_BYTE}
 };
 
+/**
+ * @brief Test instruction for arithmetic overflow
+ * 
+ * @param source Instruction source word
+ * @param destination Instruction destination word
+ * @param result Instruction result word
+ * @param wb Word or Byte operation
+ * @return byte_t 
+ */
 byte_t test_overflow(word_t source, word_t destination, word_t result, int wb)
 {
     if(wb == 0) /* Word Operation */
@@ -27,6 +40,13 @@ byte_t test_overflow(word_t source, word_t destination, word_t result, int wb)
     return 2;
 }
 
+/**
+ * @brief Undefined Instruction Handling
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_undefined(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -35,6 +55,13 @@ int execute_undefined(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Branch with Link Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_bl(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -43,6 +70,13 @@ int execute_bl(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Branch if Equal Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_beq(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -51,6 +85,13 @@ int execute_beq(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Branch if Not Equal Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_bne(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -59,6 +100,13 @@ int execute_bne(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Branch if Carry Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_bc(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -67,6 +115,13 @@ int execute_bc(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Branch if Not Carry Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_bnc(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -75,6 +130,13 @@ int execute_bnc(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Branch if Negative Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_bn(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -83,6 +145,13 @@ int execute_bn(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Branch if Greater or Equal Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_bge(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -91,6 +160,13 @@ int execute_bge(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Branch if Less Than Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_blt(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -99,6 +175,13 @@ int execute_blt(instruction_t *instruction, program_t *program)
     return -1;
 }
 
+/**
+ * @brief Branch Always Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_bra(instruction_t *instruction, program_t *program)
 {
     instruction;
@@ -395,6 +478,13 @@ int execute_dadd(instruction_t *instruction, program_t *program)
     return 0;
 }
 
+/**
+ * @brief Compare Instruction
+ * 
+ * @param instruction 
+ * @param program 
+ * @return int [0 = success, <= 0 failure]
+ */
 int execute_cmp(instruction_t *instruction, program_t *program)
 {
     word_t source = program->register_file[instruction->rc][instruction->source];

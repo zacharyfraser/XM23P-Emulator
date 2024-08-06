@@ -19,6 +19,7 @@
 #include "execute_instructions.h"
 #include "fetch_instructions.h"
 
+/* Function Prototypes */
 void load_memory(program_t *program, char *supplied_path);
 void memory_dump(byte_t *instruction_memory, byte_t *data_memory);
 void memory_write(byte_t *instruction_memory, byte_t *data_memory);

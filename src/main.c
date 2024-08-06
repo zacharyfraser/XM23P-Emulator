@@ -8,7 +8,9 @@
 
 #include "main.h"
 
+/* Program context */
 program_t program;
+
 /**
  * @brief XM23P CPU Emulator Entry Point
  * 

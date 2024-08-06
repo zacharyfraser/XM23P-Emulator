@@ -60,6 +60,11 @@ instruction_type_t shift_register_table[SHIFT_REGISTER_INSTRUCTION_COUNT] =
     UNDEFINED
 };
 
+/**
+ * @brief Table of branch instructions.
+ * 
+ * This table stores the branch instructions supported by the system.
+ */
 instruction_type_t branch_table[BRANCH_INSTRUCTION_COUNT] = 
 {
     BEQ, 

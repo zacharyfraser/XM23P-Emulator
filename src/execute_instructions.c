@@ -8,6 +8,10 @@
 
 #include "execute_instructions.h"
 
+/**
+ * @brief Lookup Table of Instruction Type Strings
+ * 
+ */
 char *instruction_names[NUM_OF_INSTRUCTIONS] = 
 {
     "UNDEFINED", "BL", "BEQ", "BNE",
@@ -23,6 +27,10 @@ char *instruction_names[NUM_OF_INSTRUCTIONS] =
     "STR"
 };
 
+/**
+ * @brief Table of Function Pointers to Instruction Execution Functions
+ * 
+ */
 execute_instruction_t execute_table[NUM_OF_INSTRUCTIONS] = 
 {
     execute_undefined, execute_bl, execute_beq, execute_bne,
@@ -38,6 +46,14 @@ execute_instruction_t execute_table[NUM_OF_INSTRUCTIONS] =
     execute_str
 };
 
+/**
+ * @brief Execute an instruction
+ * 
+ * @param instruction Pointer to instruction to be executed
+ * @param program Pointer to program context
+ * @param stage Stage of execution
+ * @return int [0 = SUCCESS, < 0 = FAILURE]
+ */
 int execute_instruction(instruction_t *instruction, program_t *program, int stage)
 {
     if(instruction == NULL || program == NULL)

@@ -20,6 +20,7 @@ typedef int (*execute_instruction_t)(instruction_t *instruction, program_t *prog
 /* List of instruction names as strings */
 extern char *instruction_names[NUM_OF_INSTRUCTIONS];
 
+/* Function Prototypes */
 int execute_instruction(instruction_t *instruction, program_t *program, int stage);
 
 #endif

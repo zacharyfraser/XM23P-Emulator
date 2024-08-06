@@ -30,6 +30,7 @@ enum utilities
     HELP            = 'h'
 };
 
+/* Function Prototypes */
 void display_utilities(void);
 void run_operating_system(program_t *program);
 
