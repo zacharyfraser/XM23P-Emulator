@@ -30,6 +30,7 @@ void memory_dump(byte_t *instruction_memory, byte_t *data_memory)
     printf("Enter Memory End Address: ");
     int end_address;
     scanf_s("%x", &end_address);
+    printf("\n");
     /* Could be simplified with 2D Array */
     switch (memory_type)
     {

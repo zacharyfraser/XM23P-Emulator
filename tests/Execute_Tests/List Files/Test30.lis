@@ -1,0 +1,57 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test30.asm
+Time of assembly: Tue 6 Aug 2024 01:06:20 
+  1	    	     	;Test 30 - Bubble
+  2	    	     	;
+  3	    	     	;If a bubble is correctly inserted, R3 should contain #FACE
+  4	    	     	;Otherwise, R3 will contain #BEEF
+  5	    	     	
+  6	    	     	        Data
+  7	    	     	        ORG #1000
+  8	1000	0200	ADDR    word #0200
+  9	    	     	        Code
+ 10	    	     	        ORG #0100
+ 11	    	     	Start
+ 12	0100	6670	        MOVL    #FACE,R0        ;Initialize R0 to FACE
+ 13	0102	7FD0	        MOVH    #FACE,R0
+ 14	0104	6779	        MOVL    #BEEF,R1        ;Initialize R1 to BEEF
+ 15	0106	7DF1	        MOVH    #BEEF,R1
+ 16	0108	6002	        MOVL    #1000,R2        ;Initialize R2 to 1000
+ 17	010A	7882	        MOVH    #1000,R2
+ 18	010C	5817	        LD.W    R2,R7           ;PC <- #0200
+ 19	    	     	;Bubble Expected
+ 20	010E	4C08	        MOV     R1,R0           ;R0 <- #BEEF : Should be ignored
+ 21	    	     	
+ 22	    	     	        org #200
+ 23	0200	4C03	        MOV     R0,R3           ;R3 <- #FACE
+ 24	    	     	        
+ 25	    	     	        END Start
+
+Successful completion of assembly - 1P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+ADDR                               	REL	1000	4096	PRI
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test30.xme
+

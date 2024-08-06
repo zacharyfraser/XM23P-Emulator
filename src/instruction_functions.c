@@ -1133,7 +1133,7 @@ int execute_movh(instruction_t *instruction, program_t *program)
 int execute_ldr(instruction_t *instruction, program_t *program)
 {
     /* Sign Extend Offset */
-    signed short offset = (signed short)((signed char)(instruction->offset));
+    signed short offset = (signed short)((signed char)(instruction->offset << 1) >> 1);
     /* Calculate Effective Address */
     word_t effective_address = program->register_file[REGISTER][instruction->source] + offset;
     /* Copy Memory Source Address to DMAR */
@@ -1156,7 +1156,7 @@ int execute_ldr(instruction_t *instruction, program_t *program)
 int execute_str(instruction_t *instruction, program_t *program)
 {
     /* Sign Extend Offset */
-    signed short offset = (signed short)((signed char)(instruction->offset));
+    signed short offset = (signed short)((signed char)(instruction->offset << 1) >> 1);
     /* Calculate Effective Address */
     word_t effective_address = program->register_file[REGISTER][instruction->destination] + offset;
     /* Copy Memory Source Address to DMAR */

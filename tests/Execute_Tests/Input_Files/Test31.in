@@ -1,0 +1,7 @@
+l .\tests\Execute_Tests\Test31_Negative_Offsets.xme
+b 10E
+d
+g
+m 1 0FC0 0FD0
+r
+x

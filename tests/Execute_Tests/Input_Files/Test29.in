@@ -1,0 +1,6 @@
+l .\tests\Execute_Tests\Test29_Load.xme
+b 120
+g
+m 1 1000 1020
+r
+x

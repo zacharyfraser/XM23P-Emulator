@@ -1,0 +1,6 @@
+l .\tests\Execute_Tests\Test28_Store.xme
+b 112
+g
+m 1 1000 1020
+r
+x

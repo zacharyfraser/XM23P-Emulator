@@ -1,0 +1,5 @@
+l .\tests\Execute_Tests\Test30_Bubble.xme
+b 202
+g
+r
+x

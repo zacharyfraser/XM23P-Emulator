@@ -170,7 +170,7 @@ int decode_instruction(instruction_t *instruction, program_t *program)
             /* Source Register - Bits Three through Five */
             instruction->source = READ_BITS(instruction_register, 3, 5);
             /* Destination Register - Bits Zero through Three */
-            instruction->destination = READ_BITS(instruction_register, 0, 3);
+            instruction->destination = READ_BITS(instruction_register, 0, 2);
         }
         /* Read Bits Eight through Twelve */
         else if (READ_BITS(instruction_register, 8, 12) == SHIFT_REGISTER_CODE)
@@ -263,6 +263,11 @@ int decode_instruction(instruction_t *instruction, program_t *program)
                     instruction->source = READ_BITS(instruction_register, 3, 5);
                     /* Decode Destination Register */
                     instruction->destination = READ_BITS(instruction_register, 0, 2);
+                    /* Check if destination is PC, and insert bubble */
+                    if(instruction->destination == PC)
+                    {
+                        program->bubble_flag = 1;
+                    }
                     break;
                 case ST_CODE:
                     /* ST */
@@ -280,11 +285,6 @@ int decode_instruction(instruction_t *instruction, program_t *program)
                     /* Decode Destination Register */
                     instruction->destination = READ_BITS(instruction_register, 0, 2);
 
-                    /* Check if destination is PC, and insert bubble */
-                    if(instruction->destination == PC)
-                    {
-                        program->bubble_flag = 1;
-                    }
                     break;
                 default:
                     /* Instruction not implemented */
@@ -323,6 +323,11 @@ int decode_instruction(instruction_t *instruction, program_t *program)
             instruction->source = READ_BITS(instruction_register, 3, 5);
             /* Decode Destination Register from bits 0 - 3 */
             instruction->destination = READ_BITS(instruction_register, 0, 2);
+            /* Check if destination is PC, and insert bubble */
+            if(instruction->destination == PC)
+            {
+                program->bubble_flag = 1;
+            }
         }
         else if(READ_BITS(instruction_register, 14, 15) == STORE_RELATIVE_CODE)
         {
@@ -336,11 +341,6 @@ int decode_instruction(instruction_t *instruction, program_t *program)
             instruction->source = READ_BITS(instruction_register, 3, 5);
             /* Decode Destination Register from bits 0 - 2 */
             instruction->destination = READ_BITS(instruction_register, 0, 2);
-            /* Check if destination is PC, and insert bubble */
-            if(instruction->destination == PC)
-            {
-                program->bubble_flag = 1;
-            }
         }
         else
         {

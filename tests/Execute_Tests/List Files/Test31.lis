@@ -1,18 +1,17 @@
 X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
-Input file name: Test29.asm
-Time of assembly: Mon 5 Aug 2024 01:59:51 
-  1	    	     	;Test 29 - Load
-  2	    	     	        org #100
-  3	    	     	Start
-  4	0100	6000	        MOVL    #1000,R0        ;Initialize R0 with #1000
-  5	0102	7880	        MOVH    #1000,R0
-  6	0104	6671	        MOVL    #FACE,R1        ;Initialize R1 with #FACE
-  7	0106	7FD1	        MOVH    #FACE,R1
-  8	0108	5EC8	        ST.B    R1,+R0          ;#1001 <- #00CE, R0 <- #1001
-  9	010A	C808	        STR.W   R1,R0,#10       ;#1011 <- #FACE
- 10	010C	5902	        LD.W    R0-,R2          ;R2 <- #00CE, R0 <- #0FFF
- 11	010E	8943	        LDR.B   R0,#12,R3       ;R3 <- #00CE
- 12	    	     	        END Start
+Input file name: Test31.asm
+Time of assembly: Tue 6 Aug 2024 00:41:09 
+  1	    	     	;Test 31 - Negative Offsets
+  2	    	     	
+  3	    	     	        org #100
+  4	    	     	Start
+  5	0100	6670	        MOVL    #FACE,R0        ;Initialize R0 to FACE
+  6	0102	7FD0	        MOVH    #FACE,R0
+  7	0104	6002	        MOVL    #1000,R2        ;Initialize R2 to 1000
+  8	0106	7882	        MOVH    #1000,R2
+  9	0108	E002	        STR.W   R0,R2,$-64      ;#0FC0 <- #FACE
+ 10	010A	A013	        LDR.W   R2,$-64,R3      ;R3 <- #FACE
+ 11	    	     	        END Start
 
 Successful completion of assembly - 1P
 
@@ -39,5 +38,5 @@ R2                                 	REG	0002	2	PRI
 R1                                 	REG	0001	1	PRI
 R0                                 	REG	0000	0	PRI
 
-.XME file: .\assembler\scripts\Test29.xme
+.XME file: .\assembler\scripts\Test31.xme
 

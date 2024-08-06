@@ -1,16 +1,19 @@
 X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
-Input file name: Test28.asm
-Time of assembly: Tue 6 Aug 2024 00:40:03 
-  1	    	     	;Test 28 - Store
+Input file name: Test29.asm
+Time of assembly: Tue 6 Aug 2024 00:40:06 
+  1	    	     	;Test 29 - Load
   2	    	     	        org #100
   3	    	     	Start
   4	0100	6000	        MOVL    #1000,R0        ;Initialize R0 with #1000
   5	0102	7880	        MOVH    #1000,R0
   6	0104	6671	        MOVL    #FACE,R1        ;Initialize R1 with #FACE
   7	0106	7FD1	        MOVH    #FACE,R1
-  8	0108	5EC8	        ST.B    R1,+R0          ;#1001 <- #00CE, R0 <- #1001
-  9	010A	C788	        STR.W   R1,R0,#0F       ;#1010 <- #FACE
- 10	    	     	        END Start
+  8	0108	5E88	        ST.W    R1,+R0          ;#1002 <- #FACE, R0 <- #1002
+  9	010A	C848	        STR.B   R1,R0,#10       ;#1012 <- #00CE
+ 10	010C	5902	        LD.W    R0-,R2          ;R2 <- #00CE, R0 <- #0FFF
+ 11	010E	8943	        LDR.B   R0,#12,R3       ;R3 <- #00CE
+ 12	    	     	        END Start
+
 Successful completion of assembly - 1P
 
 ** Symbol table **
@@ -36,5 +39,5 @@ R2                                 	REG	0002	2	PRI
 R1                                 	REG	0001	1	PRI
 R0                                 	REG	0000	0	PRI
 
-.XME file: .\assembler\scripts\Test28.xme
+.XME file: .\assembler\scripts\Test29.xme
 

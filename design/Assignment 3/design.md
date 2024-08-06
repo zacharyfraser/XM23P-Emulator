@@ -2,19 +2,16 @@
 
 <div style="position: absolute; top: 0; right: 0;">Zachary Fraser</div>
 
-This assignment implements 9 branching instructions to the XM23P emulator:
+This assignment aims to implement the data memory access pipeline for the XM23P emulator. There are three
+stages: Fetch, Decode, and Execute. In this assignment, the Execute stage is extended to allow for data
+memory access in a similar manner to the instruction memory access seen in the fetch stage.
 
-1. Branch with Link
-2. Branch if equal or zero
-3. Branch if not equal or not zero
-4. Branch if carry/higher or same (unsigned)
-5. Branch if no carry/lower (unsigned)
-6. Branch if negative
-7. Branch if greater or equal (signed)
-8. Branch if less (signed)
-9. Branch Always
+The following instructions were implemented:
 
-These instructions allow for programs with flow of control change using branching.
+1) Store
+2) Load
+3) Store Relative
+4) Load Relative
 
 ## Design
 
@@ -99,36 +96,200 @@ BIT             =   [0|1]
 
 The following tests were implemented:
 
-- Test_XX: Test One Name
-- Test_XX: Test Two Name
-- Test_XX: Test Three Name
+- Test_28: Store Instructions
+- Test_29: Load Instructions
+- Test_30: Data Hazard Bubble
+- Test_31: Negative Offsets
+- Test_32: Execute Pipeline
+
+Each test may be run from a powershell terminal with the following command:
+
+``` powershell
+Get-Content '.\Path\To\Input\File' | '.\Path\To\Executable'
+```
 
 <!-- Page Break -->
 <div style="page-break-after: always;"></div>
 
-### Test_XX: Test One Name
+### Test_28: Store Instructions
 
 #### Purpose
 
-Test description.
+Verify store and store relative instructions correctly add data to data memory.
 
 #### Configuration
 
-.\tests\Execute_Tests\Input_Files\TestXX.in
+.\tests\Execute_Tests\Input_Files\Test28.in
 
-1) TestXX_Test_File.xme was loaded into the emulator.
-2) `b xxxx` was entered to set a breakpoint at address `#xxxx`
+1) Test28_Store.xme was loaded into the emulator.
+2) `b 112` was entered to set a breakpoint at address `#0112`
 3) `g` was entered to run the program
-4) `m d xxxx yyyy` was entered to dump the data memory between address xxxx and yyyy.
+4) `m 1 1000 1020` was entered to dump the data memory between address `1000` and `1020`.
+5) `r` was entered to dump the CPU register contents.
 
 #### Expected Results
 
-Expected Results
+`#00CE` should be at data memory addresses `#1000`.\
+`#FACE` should be stored at data memory address `#1010`.
+`#1001` should be stored in Register `R0`.
+
+#### Results
+
+The memory and register contents correctly matched:\
+<img src="Test_28.png" alt="Test 28" width="50%">
+
+#### Pass/Fail
+
+Pass.
+
+<!-- Page Break -->
+<div style="page-break-after: always;"></div>
+
+### Test_29: Load Instructions
+
+#### Purpose
+
+Verify load and load relative instructions correctly retrieve data from data memory.
+
+#### Configuration
+
+.\tests\Execute_Tests\Input_Files\Test29.in
+
+1) Test29_Load.xme was loaded into the emulator.
+2) `b 120` was entered to set a breakpoint at address `#0120`
+3) `g` was entered to run the program
+4) `m 1 1000 1020` was entered to dump the data memory between address `1000` and `1020`.
+5) `r` was entered to dump the CPU register contents.
+
+#### Expected Results
+
+The CPU registers should be as follows:
+
+``` Pseudocode
+R0: 1000
+R1: FACE
+R2: FACE
+R3: 00CE
+R4: 0000
+R5: 0000
+R6: 0000
+R7: 0120
+```
+
+`#FACE` should be stored at `#1002`\
+`#00CE` should be stored at `#1012`
+
+#### Results
+
+The register and memory contents correctly matched:\
+<img src="Test_29.png" alt="Test 29" width="50%">
+
+#### Pass/Fail
+
+Pass.
+
+<!-- Page Break -->
+<div style="page-break-after: always;"></div>
+
+### Test_30: Data Hazard Bubble
+
+#### Purpose
+
+Verify that a data hazard bubble is inserted when a load instruction changes the program counter.
+
+#### Configuration
+
+.\tests\Execute_Tests\Input_Files\Test30.in
+
+1) Test30_DataHazard.xme was loaded into the emulator.
+2) `b 202` was entered to set a breakpoint at address `#0202`
+3) `g` was entered to run the program
+4) `r` was entered to dump the CPU register contents.
+
+#### Expected Results
+
+The CPU registers should be as follows:
+
+``` Pseudocode
+R0: FACE
+R1: BEEF
+R2: 1000
+R3: FACE
+R4: 0000
+R5: 0000
+R6: 0000
+R7: 0202
+```
 
 #### Results
 
 The register contents correctly matched:\
-<img src="Test_XX.png" alt="Test XX" width="50%">
+<img src="Test_30.png" alt="Test 30" width="50%">
+
+#### Pass/Fail
+
+Pass.
+
+<!-- Page Break -->
+<div style="page-break-after: always;"></div>
+
+### Test_31: Negative Offsets
+
+#### Purpose
+
+Verify that negative offsets are correctly handled in load and store relative instructions.
+
+#### Configuration
+
+.\tests\Execute_Tests\Input_Files\Test31.in
+
+1) Test31_NegativeOffsets.xme was loaded into the emulator.
+2) `b 10E` was entered to set a breakpoint at address `#010E`
+3) `g` was entered to run the program
+4) `m 1 0FC0 0FD0` was entered to dump the data memory between address `0FC0` and `0FD0`.
+5) `r` was entered to dump the CPU register contents.
+
+#### Expected Results
+
+The value `#FACE` should be loaded into Register `R3`.\
+The value `#FACE` should be stored at data memory address `#0FC0`
+
+#### Results
+
+The register and memory contents correctly matched:\
+<img src="Test_31.png" alt="Test 31" width="50%">
+
+#### Pass/Fail
+
+Pass.
+
+<!-- Page Break -->
+<div style="page-break-after: always;"></div>
+
+### Test_32: Execute 1 Pipeline
+
+#### Purpose
+
+Verify that the pipeline executes E1 stage only for data memory accesses.
+
+#### Configuration
+
+.\tests\Execute_Tests\Input_Files\Test32.in
+
+1) Test32_Execute1Pipeline.xme was loaded into the emulator.
+2) `b 10A` was entered to set a breakpoint at address `#010A`
+3) `d` was entered to enable debug mode
+4) `g` was entered to run the program
+
+#### Expected Results
+
+Instructions at PC = 100 and 106 should not have an E1 stage.\
+Instructions at PC = 102 and 104 should have an E1 stage.
+
+#### Results
+
+The pipeline debug statements showed the correct stages for each instruction:\
+<img src="Test_32.png" alt="Test 32" width="50%">
 
 #### Pass/Fail
 

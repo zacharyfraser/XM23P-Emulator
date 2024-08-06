@@ -1,0 +1,5 @@
+l .\tests\Execute_Tests\Test32_Execute_Pipeline.xme
+b 10a
+d
+g
+x
