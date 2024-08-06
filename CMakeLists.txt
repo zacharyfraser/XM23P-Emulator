@@ -37,7 +37,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_options(${Project_Name} PRIVATE /W4)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     #Add Preprocessor Definitions
-    arget_compile_definitions(${Project_Name} PRIVATE LINUX)
+    target_compile_definitions(${Project_Name} PRIVATE LINUX)
     target_compile_options(${Project_Name} PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
