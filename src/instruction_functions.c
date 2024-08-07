@@ -185,8 +185,11 @@ int execute_undefined(instruction_t *instruction, program_t *program)
  */
 int execute_bl(instruction_t *instruction, program_t *program)
 {
+    if(instruction->offset != 0x0000)
+    {
     /* Set Link Register to First Instruction after Branch */
-    program->LINK_REGISTER = instruction->address;
+    program->LINK_REGISTER = program->PROGRAM_COUNTER - WORD_LENGTH;
+    }
     /* Branch to Offset */
     branch(program, restore_offset(instruction->offset, LINK_OFFSET_LENGTH));
 
@@ -973,7 +976,11 @@ int execute_mov(instruction_t *instruction, program_t *program)
         program->register_file[REGISTER][instruction->destination] |= 
             program->register_file[REGISTER][instruction->source] & 0x00FF;
     }
-
+    if(instruction->destination == PC)
+        {
+            clear_bubble_queue(&program->bubble_queue);
+            insert_bubble(&program->bubble_queue, BUBBLE);
+        }
     return 0;
 }
 
@@ -994,6 +1001,12 @@ int execute_swap(instruction_t *instruction, program_t *program)
         program->register_file[REGISTER][instruction->source];
     /* SRC = Temp */
     program->register_file[REGISTER][instruction->source] = temp;
+
+    if(instruction->destination == PC)
+        {
+            clear_bubble_queue(&program->bubble_queue);
+            insert_bubble(&program->bubble_queue, BUBBLE);
+        }
 
     return 0;
 }
