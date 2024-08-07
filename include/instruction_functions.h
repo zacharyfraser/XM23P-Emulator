@@ -18,6 +18,12 @@
 #define PRE 1
 #define POST 0
 
+#define LINK_OFFSET_LENGTH 13
+#define BRANCH_OFFSET_LENGTH 10
+
+/* Branch Offset Calculation */
+signed short restore_offset(word_t offset, int number_of_bits);
+
 /* Undefined Instruction Handling */
 int execute_undefined(instruction_t *instruction, program_t *program);
 /* Branch Instructions */

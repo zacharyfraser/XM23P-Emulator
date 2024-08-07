@@ -85,7 +85,7 @@ int execute_instruction(instruction_t *instruction, program_t *program, int stag
                     break;
                 case WRITE_WORD:
                     program->data_memory[program->data_memory_address_register] = program->data_memory_buffer_register & 0xFF;
-                    program->data_memory[program->data_memory_address_register + 1] = (program->data_memory_buffer_register >> 8) & 0xFF;
+                    program->data_memory[program->data_memory_address_register + BYTE_LENGTH] = (program->data_memory_buffer_register >> 8) & 0xFF;
                     break;
                 case READ_BYTE:
                     /* Read Byte from Data Memory to Data Memory Buffer */
@@ -96,7 +96,7 @@ int execute_instruction(instruction_t *instruction, program_t *program, int stag
                 case READ_WORD:
                     /* Read Word from Data Memory to Data Memory Buffer */
                     program->data_memory_buffer_register = program->data_memory[program->data_memory_address_register];
-                    program->data_memory_buffer_register |= program->data_memory[program->data_memory_address_register + 1] << 8;
+                    program->data_memory_buffer_register |= program->data_memory[program->data_memory_address_register + BYTE_LENGTH] << 8;
                     /* Write result to destination register */
                     program->register_file[REGISTER][program->previous_instruction.destination] = program->data_memory_buffer_register;
                     break;

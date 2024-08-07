@@ -25,7 +25,7 @@ int fetch_instruction(program_t *program, int stage)
         /* Set ICTRL to Read */
         program->instruction_control_register = READ_WORD;
         /* Increment PC */
-        program->PROGRAM_COUNTER += 2;
+        program->PROGRAM_COUNTER += WORD_LENGTH;
         /* Copy stage to program context for debug logging */
         if(program->debug_mode)
         {
@@ -37,7 +37,7 @@ int fetch_instruction(program_t *program, int stage)
     {
         /* IMBR = IMEM[IMAR}] */
         program->instruction_memory_buffer_register = program->instruction_memory[program->instruction_memory_address_register];
-        program->instruction_memory_buffer_register |= program->instruction_memory[program->instruction_memory_address_register + 1] << 8;
+        program->instruction_memory_buffer_register |= program->instruction_memory[program->instruction_memory_address_register + BYTE_LENGTH] << 8;
         /* IR = IMBR */
         program->instruction_register = program->instruction_memory_buffer_register;
         

@@ -204,7 +204,7 @@ void run(program_t *program)
                 break;
             case CYCLE_WAIT_0:
                 /* Set Current Instruction Address for Debugging */
-                program->instruction.address = program->PROGRAM_COUNTER - 4;
+                program->instruction.address = program->PROGRAM_COUNTER - 2 * WORD_LENGTH;
                 /* FETCH_1 */
                 fetch_instruction(program, F1);
                 /* EXECUTE_0 */
@@ -219,11 +219,11 @@ void run(program_t *program)
                 }
 
                 /* Check for Breakpoint - PC Incremented in previous cycle */
-                if(program->PROGRAM_COUNTER - 2 == (program->breakpoint & 0xFFFE))
+                if(program->PROGRAM_COUNTER - WORD_LENGTH == (program->breakpoint & 0xFFFE))
                 {
                     pause_cycle = 1;
                     /* Decrement PC for resuming execution */
-                    program->PROGRAM_COUNTER -= 2;
+                    program->PROGRAM_COUNTER -= WORD_LENGTH;
                     continue;
                 }
                 break;

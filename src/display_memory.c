@@ -81,7 +81,7 @@ int display_memory(byte_t *memory_array,  int min_address, int max_address)
             printf("%02x ", memory_array[location_counter + i]);
         }
         printf("\n");
-        location_counter += 16;
+        location_counter += BYTES_PER_LINE;
     }
 
     return error_status;\

@@ -81,6 +81,56 @@ int check_condition(condition_code_t condition_code, status_register_t program_s
     }
 }
  
+ /**
+  * @brief Restore Branch Offset
+  * @param offset Encoded offset
+  * @param number_of_bits Number of bits in offset
+  * @return signed short Decoded offset
+  */
+signed short restore_offset(word_t offset, int number_of_bits)
+{
+    signed short result = (signed short)offset;
+    /* Restore LSb */
+    result <<= 1;
+    if(number_of_bits == LINK_OFFSET_LENGTH)
+    {
+        /* Test MSb */
+        if (result & BIT_13)
+        {
+            /* Sign Extend to upper bits */
+            result |= (TWO_BITS << 14);
+        }
+    }
+    else if(number_of_bits == BRANCH_OFFSET_LENGTH)
+    {
+        if (result & BIT_10)
+        {
+            /* If the sign bit is set, extend the sign to the upper bits */
+            result |= (FIVE_BITS << 11);
+        }
+    }
+
+    return offset;
+}
+
+/**
+ * @brief Branch Instruction
+ * @param program Program Context
+ * @param offset Offset to branch
+ */
+void branch(program_t *program, word_t offset)
+{
+    word_t effective_address = program->PROGRAM_COUNTER;
+    /* Calculate Effective Address */
+    effective_address += offset - WORD_LENGTH;
+    /* Set PC to Effective Address */
+    program->PROGRAM_COUNTER = effective_address;
+
+    /* Clear Bubble Queue */
+    clear_bubble_queue(&program->bubble_queue);
+    /* Insert Bubble */
+    insert_bubble(&program->bubble_queue, 1);
+}
 
 /**
  * @brief Test instruction for arithmetic overflow
@@ -115,7 +165,9 @@ int execute_undefined(instruction_t *instruction, program_t *program)
 {
     instruction;
     program;
-    //printf("%04x:\t%04x - Undefined Instruction\n", instruction->address, instruction->opcode);
+#ifdef DEBUG
+    printf("%04x:\t%04x - Undefined Instruction\n", instruction->address, instruction->opcode);
+#endif
     return -1;
 }
 
@@ -128,10 +180,12 @@ int execute_undefined(instruction_t *instruction, program_t *program)
  */
 int execute_bl(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tBranch and Link\n", instruction->address);
-    return -1;
+    /* Set Link Register to First Instruction after Branch */
+    program->LINK_REGISTER = instruction->address + WORD_LENGTH;
+    /* Branch to Offset */
+    branch(program, restore_offset(instruction->offset, LINK_OFFSET_LENGTH));
+
+    return 0;
 }
 
 /**
@@ -139,14 +193,20 @@ int execute_bl(instruction_t *instruction, program_t *program)
  * 
  * @param instruction 
  * @param program 
- * @return int [0 = success, <= 0 failure]
+ * @return int [0 = Branch Taken, 1 = Branch not taken, <= 0 failure]
  */
 int execute_beq(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tBranch if Equal\n", instruction->address);
-    return -1;
+    /* If condition not met, return 1 */
+    if(!check_condition(EQUAL, program->program_status_word))
+    {
+        return 1;
+    }
+
+    /* Branch to Offset */
+    branch(program, restore_offset(instruction->offset, BRANCH_OFFSET_LENGTH));
+
+    return 0;
 }
 
 /**
@@ -158,10 +218,16 @@ int execute_beq(instruction_t *instruction, program_t *program)
  */
 int execute_bne(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tBranch if Not Equal\n", instruction->address);
-    return -1;
+    /* If condition not met, return 1 */
+    if(!check_condition(NOT_EQUAL, program->program_status_word))
+    {
+        return 1;
+    }
+
+    /* Branch to Offset */
+    branch(program, restore_offset(instruction->offset, BRANCH_OFFSET_LENGTH));
+
+    return 0;
 }
 
 /**
@@ -173,10 +239,16 @@ int execute_bne(instruction_t *instruction, program_t *program)
  */
 int execute_bc(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tBranch if Carry\n", instruction->address);
-    return -1;
+    /* If condition not met, return 1 */
+    if(!check_condition(CARRY, program->program_status_word))
+    {
+        return 1;
+    }
+
+    /* Branch to Offset */
+    branch(program, restore_offset(instruction->offset, BRANCH_OFFSET_LENGTH));
+
+    return 0;
 }
 
 /**
@@ -188,10 +260,16 @@ int execute_bc(instruction_t *instruction, program_t *program)
  */
 int execute_bnc(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tBranch if Not Carry\n", instruction->address);
-    return -1;
+    /* If condition not met, return 1 */
+    if(!check_condition(NOT_CARRY, program->program_status_word))
+    {
+        return 1;
+    }
+
+    /* Branch to Offset */
+    branch(program, restore_offset(instruction->offset, BRANCH_OFFSET_LENGTH));
+
+    return 0;
 }
 
 /**
@@ -203,10 +281,16 @@ int execute_bnc(instruction_t *instruction, program_t *program)
  */
 int execute_bn(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tBranch if Negative\n", instruction->address);
-    return -1;
+    /* If condition not met, return 1 */
+    if(!check_condition(NEGATIVE, program->program_status_word))
+    {
+        return 1;
+    }
+
+    /* Branch to Offset */
+    branch(program, restore_offset(instruction->offset, BRANCH_OFFSET_LENGTH));
+
+    return 0;
 }
 
 /**
@@ -218,10 +302,16 @@ int execute_bn(instruction_t *instruction, program_t *program)
  */
 int execute_bge(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tBranch if Greater or Equal\n", instruction->address);
-    return -1;
+    /* If condition not met, return 1 */
+    if(!check_condition(SIGNED_GREATER_EQUAL, program->program_status_word))
+    {
+        return 1;
+    }
+
+    /* Branch to Offset */
+    branch(program, restore_offset(instruction->offset, BRANCH_OFFSET_LENGTH));
+
+    return 0;
 }
 
 /**
@@ -233,10 +323,16 @@ int execute_bge(instruction_t *instruction, program_t *program)
  */
 int execute_blt(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tBranch if Less Than\n", instruction->address);
-    return -1;
+    /* If condition not met, return 1 */
+    if(!check_condition(SIGNED_LESS, program->program_status_word))
+    {
+        return 1;
+    }
+    
+    /* Branch to Offset */
+    branch(program, restore_offset(instruction->offset, BRANCH_OFFSET_LENGTH));
+
+    return 0;
 }
 
 /**
@@ -248,10 +344,10 @@ int execute_blt(instruction_t *instruction, program_t *program)
  */
 int execute_bra(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tBranch Always\n", instruction->address);
-    return -1;
+    /* Branch to Offset */
+    branch(program, restore_offset(instruction->offset, BRANCH_OFFSET_LENGTH));
+
+    return 0;
 }
 
 /**

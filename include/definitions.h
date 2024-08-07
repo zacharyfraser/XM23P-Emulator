@@ -10,6 +10,8 @@
 
 #include <ctype.h>
 
+#define DEBUG
+
 /* Type Definitions */
 #define byte_t unsigned char
 #define word_t unsigned short
@@ -53,6 +55,9 @@
 
 #define BUBBLE 1
 #define NO_BUBBLE 0
+
+#define WORD_LENGTH 2
+#define BYTE_LENGTH 1
 
 /* Address and Checksum Constants */
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */

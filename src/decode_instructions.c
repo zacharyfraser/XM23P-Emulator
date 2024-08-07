@@ -129,7 +129,9 @@ int decode_instruction(instruction_t *instruction, program_t *program)
         if(remove_bubble(&program->bubble_queue))
         {
             /* Replace next instruction with NOOP */
+#ifdef DEBUG
             printf("Bubblin'...\n");
+#endif
             program->instruction_register = INSTRUCTION_NOOP;
         }
     }
