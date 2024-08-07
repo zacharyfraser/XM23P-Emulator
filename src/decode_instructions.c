@@ -122,6 +122,18 @@ int decode_instruction(instruction_t *instruction, program_t *program)
         return -1;
     }
 
+    /* Check if bubble queue is empty */
+    if(program->bubble_queue.size > 0)
+    {
+        /* Check if next instruction should bubble */
+        if(remove_bubble(&program->bubble_queue))
+        {
+            /* Replace next instruction with NOOP */
+            printf("Bubblin'...\n");
+            program->instruction_register = INSTRUCTION_NOOP;
+        }
+    }
+
     word_t instruction_register = program->instruction_register;
 
     /* Clear Instruction Struct */
