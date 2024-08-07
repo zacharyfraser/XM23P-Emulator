@@ -19,6 +19,70 @@ control_state_t control_table[READ_WRITE][WORD_BYTE] =
 };
 
 /**
+ * @brief Decode Condition Code and Return Result
+ * @param condition_code Condition Code
+ * @param program_status_word Program Status Word
+ * @return int [0|1]
+ */
+int check_condition(condition_code_t condition_code, status_register_t program_status_word)
+{
+    switch(condition_code)
+    {
+        /* Z = 1 */
+        case EQUAL:
+            return program_status_word.zero;
+        /* Z = 0 */
+        case NOT_EQUAL:
+            return !program_status_word.zero;
+        /* C = 1 */
+        case CARRY:
+            return program_status_word.carry;
+        /* C = 0 */
+        case NOT_CARRY:
+            return !program_status_word.carry;
+        /* N = 1 */
+        case NEGATIVE:
+            return program_status_word.negative;
+        /* N = 0 */
+        case NOT_NEGATIVE:
+            return !program_status_word.negative;
+        /* V = 1 */
+        case OVERFLOW:
+            return program_status_word.overflow;
+        /* V = 0 */
+        case NOT_OVERFLOW:
+            return !program_status_word.overflow;
+        /* C = 1 & Z = 0 */
+        case UNSIGNED_GREATER:
+            return !program_status_word.zero && program_status_word.carry;
+        /* C = 0 | Z = 1 */
+        case UNSIGNED_LESS_EQUAL:
+            return program_status_word.zero || !program_status_word.carry;
+        /* N == V */
+        case SIGNED_GREATER_EQUAL:
+            return (program_status_word.negative == program_status_word.overflow);
+        /* N != V*/
+        case SIGNED_LESS:
+            return (program_status_word.negative != program_status_word.overflow);
+        /* (N == V) & Z = 0 */
+        case SIGNED_GREATER:
+            return !program_status_word.zero && (program_status_word.negative == program_status_word.overflow);
+        /* (N != V) | Z = 1 */
+        case SIGNED_LESS_EQUAL:
+            return program_status_word.zero || (program_status_word.negative != program_status_word.overflow);
+        /* Always True */
+        case TRUE_ALWAYS:
+            return 1;
+        /* Always False */
+        case FALSE_ALWAYS:
+            return 0;
+        default:
+            return -1;
+    }
+}
+ 
+
+/**
  * @brief Test instruction for arithmetic overflow
  * 
  * @param source Instruction source word
@@ -1048,10 +1112,34 @@ int execute_clrcc(instruction_t *instruction, program_t *program)
  */
 int execute_cex(instruction_t *instruction, program_t *program)
 {
-    instruction;
-    program;
-    //printf("%04x\tConditional Exchange\n", instruction->address);
-    return -1;
+    if(check_condition(instruction->condition_code, program->program_status_word))
+    {
+        /* Execute True, Skip False*/
+        /* Add True_Count No_Bubbles then False_Count Bubbles to bubble queue */
+        for(int i = 0; i < instruction->t_count; i++)
+        {
+            insert_bubble(&program->bubble_queue, NO_BUBBLE);
+        }
+        for(int i = 0; i < instruction->f_count; i++)
+        {
+            insert_bubble(&program->bubble_queue, BUBBLE);
+        }
+    }
+    else
+    {
+        /* Skip True, Execute False */
+        /* Add False_Count No_Bubbles then True_Count Bubbles to bubble queue */
+        for(int i = 0; i < instruction->t_count; i++)
+        {
+            insert_bubble(&program->bubble_queue, BUBBLE);
+        }
+        for(int i = 0; i < instruction->f_count; i++)
+        {
+            insert_bubble(&program->bubble_queue, NO_BUBBLE);
+        }
+    }
+    
+    return 0;
 }
 
 /**

@@ -51,6 +51,9 @@
 #define READ 0
 #define WRITE 1
 
+#define BUBBLE 1
+#define NO_BUBBLE 0
+
 /* Address and Checksum Constants */
 #define ADDRESS_LENGTH 2 /* 2 Byte Memory Addressing */
 #define CHECKSUM_LENGTH 1
@@ -153,7 +156,7 @@ typedef enum record_type_t
  * 
  * Contiguous encoding of each instruction to be used with lookup table
  */
-typedef enum instruction_type 
+typedef enum instruction_type_t 
 {
     UNDEFINED, BL, BEQ, BNE,
     BC, BNC, BN, BGE,
@@ -169,12 +172,39 @@ typedef enum instruction_type
 } instruction_type_t;
 
 /* Available states for ICTRL and DCTRL registers */
-typedef enum control_state {
-    READ_BYTE = 0,
-    READ_WORD = 1,
-    WRITE_BYTE = 2,
-    WRITE_WORD = 3
+typedef enum control_state_t {
+    READ_BYTE   = 0,
+    READ_WORD   = 1,
+    WRITE_BYTE  = 2,
+    WRITE_WORD  = 3
 } control_state_t;
+
+/* Conditional Execution Conditions */
+typedef enum condition_code_t {
+    EQUAL                   = 0b0000,
+    NOT_EQUAL               = 0b0001,
+
+    CARRY                   = 0b0010,
+    NOT_CARRY               = 0b0011,
+
+    NEGATIVE                = 0b0100,
+    NOT_NEGATIVE            = 0b0101,
+
+    OVERFLOW                = 0b0110,
+    NOT_OVERFLOW            = 0b0111,
+
+    UNSIGNED_GREATER        = 0b1000,
+    UNSIGNED_LESS_EQUAL     = 0b1001,
+
+    SIGNED_GREATER_EQUAL    = 0b1010,
+    SIGNED_LESS             = 0b1011,
+
+    SIGNED_GREATER          = 0b1100,
+    SIGNED_LESS_EQUAL       = 0b1101,
+
+    TRUE_ALWAYS             = 0b1110,
+    FALSE_ALWAYS            = 0b1111
+} condition_code_t;
 
 /* Struct Definitions */
 /**
@@ -217,7 +247,7 @@ typedef struct instruction
     byte_t increment;       /* Increment Flag */
     byte_t prpo;            /* Pre/Post Increment Flag */
 
-    byte_t cc;              /* Condition Code*/
+    byte_t condition_code;  /* Condition Code*/
     byte_t t_count;         /* True-Count */
     byte_t f_count;         /* False-Count */
 
@@ -230,6 +260,15 @@ typedef struct instruction
 
     byte_t data_flag;       /* Indicates if instruction accesses data memory */
 } instruction_t;
+
+/* Queue for Flushing Pipeline with Bubbles */
+typedef struct bubble_queue_t
+{
+    /* 1 Bits indicate bubbles, 0 bits indicate non_bubbles */
+    int bubble_flag;
+    /* Number of elements in the queue */
+    int size;
+} bubble_queue_t;
 
 /**
  * @brief Represents a program.
@@ -261,12 +300,17 @@ typedef struct program_t
     int starting_address;                                           /* Starting Address of the Program */
     int clock_cycles;                                               /* Number of Clock Cycles */
     int debug_mode;                                                 /* Debug Mode Flag */
-    int bubble_flag;                                                /* Indicates if bubble should be used to avoid Data Hazard */
+    bubble_queue_t bubble_queue;                                                /* Indicates if bubble should be used to avoid Data Hazard */
 
     char instruction_fetch[MAX_STAGE_LENGTH];
     char instruction_decode[MAX_STAGE_LENGTH];
     char instruction_execute[MAX_STAGE_LENGTH];
     byte_t executable_name[MAX_RECORD_LENGTH];                      /* Name of the Executable */
 } program_t;
+
+/* Global Function Prototypes */
+void insert_bubble(bubble_queue_t *bubble_queue, int bubble_flag);
+int remove_bubble(bubble_queue_t *bubble_queue);
+void clear_bubble_queue(bubble_queue_t *bubble_queue);
 
 #endif /* DEFINITIONS_H */

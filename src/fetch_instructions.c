@@ -40,13 +40,17 @@ int fetch_instruction(program_t *program, int stage)
         program->instruction_memory_buffer_register |= program->instruction_memory[program->instruction_memory_address_register + 1] << 8;
         /* IR = IMBR */
         program->instruction_register = program->instruction_memory_buffer_register;
-        /* Insert bubble if bubble flag raised */
-        if(program->bubble_flag)
+        
+        /* Check if bubble queue is empty */
+        if(program->bubble_queue.size > 0)
         {
-            /* Replace next instruction with NOOP */
-            printf("Bubblin'...\n");
-            program->instruction_register = INSTRUCTION_NOOP;
-            program->bubble_flag = 0;
+            /* Check if next instruction should bubble */
+            if(remove_bubble(&program->bubble_queue))
+            {
+                /* Replace next instruction with NOOP */
+                printf("Bubblin'...\n");
+                program->instruction_register = INSTRUCTION_NOOP;
+            }
         }
         /* Copy stage to program context for debug logging */
         if(program->debug_mode)

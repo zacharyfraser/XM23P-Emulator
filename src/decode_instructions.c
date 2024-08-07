@@ -247,7 +247,7 @@ int decode_instruction(instruction_t *instruction, program_t *program)
                     /* CEX */
                     instruction->type = CEX;
                     /* Decode Condition Code */
-                    instruction->cc = READ_BITS(instruction_register, 6, 9);
+                    instruction->condition_code = READ_BITS(instruction_register, 6, 9);
                     /* Decode True Count */
                     instruction->t_count = READ_BITS(instruction_register, 3, 5);
                     /* Decode False Count */
@@ -271,7 +271,8 @@ int decode_instruction(instruction_t *instruction, program_t *program)
                     /* Check if destination is PC, and insert bubble */
                     if(instruction->destination == PC)
                     {
-                        program->bubble_flag = 1;
+                        clear_bubble_queue(&program->bubble_queue);
+                        insert_bubble(&program->bubble_queue, BUBBLE);
                     }
                     break;
                 case ST_CODE:
@@ -331,7 +332,8 @@ int decode_instruction(instruction_t *instruction, program_t *program)
             /* Check if destination is PC, and insert bubble */
             if(instruction->destination == PC)
             {
-                program->bubble_flag = 1;
+                clear_bubble_queue(&program->bubble_queue);
+                insert_bubble(&program->bubble_queue, BUBBLE);
             }
         }
         else if(READ_BITS(instruction_register, 14, 15) == STORE_RELATIVE_CODE)
