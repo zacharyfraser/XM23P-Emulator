@@ -10,6 +10,7 @@
 #define EXECUTE_INSTRUCTIONS_H
 
 #include <stdio.h>
+#include <string.h>
 
 #include "definitions.h"
 #include "instruction_functions.h"

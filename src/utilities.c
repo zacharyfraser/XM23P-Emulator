@@ -219,11 +219,11 @@ void run(program_t *program)
                 }
 
                 /* Check for Breakpoint - PC Incremented in previous cycle */
-                if(program->PROGRAM_COUNTER - WORD_LENGTH == (program->breakpoint & 0xFFFE))
+                if(program->PROGRAM_COUNTER - 2 * WORD_LENGTH == (program->breakpoint & 0xFFFE))
                 {
                     pause_cycle = 1;
                     /* Decrement PC for resuming execution */
-                    program->PROGRAM_COUNTER -= WORD_LENGTH;
+                    program->PROGRAM_COUNTER -= 2 * WORD_LENGTH;
                     continue;
                 }
                 break;
@@ -232,10 +232,12 @@ void run(program_t *program)
         }
         if(program->debug_mode == 1)
         {
-            printf("%04d\t\t%04x\t\t%04x\t\t%s\t%s\t%s\n", 
-            program->clock_cycles, program->PROGRAM_COUNTER, 
+            printf("%04d\t\t%04x\t\t%04x\t\t%s\t%s\t%s\tCVNZ: %d%d%d%d\n", 
+            program->clock_cycles, program->PROGRAM_COUNTER - WORD_LENGTH, 
             program->instruction_register, program->instruction_fetch, 
-            program->instruction_decode, program->instruction_execute);
+            program->instruction_decode, program->instruction_execute,
+            program->program_status_word.carry, program->program_status_word.overflow,
+            program->program_status_word.negative, program->program_status_word.zero);
         }
         program->clock_cycles++;
     }

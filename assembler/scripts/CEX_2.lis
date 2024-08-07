@@ -1,0 +1,51 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: CEX_2.asm
+Time of assembly: Wed 7 Aug 2024 03:14:51 
+  1	    	     	;Test 32 - Execute Pipeline
+  2	    	     	
+  3	    	     	        org #100
+  4	    	     	Start
+  5	0100	4DB6	        SETCC   VNZ
+  6	0102	5299	        CEX     GE,$3,$1
+  7	0104	278D	        BNE     SUM
+  8	0106	4088	        ADD     #1,R0
+  9	0108	4289	        SUB     #1,R1
+ 10	010A	408A	        ADD     #1,R2
+ 11	    	     	
+ 12	    	     	        org #20
+ 13	    	     	SUM
+ 14	0020	408B	        ADD     #1,R3
+ 15	0022	408B	        ADD     #1,R3
+ 16	0024	408B	        ADD     #1,R3
+ 17	0026	408B	        ADD     #1,R3
+ 18	0028	408B	        ADD     #1,R3
+ 19	    	     	        END Start
+
+Successful completion of assembly - 2P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+SUM                                	REL	0020	32	PRI
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\CEX_2.xme
+

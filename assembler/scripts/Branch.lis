@@ -1,6 +1,6 @@
 X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
 Input file name: Branch.asm
-Time of assembly: Wed 7 Aug 2024 01:33:57 
+Time of assembly: Wed 7 Aug 2024 02:57:04 
   1	    	     	        DATA
   2	    	     	        org     #100
   3	0100	000A	DVal    word    $10
@@ -24,7 +24,7 @@ Time of assembly: Wed 7 Aug 2024 01:33:57
  21	020E	3FFB	        bra     Loop    ; Repeat for next value
  22	    	     	; End of loop - Result in R1
  23	    	     	Done
- 24	    	     	;       bra Done
+ 24	    	     	;        bra Done
  25	    	     	;
  26	    	     	        end SumMain
 

@@ -21,7 +21,7 @@ Loop    ld      R0+,R2  ; R2 <- mem[R0]
         bra     Loop    ; Repeat for next value
 ; End of loop - Result in R1
 Done
-;       bra Done
+;        bra Done
 ;
         end SumMain
 

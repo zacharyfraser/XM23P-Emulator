@@ -89,7 +89,7 @@ int check_condition(condition_code_t condition_code, status_register_t program_s
   */
 signed short restore_offset(word_t offset, int number_of_bits)
 {
-    signed short result = (signed short)offset;
+    signed short result = offset;
     /* Restore LSb */
     result <<= 1;
     if(number_of_bits == LINK_OFFSET_LENGTH)
@@ -110,7 +110,7 @@ signed short restore_offset(word_t offset, int number_of_bits)
         }
     }
 
-    return offset;
+    return result;
 }
 
 /**
@@ -118,18 +118,23 @@ signed short restore_offset(word_t offset, int number_of_bits)
  * @param program Program Context
  * @param offset Offset to branch
  */
-void branch(program_t *program, word_t offset)
+void branch(program_t *program, signed short offset)
 {
-    word_t effective_address = program->PROGRAM_COUNTER;
+    word_t effective_address = program->PROGRAM_COUNTER - WORD_LENGTH;
     /* Calculate Effective Address */
-    effective_address += offset - WORD_LENGTH;
-    /* Set PC to Effective Address */
-    program->PROGRAM_COUNTER = effective_address;
-
-    /* Clear Bubble Queue */
-    clear_bubble_queue(&program->bubble_queue);
-    /* Insert Bubble */
-    insert_bubble(&program->bubble_queue, 1);
+    effective_address += offset;
+#ifdef DEBUG
+    printf("Branching + %d from %04x to %04x\n", offset, program->PROGRAM_COUNTER - 2 * WORD_LENGTH, effective_address);
+#endif
+    if(offset != 0x0000)
+    {
+        /* Set PC to Effective Address */
+        program->PROGRAM_COUNTER = effective_address;
+        /* Clear Bubble Queue */
+        clear_bubble_queue(&program->bubble_queue);
+        /* Insert Bubble */
+        insert_bubble(&program->bubble_queue, 1);
+    }
 }
 
 /**
@@ -181,7 +186,7 @@ int execute_undefined(instruction_t *instruction, program_t *program)
 int execute_bl(instruction_t *instruction, program_t *program)
 {
     /* Set Link Register to First Instruction after Branch */
-    program->LINK_REGISTER = instruction->address + WORD_LENGTH;
+    program->LINK_REGISTER = instruction->address;
     /* Branch to Offset */
     branch(program, restore_offset(instruction->offset, LINK_OFFSET_LENGTH));
 
@@ -1247,6 +1252,7 @@ int execute_cex(instruction_t *instruction, program_t *program)
  */
 int execute_ld(instruction_t *instruction, program_t *program)
 {
+
     word_t increment_size = 2 - instruction->wb;
     /* Handle Pre Inc/Dec */
     if(instruction->prpo == PRE)
@@ -1267,7 +1273,7 @@ int execute_ld(instruction_t *instruction, program_t *program)
     {
         if(instruction->increment == 1)
         {
-            program->register_file[REGISTER][instruction->source]-=increment_size;
+            program->register_file[REGISTER][instruction->source]+=increment_size;
         }
         else if(instruction->decrement == 1)
         {
