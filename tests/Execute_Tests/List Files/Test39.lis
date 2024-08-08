@@ -1,0 +1,45 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test39.asm
+Time of assembly: Thu 8 Aug 2024 01:29:15 
+  1	    	     	;Test 38 - True Condition
+  2	    	     	
+  3	    	     	        org #100
+  4	    	     	Start
+  5	0100	77F8	        MOVLS   #FF,R0
+  6	0102	77F9	        MOVLS   #FF,R1
+  7	0104	4DB0	        SETCC   V
+  8	0106	5292	        CEX     GE,$2,$2
+  9	0108	4088	        ADD     #1,R0
+ 10	010A	4089	        ADD     #1,R1
+ 11	010C	4288	        SUB     #1,R0
+ 12	010E	4289	        SUB     #1,R1
+ 13	    	     	
+ 14	    	     	        END Start
+
+Successful completion of assembly - 1P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test39.xme
+

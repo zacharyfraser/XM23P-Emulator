@@ -1,0 +1,52 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test41.asm
+Time of assembly: Thu 8 Aug 2024 01:42:56 
+  1	    	     	;Test 41 - CEX Branch
+  2	    	     	
+  3	    	     	        org #100
+  4	    	     	Start
+  5	0100	4588	        CMP     $1,R0
+  6	0102	5061	        CEX     NE,$4,$1
+  7	0104	3FBD	        BRA     Branch
+  8	0106	4088	        ADD     #1,R0
+  9	0108	4588	        CMP     $1,R0
+ 10	010A	5000	        CEX     EQ,$0,$0
+ 11	010C	4089	        ADD     #1,R1
+ 12	    	     	
+ 13	    	     	        org #80
+ 14	    	     	Branch
+ 15	0080	408A	        ADD     $1,R2
+ 16	0082	408A	        ADD     $1,R2
+ 17	0084	408A	        ADD     $1,R2
+ 18	0086	408A	        ADD     $1,R2
+ 19	0088	408A	        ADD     $1,R2
+ 20	    	     	        END Start
+
+Successful completion of assembly - 2P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+Branch                             	REL	0080	128	PRI
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test41.xme
+
