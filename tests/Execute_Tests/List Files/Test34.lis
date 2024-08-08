@@ -1,0 +1,49 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test34.asm
+Time of assembly: Thu 8 Aug 2024 00:33:32 
+  1	    	     	;Test 33 - Execute Pipeline
+  2	    	     	
+  3	    	     	        org #100
+  4	    	     	Start
+  5	0100	6778	        MOVL    #BEEF,R0
+  6	0102	7DF0	        MOVH    #BEEF,R0
+  7	0104	4500	        CMP     R0,R0
+  8	0106	27B5	        BNE     Branch          ;Should Not Branch
+  9	0108	4C01	        MOV     R0,R1           ;Should Execute
+ 10	    	     	
+ 11	    	     	        org #70
+ 12	0070	4C02	        MOV     R0,R2           ;Should Not Execute
+ 13	    	     	Branch
+ 14	0072	6673	        MOVL    #FACE,R3        ;Should Not Execute
+ 15	0074	7FD3	        MOVH    #FACE,R3        ;Should Not Execute
+ 16	    	     	
+ 17	    	     	        END Start
+
+Successful completion of assembly - 2P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+Branch                             	REL	0072	114	PRI
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test34.xme
+

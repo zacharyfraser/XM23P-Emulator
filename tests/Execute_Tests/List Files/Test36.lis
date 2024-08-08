@@ -1,0 +1,43 @@
+X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
+Input file name: Test36.asm
+Time of assembly: Thu 8 Aug 2024 00:50:05 
+  1	    	     	;Test 36 - Link Branch
+  2	    	     	
+  3	    	     	        org #100
+  4	    	     	Start
+  5	0100	0007	        BL      Branch
+  6	    	     	
+  7	    	     	        org #110
+  8	    	     	Branch
+  9	0110	4C00	        MOV      R0,R0
+ 10	    	     	
+ 11	    	     	        END Start
+
+Successful completion of assembly - 2P
+
+** Symbol table **
+
+Constants (Equates)
+Name                               	Type	Value	Decimal
+
+Labels (Code)
+Name                               	Type	Value	Decimal
+Branch                             	REL	0110	272	PRI
+Start                              	REL	0100	256	PRI
+
+Labels (Data)
+Name                               	Type	Value	Decimal
+
+Registers
+Name                               	Type	Value	Decimal
+R7                                 	REG	0007	7	PRI
+R6                                 	REG	0006	6	PRI
+R5                                 	REG	0005	5	PRI
+R4                                 	REG	0004	4	PRI
+R3                                 	REG	0003	3	PRI
+R2                                 	REG	0002	2	PRI
+R1                                 	REG	0001	1	PRI
+R0                                 	REG	0000	0	PRI
+
+.XME file: .\assembler\scripts\Test36.xme
+

@@ -1,18 +1,28 @@
 X-Makina Assembler - Version XM-23p Single Pass+ Assembler - Release 24.05.16
-Input file name: CEX.asm
-Time of assembly: Tue 6 Aug 2024 23:26:24 
-  1	    	     	;Test 32 - Execute Pipeline
+Input file name: Test35.asm
+Time of assembly: Thu 8 Aug 2024 00:46:46 
+  1	    	     	;Test 35 - Bubble
   2	    	     	
   3	    	     	        org #100
   4	    	     	Start
-  5	0100	77F8	        MOVLS   #FF,R0
-  6	0102	4DB4	        SETCC   VN
-  7	0104	5291	        CEX     GE,$2,$1
-  8	0106	4088	        ADD     #1,R0
-  9	0108	4288	        SUB     #1,R0
- 10	    	     	        END Start
+  5	0100	4588	        CMP     $1,R0
+  6	0102	23B7	        BEQ     Branch_1
+  7	0104	4580	        CMP     $0,R0
+  8	0106	2004	        BEQ     Branch_2
+  9	    	     	
+ 10	    	     	        org #110
+ 11	    	     	Branch_2
+ 12	0110	4C00	        MOV      R0,R0
+ 13	    	     	
+ 14	    	     	        org #70
+ 15	0070	4C02	        MOV     R0,R2           ;Should Not Execute
+ 16	    	     	Branch_1
+ 17	0072	6673	        MOVL    #FACE,R3        ;Should Not Execute
+ 18	0074	7FD3	        MOVH    #FACE,R3        ;Should Not Execute
+ 19	    	     	
+ 20	    	     	        END Start
 
-Successful completion of assembly - 1P
+Successful completion of assembly - 2P
 
 ** Symbol table **
 
@@ -21,6 +31,8 @@ Name                               	Type	Value	Decimal
 
 Labels (Code)
 Name                               	Type	Value	Decimal
+Branch_2                           	REL	0110	272	PRI
+Branch_1                           	REL	0072	114	PRI
 Start                              	REL	0100	256	PRI
 
 Labels (Data)
@@ -37,5 +49,5 @@ R2                                 	REG	0002	2	PRI
 R1                                 	REG	0001	1	PRI
 R0                                 	REG	0000	0	PRI
 
-.XME file: .\assembler\scripts\CEX.xme
+.XME file: .\assembler\scripts\Test35.xme
 
